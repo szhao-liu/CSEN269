@@ -35,7 +35,8 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text("SignUp"),
+        title: Text("College Finder"),
+        backgroundColor: Colors.blue,
       ),
       body: Center(
         child: Padding(

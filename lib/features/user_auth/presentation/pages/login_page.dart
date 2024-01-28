@@ -36,7 +36,8 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text("Login"),
+        title: Text("College Finder"),
+        backgroundColor: Colors.blue,
       ),
       body: Center(
         child: Padding(
