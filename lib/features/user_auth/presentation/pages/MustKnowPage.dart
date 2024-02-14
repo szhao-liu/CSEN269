@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'MustKnow2Page.dart';
 
 class MustKnowPage extends StatelessWidget {
   @override
@@ -35,7 +36,7 @@ class MustKnowPage extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          "Hey Sonam!",
+                          "Hey Student!",
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -50,7 +51,7 @@ class MustKnowPage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(width: 30), // Adjust spacing if needed
+                    SizedBox(width: 30),
                   ],
                 ),
               ),
@@ -82,56 +83,81 @@ class MustKnowPage extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 40),
-          _buildCollegeBlock(
-            "Community College",
-            Colors.lightBlue[100],
-            Icons.info,
+          SizedBox(height: 10), // Add some space between header and blocks
+          Expanded(
+            child: ListView.builder(
+              itemCount: 3,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: _buildCollegeBlock(
+                    index == 2
+                        ? "Trade or Vocational College"
+                        : (index == 0
+                        ? "Community College"
+                        : "Four Year College"),
+                    index == 2
+                        ? Colors.green[300]
+                        : (index == 0
+                        ? Colors.lightBlue[100]
+                        : Colors.yellow[200]),
+                    Icons.info,
+                    context,
+                  ),
+                );
+              },
+            ),
           ),
-          SizedBox(height: 40),
-          _buildCollegeBlock(
-            "Four Year College",
-            Colors.yellow[200],
-            Icons.info,
-          ),
-          SizedBox(height: 40),
-          _buildCollegeBlock(
-            "Trade or Vocational\nCollege",
-            Colors.green[300],
-            Icons.info,
-          ),
-          SizedBox(height: 40),
         ],
       ),
     );
   }
 
-  Widget _buildCollegeBlock(String text, Color? color, IconData icon) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: color ?? Colors.transparent,
-        borderRadius: BorderRadius.circular(15),
-      ),
-      padding: EdgeInsets.all(24),
-      width: double.infinity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            text,
-            style: TextStyle(
-              color: Colors.indigo,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+  Widget _buildCollegeBlock(String text, Color? color, IconData icon,
+      BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        // Navigate to MustKnow2Page when the block is tapped
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MustKnow2Page()),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        height: 90,
+        decoration: BoxDecoration(
+          color: color ?? Colors.transparent,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    text,
+                    style: TextStyle(
+                      color: Colors.indigo,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          SizedBox(height: 8),
-          Icon(
-            icon,
-            color: Colors.black,
-          ),
-        ],
+            Positioned(
+              bottom: 10,
+              right: 10,
+              child: Icon(
+                icon,
+                color: Colors.black,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

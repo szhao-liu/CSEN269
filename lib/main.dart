@@ -10,8 +10,15 @@ import 'features/user_auth/presentation/pages/login_page.dart';
 import 'features/user_auth/presentation/pages/sign_up_page.dart'; // Import Firebase Auth
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'features/user_auth/presentation/pages/Quiz1Page.dart';
+import 'features/user_auth/presentation/pages/Quiz9Page.dart';
+import 'features/user_auth/presentation/pages/Quiz10Page.dart';
+import 'features/user_auth/presentation/pages/Quiz11Page.dart';
+import 'features/user_auth/presentation/pages/Quiz12Page.dart';
 import 'features/user_auth/presentation/pages/MustKnowPage.dart';
+import 'features/user_auth/presentation/pages/RoadmapPage.dart';
+import 'features/user_auth/presentation/pages/MustKnow2Page.dart';
+import 'features/user_auth/presentation/pages/CheckCollegePage.dart';
+
 
 
 Future main() async {
@@ -49,8 +56,16 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginPage(),
         '/signUp': (context) => SignUpPage(),
         '/home': (context) => HomePage(),
-    '/quiz1': (context) => Quiz1Page(),
+        '/quiz9': (context) => Quiz9Page(),
+        '/quiz10': (context) => Quiz10Page(),
+        '/quiz11': (context) => Quiz11Page(),
+        '/quiz12': (context) => Quiz12Page(),
         '/mustknow': (context) => MustKnowPage(),
+        '/mustknow2': (context) => MustKnow2Page(),
+        '/roadmap': (context) => RoadmapPage(),
+        '/checkcollege': (context) => CheckCollegePage(),
+
+
       },
     );
   }

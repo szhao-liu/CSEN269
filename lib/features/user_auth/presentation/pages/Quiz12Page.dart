@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'MustKnowPage.dart';
 
-class Quiz1Page extends StatefulWidget {
+class Quiz12Page extends StatefulWidget {
   @override
-  _Quiz1PageState createState() => _Quiz1PageState();
+  _Quiz12PageState createState() => _Quiz12PageState();
 }
 
-class _Quiz1PageState extends State<Quiz1Page> {
+class _Quiz12PageState extends State<Quiz12Page> {
   List<int?> selectedOptions = List.filled(3, null);
 
   @override
@@ -40,7 +40,7 @@ class _Quiz1PageState extends State<Quiz1Page> {
                     },
                   ),
                   Text(
-                    "Hey Sonam!",
+                    "Hey Student!",
                     style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,

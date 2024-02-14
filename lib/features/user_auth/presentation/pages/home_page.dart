@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'Quiz1Page.dart'; // Import the Quiz1Page
+import 'Quiz9Page.dart'; // Import the Quiz1Page
 
 class HomePage extends StatelessWidget {
   @override
@@ -28,7 +28,7 @@ class HomePage extends StatelessWidget {
                 // Navigate to Quiz1Page when clicking on "Take Quiz"
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Quiz1Page()),
+                  MaterialPageRoute(builder: (context) => Quiz9Page()),
                 );
               },
               child: Text("Go to HomePage"),
