@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'Quiz9Page.dart';
+import 'Quiz10Page.dart';
+import 'Quiz11Page.dart';
+import 'Quiz12Page.dart';
+
+
 
 void main() {
   runApp(Student_choose_grade());
@@ -32,9 +38,13 @@ class MyHomePage extends StatelessWidget {
             ),
           ),
           SizedBox(height: 10),
-          OptionButton("Scholarships"),
-          SizedBox(height: 10),
-          OptionButton("Option 2"),
+          OptionButton(
+            '9th Grade',
+            onTap: () {
+              // Implement the action when the option is selected
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Quiz9Page()));
+            },
+          ),
           SizedBox(height: 10),
           OptionButton("Option 3"),
           SizedBox(height: 10),
@@ -57,20 +67,18 @@ class MyHomePage extends StatelessWidget {
 
 class OptionButton extends StatelessWidget {
   final String optionText;
+  final VoidCallback? onTap;
 
-  OptionButton(this.optionText);
+  OptionButton(this.optionText, {this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 70.0), // Add padding on left and right
+      padding: const EdgeInsets.symmetric(horizontal: 70.0),
       child: Container(
-        width: double.infinity, // Makes the button take the full width
+        width: double.infinity,
         child: ElevatedButton(
-          onPressed: () {
-            // Implement the action when the option is selected
-            print("Selected: $optionText");
-          },
+          onPressed: onTap,
           child: Text(optionText),
         ),
       ),

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'Student_benefits.dart';
+import 'Student_choose_grade.dart';
+import 'Student_testimonials.dart';
+
+
+
 
 void main() {
   runApp(Student_homepage());
@@ -47,14 +52,14 @@ class CollegeGuidePage extends StatelessWidget {
             title: 'Why College?',
             onTap: () {
               // Navigate to Page for Option 1
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Student_benefits()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Student_testimonials()));
             },
           ),
           SizedBox(height: 20),
           OptionCard(title: 'My Benefits',
             onTap: () {
               // Navigate to Page for Option 1
-              //Navigator.push(context, MaterialPageRoute(builder: (context) => MyBenefits()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Student_benefits()));
             },
           ),
           SizedBox(height: 20),
@@ -62,7 +67,7 @@ class CollegeGuidePage extends StatelessWidget {
             title: 'Explore career',
             onTap: () {
               // Navigate to Page for Option 1
-              //Navigator.push(context, MaterialPageRoute(builder: (context) => Choosegrade()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Student_choose_grade()));
             },
 
           ),
@@ -101,28 +106,30 @@ class OptionCard extends StatelessWidget {
 
   OptionCard({required this.title, this.onTap});
 
-  //OptionCard({required this.title});
-
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30.0), // Horizontal padding of 30 logical pixels
-      child: Card(
-        elevation: 3,
-        color: Colors.tealAccent, // Set the background color to pistachio
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                title,
-                style: TextStyle(fontSize: 18, color: Colors.indigo,fontWeight: FontWeight.bold),
-              ),
-            ],
+      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+      child: GestureDetector(
+        onTap: onTap, // Use onTap directly on GestureDetector
+        child: Card(
+          elevation: 3,
+          color: Colors.cyan,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(fontSize: 18, color: Colors.indigo, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
+

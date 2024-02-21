@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:myapp/features/user_auth/presentation/pages/MustKnowPage.dart';
 
 import 'features/app/splash_screen/splash_screen.dart';
-import 'features/user_auth/presentation/pages/home_page.dart';
+import 'features/user_auth/presentation/pages/Student_homepage.dart';
 import 'features/user_auth/presentation/pages/login_page.dart';
 import 'features/user_auth/presentation/pages/sign_up_page.dart'; // Import Firebase Auth
 import 'package:firebase_core/firebase_core.dart';
@@ -18,6 +18,9 @@ import 'features/user_auth/presentation/pages/MustKnowPage.dart';
 import 'features/user_auth/presentation/pages/RoadmapPage.dart';
 import 'features/user_auth/presentation/pages/MustKnow2Page.dart';
 import 'features/user_auth/presentation/pages/CheckCollegePage.dart';
+import 'features/user_auth/presentation/pages/Student_testimonials.dart';
+import 'features/user_auth/presentation/pages/Student_choose_grade.dart';
+import 'features/user_auth/presentation/pages/Student_benefits.dart';
 
 
 
@@ -55,7 +58,7 @@ class MyApp extends StatelessWidget {
         ),
         '/login': (context) => LoginPage(),
         '/signUp': (context) => SignUpPage(),
-        '/home': (context) => HomePage(),
+        '/home': (context) => Student_homepage(),
         '/quiz9': (context) => Quiz9Page(),
         '/quiz10': (context) => Quiz10Page(),
         '/quiz11': (context) => Quiz11Page(),
@@ -64,6 +67,9 @@ class MyApp extends StatelessWidget {
         '/mustknow2': (context) => MustKnow2Page(),
         '/roadmap': (context) => RoadmapPage(),
         '/checkcollege': (context) => CheckCollegePage(),
+        '/benefits': (context) => Student_benefits(),
+        '/choosegrade': (context) => Student_choose_grade(),
+        '/testimonials': (context) => Student_testimonials(),
 
 
       },
