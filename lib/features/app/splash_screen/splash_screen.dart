@@ -28,8 +28,8 @@ class _SplashScreenState extends State<SplashScreen> {
     // TODO: implement build
     return const Scaffold(
       body: Center(
-        child: Text("Welcome to Flutter Firebase",
-          style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),),
+        child: Text("Welcome to College Finder! Here you'll find the college of your dreams!!",
+          style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 14),),
       ),
     );
   }

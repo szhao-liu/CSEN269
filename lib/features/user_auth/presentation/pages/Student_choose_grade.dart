@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../global/common/Header.dart';
 import 'Quiz9Page.dart';
 import 'Quiz10Page.dart';
 import 'Quiz11Page.dart';
@@ -23,13 +24,11 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Choose Your Page"),
-      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Header(),
           Padding(
             padding: const EdgeInsets.all(30.0),
             child: Text(

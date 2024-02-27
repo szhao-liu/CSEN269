@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/global/common/Header.dart';
 import 'MustKnowPage.dart';
 
 class Quiz12Page extends StatefulWidget {
@@ -14,48 +15,7 @@ class _Quiz12PageState extends State<Quiz12Page> {
     return Scaffold(
       body: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              ),
-            ),
-            height: 150,
-            width: double.infinity,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Colors.black,
-                      size: 30,
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  Text(
-                    "Hey Student!",
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Icon(
-                    Icons.face,
-                    size: 40,
-                    color: Colors.black,
-                  ),
-                ],
-              ),
-            ),
-          ),
+         Header(),
           Expanded(
             child: ListView(
               children: [

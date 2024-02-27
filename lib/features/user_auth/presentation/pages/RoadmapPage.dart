@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/global/common/Header.dart';
 import 'CheckCollegePage.dart';
 
 class RoadmapPage extends StatefulWidget {
@@ -24,7 +25,7 @@ class _RoadmapPageState extends State<RoadmapPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildAppBar(),
+            Header(),
             SizedBox(height: 20),
             for (var topic in selectedOptions.keys)
               _buildTopicDropdown(topic),
@@ -45,57 +46,6 @@ class _RoadmapPageState extends State<RoadmapPage> {
             ),
             SizedBox(height: 20),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAppBar() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[300],
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(20),
-          bottomRight: Radius.circular(20),
-        ),
-      ),
-      height: 150,
-      width: double.infinity,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 40),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Colors.black,
-                      size: 30,
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  Column(
-                    children: [
-                      Text(
-                        "Roadmap",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(width: 30),
-                ],
-              ),
-            ],
-          ),
         ),
       ),
     );
