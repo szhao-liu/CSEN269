@@ -14,6 +14,9 @@ import 'features/user_auth/presentation/pages/CheckCollegePage.dart';
 import 'features/user_auth/presentation/pages/Student_testimonials.dart';
 import 'features/user_auth/presentation/pages/Student_choose_grade.dart';
 import 'features/user_auth/presentation/pages/Student_benefits.dart';
+import 'features/user_auth/presentation/pages/CollegeSearch.dart';
+
+
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -76,6 +79,8 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (context) => StudentChooseGrade());
           case '/testimonials':
             return MaterialPageRoute(builder: (context) => Student_testimonials());
+          case '/searchcollege':
+            return MaterialPageRoute(builder: (context) => CollegeSearch());
         // Add cases for other routes as needed
           default:
             return null;

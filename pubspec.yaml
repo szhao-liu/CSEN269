@@ -74,6 +74,7 @@ flutter:
     - assets/ss.jpg
     - assets/backgg.jpg
     - assets/stud1test.jpeg
+    - assets/santa.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
