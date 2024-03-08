@@ -33,20 +33,25 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text("College Finder"),
-        backgroundColor: Colors.blue,
-      ),
-      body: Center(
+      body: SingleChildScrollView(
+        child: Container(
+        color: Colors.white,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              SizedBox(height: 10),
+              Image.asset(
+                'assets/ss.jpg', // Replace with your image asset path
+                height: 300, // Adjust the height as needed
+                width: 200,
+                fit: BoxFit.cover,// Adjust the width as needed
+              ),
               Text(
-                "Sign Up",
-                style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
+                "REGISTER",
+                style: TextStyle(color: Colors.blue,fontSize: 25, fontWeight: FontWeight.bold),
               ),
               SizedBox(
                 height: 30,
@@ -61,7 +66,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               FormContainerWidget(
                 controller: _emailController,
-                hintText: "Email",
+                hintText: "Email Address",
                 isPasswordField: false,
               ),
               SizedBox(
@@ -73,6 +78,14 @@ class _SignUpPageState extends State<SignUpPage> {
                 isPasswordField: true,
               ),
               SizedBox(
+                height: 10,
+              ),
+              FormContainerWidget(
+                controller: _passwordController,
+                hintText: "Confirm Password",
+                isPasswordField: true,
+              ),
+              SizedBox(
                 height: 30,
               ),
               GestureDetector(
@@ -81,17 +94,19 @@ class _SignUpPageState extends State<SignUpPage> {
 
                 },
                 child: Container(
-                  width: double.infinity,
+                    width: 150,
                   height: 45,
                   decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(30),
+                    gradient: LinearGradient(
+                      colors: [Colors.blue ?? Colors.transparent, Colors.cyanAccent[100] ?? Colors.transparent],
+                    ),
                   ),
                   child: Center(
                       child: isSigningUp ? CircularProgressIndicator(color: Colors.white,):Text(
-                        "Sign Up",
+                        "SIGN UP",
                         style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
+                            fontSize: 20,color: Colors.white, fontWeight: FontWeight.bold),
                       )),
                 ),
               ),
@@ -122,6 +137,7 @@ class _SignUpPageState extends State<SignUpPage> {
               )
             ],
           ),
+        ),
         ),
       ),
     );

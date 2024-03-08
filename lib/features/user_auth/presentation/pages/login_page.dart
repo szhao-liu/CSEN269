@@ -34,20 +34,25 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text("College Finder"),
-        backgroundColor: Colors.blue,
-      ),
-      body: Center(
+      body: SingleChildScrollView(
+        child: Container(
+          color: Colors.white, //
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              SizedBox(height: 10),
+              Image.asset(
+                'assets/ss.jpg', // Replace with your image asset path
+                height: 300, // Adjust the height as needed
+                width: 200,
+                fit: BoxFit.cover,// Adjust the width as needed
+              ),
               Text(
-                "Login",
-                style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
+                "Welcome to CollegeFinder",
+                style: TextStyle(color: Colors.blue,fontSize: 25, fontWeight: FontWeight.bold),
               ),
               SizedBox(
                 height: 30,
@@ -73,17 +78,19 @@ class _LoginPageState extends State<LoginPage> {
                   _signIn();
                 },
                 child: Container(
-                  width: double.infinity,
+                  width: 150,
                   height: 45,
                   decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(30),
+                    gradient: LinearGradient(
+                      colors: [Colors.blue ?? Colors.transparent, Colors.cyanAccent[100] ?? Colors.transparent],
+                    ),
                   ),
                   child: Center(
                     child: _isSigning ? CircularProgressIndicator(
                       color: Colors.white,) : Text(
                       "Login",
-                      style: TextStyle(
+                      style: TextStyle(fontSize: 25,
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
@@ -98,11 +105,13 @@ class _LoginPageState extends State<LoginPage> {
 
                 },
                 child: Container(
-                  width: double.infinity,
+                  width: 250,
                   height: 45,
                   decoration: BoxDecoration(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(30),
+                    gradient: LinearGradient(
+                      colors: [Colors.red[800] ?? Colors.transparent, Colors.deepOrange[200] ?? Colors.transparent],
+                    ),
                   ),
                   child: Center(
                     child: Row(
@@ -112,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(width: 5,),
                         Text(
                           "Sign in with Google",
-                          style: TextStyle(
+                          style: TextStyle(fontSize: 15,
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
@@ -155,6 +164,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ],
           ),
+        ),
         ),
       ),
     );

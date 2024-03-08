@@ -1,19 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:myapp/features/user_auth/presentation/pages/MustKnowPage.dart';
 
 import 'features/app/splash_screen/splash_screen.dart';
 import 'features/user_auth/presentation/pages/Student_homepage.dart';
 import 'features/user_auth/presentation/pages/login_page.dart';
-import 'features/user_auth/presentation/pages/sign_up_page.dart'; // Import Firebase Auth
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'features/user_auth/presentation/pages/Quiz9Page.dart';
-import 'features/user_auth/presentation/pages/Quiz10Page.dart';
-import 'features/user_auth/presentation/pages/Quiz11Page.dart';
-import 'features/user_auth/presentation/pages/Quiz12Page.dart';
+import 'features/user_auth/presentation/pages/sign_up_page.dart';
+import 'features/user_auth/presentation/pages/Quiz.dart'; // Updated to use a single Quiz page
 import 'features/user_auth/presentation/pages/MustKnowPage.dart';
 import 'features/user_auth/presentation/pages/RoadmapPage.dart';
 import 'features/user_auth/presentation/pages/MustKnow2Page.dart';
@@ -22,10 +15,10 @@ import 'features/user_auth/presentation/pages/Student_testimonials.dart';
 import 'features/user_auth/presentation/pages/Student_choose_grade.dart';
 import 'features/user_auth/presentation/pages/Student_benefits.dart';
 
-
-
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
   if (kIsWeb) {
     await Firebase.initializeApp(
       options: FirebaseOptions(
@@ -37,41 +30,56 @@ Future main() async {
       ),
     );
   } else {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    await Firebase.initializeApp();
   }
+
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Firebase',
-      routes: {
-        '/': (context) => SplashScreen(
-          // Here, you can decide whether to show the LoginPage or HomePage based on user authentication
-          child: LoginPage(),
-        ),
-        '/login': (context) => LoginPage(),
-        '/signUp': (context) => SignUpPage(),
-        '/home': (context) => Student_homepage(),
-        '/quiz9': (context) => Quiz9Page(),
-        '/quiz10': (context) => Quiz10Page(),
-        '/quiz11': (context) => Quiz11Page(),
-        '/quiz12': (context) => Quiz12Page(),
-        '/mustknow': (context) => MustKnowPage(),
-        '/mustknow2': (context) => MustKnow2Page(),
-        '/roadmap': (context) => RoadmapPage(),
-        '/checkcollege': (context) => CheckCollegePage(),
-        '/benefits': (context) => Student_benefits(),
-        '/choosegrade': (context) => Student_choose_grade(),
-        '/testimonials': (context) => Student_testimonials(),
-
-
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case '/':
+            return MaterialPageRoute(
+              builder: (context) => SplashScreen(
+                child: LoginPage(),
+              ),
+            );
+          case '/login':
+            return MaterialPageRoute(builder: (context) => LoginPage());
+          case '/signUp':
+            return MaterialPageRoute(builder: (context) => SignUpPage());
+          case '/home':
+            return MaterialPageRoute(builder: (context) => Student_homepage());
+          case '/quiz':
+          // Extract grade from the route arguments
+            final String grade = settings.arguments as String;
+            return MaterialPageRoute(
+              builder: (context) => Quiz(grade: grade),
+            );
+          case '/mustknow':
+            return MaterialPageRoute(builder: (context) => MustKnowPage());
+          case '/mustknow2':
+            return MaterialPageRoute(builder: (context) => MustKnow2Page());
+          case '/roadmap':
+            return MaterialPageRoute(builder: (context) => RoadmapPage());
+          case '/checkcollege':
+            return MaterialPageRoute(builder: (context) => CheckCollegePage());
+          case '/benefits':
+            return MaterialPageRoute(builder: (context) => Student_benefits());
+          case '/choosegrade':
+            return MaterialPageRoute(builder: (context) => StudentChooseGrade());
+          case '/testimonials':
+            return MaterialPageRoute(builder: (context) => Student_testimonials());
+        // Add cases for other routes as needed
+          default:
+            return null;
+        }
       },
     );
   }

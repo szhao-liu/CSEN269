@@ -24,9 +24,9 @@ class Student_testimonials extends StatelessWidget {
   final List<SuccessStory> successStories = [
     SuccessStory(
       name: "John Doe",
-      photoPath: "assets/testimonial_1.jpg",
+      photoPath: "assets/stud1test.jpeg",
       income: 50000.0,
-      description: "Thanks to my hard work and dedication, I've achieved financial success beyond my dreams. College degree made it easy to showcase my journey.",
+      description: "Focus on what you can control. The college application process can be stressful, and there are often aspects beyond your control. Concentrate on putting your best effort into your application, essays, and standardized tests if applicable.Share your goals and challenges with friends, family, or mentors who can offer encouragement and support. Having a reliable support system can help you stay motivated and navigate challenges more effectively.",
 
     ),
     SuccessStory(
