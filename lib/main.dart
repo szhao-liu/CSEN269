@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/features/user_auth/presentation/pages/CommonFooter.dart';
 
 import 'features/app/splash_screen/splash_screen.dart';
 import 'features/user_auth/presentation/pages/Student_homepage.dart';
@@ -15,6 +16,7 @@ import 'features/user_auth/presentation/pages/Student_testimonials.dart';
 import 'features/user_auth/presentation/pages/Student_choose_grade.dart';
 import 'features/user_auth/presentation/pages/Student_benefits.dart';
 import 'features/user_auth/presentation/pages/CollegeSearch.dart';
+import 'features/user_auth/presentation/pages/CommonFooter.dart';
 
 
 
@@ -81,6 +83,8 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (context) => Student_testimonials());
           case '/searchcollege':
             return MaterialPageRoute(builder: (context) => CollegeSearch());
+          case '/commonfooter':
+            return MaterialPageRoute(builder: (context) => CommonFooter());
         // Add cases for other routes as needed
           default:
             return null;

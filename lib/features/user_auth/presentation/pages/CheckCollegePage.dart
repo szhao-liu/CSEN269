@@ -11,7 +11,7 @@ class CheckCollegePage extends StatelessWidget {
           SingleChildScrollView(
             child: Column(
               children: [
-                Header(),
+                Header(dynamicText: "College Search"),
                 SizedBox(height: 60),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),

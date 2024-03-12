@@ -4,6 +4,7 @@ import 'Student_benefits.dart';
 import 'Student_choose_grade.dart';
 import 'Student_testimonials.dart';
 import 'package:myapp/global/common/showHelpDialog.dart';
+import 'CommonFooter.dart';
 
 void main() {
   runApp(Student_homepage());
@@ -20,25 +21,27 @@ class Student_homepage extends StatelessWidget {
             'assets/backgg.jpg',
             fit: BoxFit.cover,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          ListView(
+            padding: EdgeInsets.zero, // Set padding to zero to eliminate default padding
             children: [
-              CommonHeader.Header(),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'College Guide',
-                    style: TextStyle(
-                      color: Colors.indigo,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+              CommonHeader.Header(dynamicText: "HomePage"),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 40),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'College Guide',
+                      style: TextStyle(
+                        color: Colors.indigo,
+                        fontSize: 34,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'MadimiOne', // Replace with the desired font family
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              SizedBox(height: 20),
               OptionCard(
                 title: 'Why College?',
                 onTap: () {
@@ -48,17 +51,18 @@ class Student_homepage extends StatelessWidget {
                   );
                 },
               ),
-              SizedBox(height: 20),
-              OptionCard(
-                title: 'My Benefits',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Student_benefits()),
-                  );
-                },
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: OptionCard(
+                  title: 'My Benefits',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Student_benefits()),
+                    );
+                  },
+                ),
               ),
-              SizedBox(height: 20),
               OptionCard(
                 title: 'Explore career',
                 onTap: () {
@@ -104,12 +108,22 @@ class OptionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 60.0, vertical: 16.0),
       child: GestureDetector(
         onTap: onTap,
-        child: Card(
-          elevation: 3,
-          color: Colors.deepPurple[50] ?? Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            color: Colors.deepPurple[50] ?? Colors.transparent,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2), // Adjust the color and opacity as needed
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: Offset(0, 3), // Offset to create a little shadow below the container
+              ),
+            ],
+          ),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -117,7 +131,11 @@ class OptionCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(fontSize: 18, color: Colors.indigo, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.deepPurple[400],
+                    fontFamily: 'MadimiOne',
+                  ),
                 ),
               ],
             ),
@@ -127,3 +145,4 @@ class OptionCard extends StatelessWidget {
     );
   }
 }
+

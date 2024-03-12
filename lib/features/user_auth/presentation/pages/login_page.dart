@@ -34,137 +34,191 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          color: Colors.white, //
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/grad2.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 10),
-              Image.asset(
-                'assets/ss.jpg', // Replace with your image asset path
-                height: 300, // Adjust the height as needed
-                width: 200,
-                fit: BoxFit.cover,// Adjust the width as needed
-              ),
+              SizedBox(height: 150),
               Text(
-                "Welcome to CollegeFinder",
-                style: TextStyle(color: Colors.blue,fontSize: 25, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              FormContainerWidget(
-                controller: _emailController,
-                hintText: "Email",
-                isPasswordField: false,
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              FormContainerWidget(
-                controller: _passwordController,
-                hintText: "Password",
-                isPasswordField: true,
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              GestureDetector(
-                onTap: () {
-                  _signIn();
-                },
-                child: Container(
-                  width: 150,
-                  height: 45,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    gradient: LinearGradient(
-                      colors: [Colors.blue ?? Colors.transparent, Colors.cyanAccent[100] ?? Colors.transparent],
-                    ),
-                  ),
-                  child: Center(
-                    child: _isSigning ? CircularProgressIndicator(
-                      color: Colors.white,) : Text(
-                      "Login",
-                      style: TextStyle(fontSize: 25,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                "Welcome!",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 60,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'MadimiOne',
                 ),
               ),
-              SizedBox(height: 10,),
-              GestureDetector(
-                onTap: () {
-                  _signInWithGoogle();
-
-                },
-                child: Container(
-                  width: 250,
-                  height: 45,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    gradient: LinearGradient(
-                      colors: [Colors.red[800] ?? Colors.transparent, Colors.deepOrange[200] ?? Colors.transparent],
-                    ),
-                  ),
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(FontAwesomeIcons.google, color: Colors.white,),
-                        SizedBox(width: 5,),
-                        Text(
-                          "Sign in with Google",
-                          style: TextStyle(fontSize: 15,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+              SizedBox(height: 50),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 10),
+                      Text(
+                        "Login",
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 45,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'MadimiOne',
+                        ),
+                      ),
+                      SizedBox(height: 30),
+                      FormContainerWidget(
+                        controller: _emailController,
+                        hintText: "Email",
+                        isPasswordField: false,
+                      ),
+                      SizedBox(height: 10),
+                      FormContainerWidget(
+                        controller: _passwordController,
+                        hintText: "Password",
+                        isPasswordField: true,
+                      ),
+                      SizedBox(height: 30),
+                      GestureDetector(
+                        onTap: () {
+                          _signIn();
+                        },
+                        child: Container(
+                          width: 400,
+                          height: 45,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.blue ?? Colors.transparent,
+                                Colors.cyanAccent[100] ?? Colors.transparent,
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5), // You can adjust the color and opacity
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset: Offset(0, 3), // Adjust the offset as needed
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: _isSigning
+                                ? CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                                : Text(
+                              "Login",
+                              style: TextStyle(
+                                fontSize: 25,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                  fontFamily: 'MadimiOne',
+                              ),
+                            ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(height: 20),
+                      GestureDetector(
+                        onTap: () {
+                          _signInWithGoogle();
+                        },
+                        child: Container(
+                          width: 400,
+                          height: 45,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5), // You can adjust the color and opacity
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset: Offset(0, 3), // Adjust the offset as needed
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/google.png', // Replace with your actual file path
+                                  height: 25, // Adjust the height as needed
+                                  width: 25, // Adjust the width as needed
+                                ),
+                                SizedBox(
+                                  width: 10, // Adjust the spacing between the logo and text
+                                ),
+                                Text(
+                                  "Sign in with Google",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'MadimiOne',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Don't have an account?",style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.black,
+                            fontFamily: 'MadimiOne',
+                          ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SignUpPage(),
+                                ),
+                                    (route) => false,
+                              );
+                            },
+                            child: Text(
+                              "Sign Up",
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'MadimiOne',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              ),
-
-
-              SizedBox(
-                height: 20,
-              ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Don't have an account?"),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => SignUpPage()),
-                            (route) => false,
-                      );
-                    },
-                    child: Text(
-                      "Sign Up",
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
               ),
             ],
           ),
-        ),
         ),
       ),
     );

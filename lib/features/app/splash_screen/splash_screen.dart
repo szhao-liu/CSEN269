@@ -3,33 +3,41 @@ import 'package:flutter/material.dart';
 class SplashScreen extends StatefulWidget {
   final Widget? child;
 
-  const SplashScreen({super.key, this.child});
+  const SplashScreen({Key? key, this.child}) : super(key: key);
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
-
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   @override
   void initState() {
     Future.delayed(
-        const Duration(seconds: 3), () {
-      Navigator.pushAndRemoveUntil(
-          context, MaterialPageRoute(builder: (context) => widget.child!), (
-          route) => false);
-    }
+      const Duration(seconds: 3),
+          () {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => widget.child!),
+              (route) => false,
+        );
+      },
     );
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return const Scaffold(
-      body: Center(
-        child: Text("Welcome to College Finder! Here you'll find the college of your dreams!!",
-          style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 14),),
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/splash2.png'), // Replace with your image asset
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(
+          child: CircularProgressIndicator(), // or any other widget you want to show
+        ),
       ),
     );
   }

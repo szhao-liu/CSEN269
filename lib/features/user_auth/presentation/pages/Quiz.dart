@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'MustKnowPage.dart';
 import 'dart:ui';
+import 'package:myapp/global/common/Header.dart' as CommonHeader;
 
 class FrostedGlassBox extends StatelessWidget {
   const FrostedGlassBox({
@@ -124,12 +125,26 @@ class _QuizState extends State<Quiz> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Quiz for ${widget.grade}'),
+      body: Stack(
+        children: [
+          Image.asset(
+            'assets/backgg.jpg', // Replace with your image asset path
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          ),
+          Column(
+            children: [
+              CommonHeader.Header(dynamicText: 'Quiz for ${widget.grade}'),
+              Expanded(
+                child: currentQuestionIndex < questions.length
+                    ? buildQuizBody()
+                    : buildSubmitQuizButton(context),
+              ),
+            ],
+          ),
+        ],
       ),
-      body: currentQuestionIndex < questions.length
-          ? buildQuizBody()
-          : buildSubmitQuizButton(context),
     );
   }
 
@@ -137,10 +152,6 @@ class _QuizState extends State<Quiz> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Image.asset(
-          'assets/backgg.jpg', // Replace with your image asset path
-          fit: BoxFit.cover,
-        ),
         Positioned(
           top: 50, // Adjust the top position as needed
           left: 10,
@@ -149,6 +160,31 @@ class _QuizState extends State<Quiz> {
             theWidth: double.infinity,
             theHeight: MediaQuery.of(context).size.height * 0.6,
             theChild: buildQuestionCard(questions[currentQuestionIndex]),
+          ),
+        ),
+        Positioned(
+          top: 10,
+          right: 20,
+          child: TextButton(
+            onPressed: () {
+              // Navigate to MustKnowPage
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MustKnowPage(),
+                ),
+              );
+            },
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.indigo[300],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+            child: Text(
+              'Skip Quiz',
+              style: TextStyle(color: Colors.white,fontFamily: 'MadimiOne',),
+            ),
           ),
         ),
         Positioned(
@@ -164,14 +200,16 @@ class _QuizState extends State<Quiz> {
               ),
               ElevatedButton(
                 onPressed: isOptionSelected
-                    ? (isLastQuestion() ? () {
+                    ? (isLastQuestion()
+                    ? () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => MustKnowPage(),
                     ),
                   );
-                } : goToNextQuestion)
+                }
+                    : goToNextQuestion)
                     : null,
                 child: Text(isLastQuestion() ? 'Submit Quiz' : 'Next Question'),
               ),
@@ -198,9 +236,6 @@ class _QuizState extends State<Quiz> {
       ),
     );
   }
-
-
-
 
   Widget buildQuestionCard(Map<String, dynamic> question) {
     return Card(
