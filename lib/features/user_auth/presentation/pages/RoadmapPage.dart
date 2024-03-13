@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/global/common/Header.dart';
+import 'package:myapp/global/common/Header.dart' as CommonHeader;
 import 'CheckCollegePage.dart';
-//import 'CheckCollegePage.dart';
 import 'package:myapp/global/common/showHelpDialog.dart';
 
 void main() {
@@ -14,8 +14,7 @@ class RoadmapPage extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         body: Container(
-         // CommonHeader.Header(),
-        decoration: BoxDecoration(
+          decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage("assets/backgg.jpg"),
               fit: BoxFit.cover,
@@ -24,16 +23,8 @@ class RoadmapPage extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(height: 16),
-              Text(
-                'Roadmap',
-                style: TextStyle(
-                  fontSize: 36, // Increased font size
-                  fontWeight: FontWeight.bold,
-                  color: Colors.indigo, // Changed color to white for better contrast
-                  fontFamily: 'Montserrat', // Example custom font family
-                ),
-              ),
-              SizedBox(height: 16),
+              CommonHeader.Header(dynamicText: "Roadmap"), // Use CommonHeader.Header widget
+              SizedBox(height: 20),
               OptionsList(),
             ],
           ),
@@ -49,25 +40,24 @@ class OptionsList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        SizedBox(height: 60), // Add space here
         ListTileWithDropdown(title: 'Professional Development', options: [
-          'Option 1',
-          'Option 2',
-          'Option 3',
+          'Meet with a counsellor',
+          'Explore extra-curricular activities',
+          'Explore internship opportunities',
         ]),
-        ListTileWithDropdown(title: 'Test Preparations', options: [
-          'Option A',
-          'Option B',
-          'Option C',
+        ListTileWithDropdown(title: 'Developing skills', options: [
+          'Technical skills',
+          'Writing skills',
+
         ]),
         ListTileWithDropdown(title: 'Study tips', options: [
-          'Tip 1',
-          'Tip 2',
-          'Tip 3',
+          'Establishing study habits',
+          'Set study goals'
         ]),
         ListTileWithDropdown(title: 'Academic planning', options: [
-          'Plan A',
-          'Plan B',
-          'Plan C',
+          'Set academic goals',
+          'Post Secondary Education Capacity Development'
         ]),
         ListTileWithDropdown(title: 'Financial aid', options: [
           'Aid 1',
@@ -75,9 +65,9 @@ class OptionsList extends StatelessWidget {
           'Aid 3',
         ]),
         ListTileWithDropdown(title: 'Well being', options: [
-          'Wellness 1',
-          'Wellness 2',
-          'Wellness 3',
+          'Healthy life style',
+          'Stress Management',
+          'Healthy well being',
         ]),
         SizedBox(height: 16), // Add some space between options and buttons
         Row(
@@ -90,26 +80,22 @@ class OptionsList extends StatelessWidget {
                   context,
                   MaterialPageRoute(builder: (context) => CheckCollegePage()),
                 );
-
               },
               style: ButtonStyle(
-                backgroundColor:
-                MaterialStateProperty.all<Color>(Colors.indigo),
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.indigo),
               ),
               child: Text(
                 'Check Colleges',
                 style: TextStyle(color: Colors.white),
               ),
             ),
-            SizedBox(width: 16), // Add some space between buttons
+            SizedBox(width: 20), // Add some space between buttons
             TextButton(
               onPressed: () {
                 showHelpDialog(context);
-
               },
               style: ButtonStyle(
-                backgroundColor:
-                MaterialStateProperty.all<Color>(Colors.indigo),
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.indigo),
               ),
               child: Text(
                 'Get Help',
@@ -152,6 +138,8 @@ class _ListTileWithDropdownState extends State<ListTileWithDropdown> {
                     style: TextStyle(
                       color: Colors.indigo,
                       fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      fontFamily: 'MadimiOne'
                     ),
                   ),
                 ),
@@ -191,6 +179,8 @@ class _ListTileWithDropdownState extends State<ListTileWithDropdown> {
                     style: TextStyle(
                       color: Colors.purple,
                       fontWeight: FontWeight.bold,
+                      fontFamily: 'MadimiOne',
+                      fontSize: 18,
                     ),
                   ),
                 ),
