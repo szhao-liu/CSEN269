@@ -8,6 +8,11 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (context == null) {
+      // Return a placeholder widget or handle it in a way suitable for your app
+      return Container();
+    }
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.indigo[300],
@@ -30,11 +35,9 @@ class Header extends StatelessWidget {
                   color: Colors.black,
                   size: 30,
                 ),
-                onPressed: context != null
-                    ? () {
+                onPressed: () {
                   Navigator.pop(context);
-                }
-                    : null,
+                },
               ),
               Column(
                 children: [
