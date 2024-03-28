@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/global/common/Header.dart';
+import 'CollegeSearch.dart';
 
 class CheckCollegePage extends StatelessWidget {
   @override
@@ -10,7 +11,7 @@ class CheckCollegePage extends StatelessWidget {
           SingleChildScrollView(
             child: Column(
               children: [
-               Header(),
+                Header(dynamicText: "College Search"),
                 SizedBox(height: 60),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -59,7 +60,11 @@ class CheckCollegePage extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         // Handle Search on my own button press
-                        // You can navigate to a specific page or perform any desired action
+                        // Navigate to CollegeSearch.dart page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => CollegeSearch()),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         primary: Colors.indigo[200],
