@@ -271,7 +271,7 @@ class _QuizState extends State<Quiz> {
               answerQuestion(option);
             },
             style: ElevatedButton.styleFrom(
-              primary: selectedOptions[currentQuestionIndex] == option
+              backgroundColor: selectedOptions[currentQuestionIndex] == option
                   ? Colors.green // Change the color when the option is selected
                   : Colors.deepPurple[50],
             ),

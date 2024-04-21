@@ -56,8 +56,7 @@ class MustKnow2Page extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.indigo,
-                onPrimary: Colors.white,
+                foregroundColor: Colors.white, backgroundColor: Colors.indigo,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(40),
                 ),

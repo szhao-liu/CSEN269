@@ -22,8 +22,7 @@ class CheckCollegePage extends StatelessWidget {
                         // You can navigate to a specific page or perform any desired action
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.indigo[200],
-                        onPrimary: Colors.white,
+                        foregroundColor: Colors.white, backgroundColor: Colors.indigo[200],
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
@@ -67,8 +66,7 @@ class CheckCollegePage extends StatelessWidget {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.indigo[200],
-                        onPrimary: Colors.white,
+                        foregroundColor: Colors.white, backgroundColor: Colors.indigo[200],
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
@@ -110,8 +108,7 @@ class CheckCollegePage extends StatelessWidget {
                           // You can show a dialog or perform any desired action
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.blue[200],
-                          onPrimary: Colors.black,
+                          foregroundColor: Colors.black, backgroundColor: Colors.blue[200],
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
