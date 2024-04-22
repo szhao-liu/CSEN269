@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/features/user_auth/presentation/pages/CommonFooter.dart';
+import 'package:myapp/features/user_auth/presentation/pages/Tasks.dart';
 
 import 'features/app/splash_screen/splash_screen.dart';
 import 'features/user_auth/presentation/pages/Student_homepage.dart';
@@ -60,12 +61,18 @@ class MyApp extends StatelessWidget {
           case '/signUp':
             return MaterialPageRoute(builder: (context) => SignUpPage());
           case '/home':
-            return MaterialPageRoute(builder: (context) => Student_homepage());
+            return MaterialPageRoute(builder: (context) => StudentChooseGrade());
           case '/quiz':
           // Extract grade from the route arguments
             final String grade = settings.arguments as String;
             return MaterialPageRoute(
               builder: (context) => Quiz(grade: grade),
+            );
+          case '/tasks':
+          // Extract grade from the route arguments
+            final String grade = settings.arguments as String;
+            return MaterialPageRoute(
+              builder: (context) => TasksPage(grade: grade),
             );
           case '/mustknow':
             return MaterialPageRoute(builder: (context) => MustKnowPage());

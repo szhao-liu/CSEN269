@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'MustKnowPage.dart';
+import 'package:myapp/features/user_auth/presentation/pages/Tasks.dart';
 import 'dart:ui';
 import 'package:myapp/global/common/Header.dart' as CommonHeader;
 
@@ -168,12 +168,7 @@ class _QuizState extends State<Quiz> {
           child: TextButton(
             onPressed: () {
               // Navigate to MustKnowPage
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MustKnowPage(),
-                ),
-              );
+              navigateToTasks(context, widget.grade);
             },
             style: TextButton.styleFrom(
               backgroundColor: Colors.indigo[300],
@@ -202,12 +197,7 @@ class _QuizState extends State<Quiz> {
                 onPressed: isOptionSelected
                     ? (isLastQuestion()
                     ? () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MustKnowPage(),
-                    ),
-                  );
+                  navigateToTasks(context, widget.grade);
                 }
                     : goToNextQuestion)
                     : null,
@@ -225,12 +215,7 @@ class _QuizState extends State<Quiz> {
       child: ElevatedButton(
         onPressed: () {
           // Navigate to MustKnowPage
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MustKnowPage(),
-            ),
-          );
+          navigateToTasks(context, widget.grade);
         },
         child: Text('Submit Quiz'),
       ),
@@ -256,6 +241,15 @@ class _QuizState extends State<Quiz> {
             buildOptions(question['options']),
           ],
         ),
+      ),
+    );
+  }
+
+  void navigateToTasks(BuildContext context, String grade) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TasksPage(grade: grade),
       ),
     );
   }
