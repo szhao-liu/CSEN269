@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/global/common/Header.dart' as CommonHeader;
 
 import 'Memo.dart';
 
@@ -110,11 +111,11 @@ class _TasksPageState extends State<TasksPage> {
         }
 
         return Task(
-          id: doc.id,
-          title: doc['title'],
-          description: doc['description'],
-          mark: userTask != null ? userTask['mark'] : false,
-          rank: doc['rank']// Use null-aware operator to handle null value
+            id: doc.id,
+            title: doc['title'],
+            description: doc['description'],
+            mark: userTask != null ? userTask['mark'] : false,
+            rank: doc['rank'] // Use null-aware operator to handle null value
         );
       }).toList();
 
@@ -124,11 +125,12 @@ class _TasksPageState extends State<TasksPage> {
   }
 
 
-
   double calculateProgress(List<Task> tasks) {
     if (tasks.isEmpty) return 0.0;
 
-    int completedTasks = tasks.where((task) => task.mark).length;
+    int completedTasks = tasks
+        .where((task) => task.mark)
+        .length;
     return completedTasks / tasks.length;
   }
 
@@ -144,7 +146,8 @@ class _TasksPageState extends State<TasksPage> {
         .doc(userUUID)
         .collection('tasks')
         .doc(task.id)
-        .set({'mark': newValue}, SetOptions(merge: true)) // Use set with merge to create if not exists or update if exists
+        .set({'mark': newValue}, SetOptions(
+        merge: true)) // Use set with merge to create if not exists or update if exists
         .then((value) {
       print('User task mark updated successfully');
     }).catchError((error) {
@@ -159,21 +162,51 @@ class _TasksPageState extends State<TasksPage> {
     double progress = calculateProgress(tasks);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Tasks'),
+
+      body: Stack(
+        children: [
+      Positioned.fill(
+      child: Image.asset(
+        "assets/backgg.jpg",
+        fit: BoxFit.cover,
       ),
-      body: Padding(
+    ),
+
+    Padding(
         padding: EdgeInsets.all(16.0),
+
         child: Column(
+
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 20),
+            //SizedBox(height: 70),
+
+            Container(
+
+              padding: EdgeInsets.all(0.0),
+
+              child: CommonHeader.Header(dynamicText: "Tasks"),
+
+              // child: Center(
+              //   child: Text(
+              //     'Tasks',
+              //     style: TextStyle(
+              //       color: Colors.indigo,
+              //       fontSize: 30,
+              //       fontWeight: FontWeight.bold,
+              //       fontFamily: 'MadimiOne',
+              //     ),
+              //   ),
+              // ),
+            ),
+            SizedBox(height: 40),
             LinearProgressIndicator(value: progress),
-            SizedBox(height: 20),
+
+
             Expanded(
               child: FrostedGlassBox(
                 theWidth: double.infinity,
-                theHeight: MediaQuery.of(context).size.height * 0.6,
+                theHeight: MediaQuery.of(context).size.height * 1.0,
                 theChild: TaskList(
                   tasks: tasks,
                   grade: widget.grade,
@@ -183,12 +216,15 @@ class _TasksPageState extends State<TasksPage> {
             ),
           ],
         ),
+    ),
+        ],
       ),
     );
   }
 }
 
-class TaskList extends StatelessWidget {
+
+  class TaskList extends StatelessWidget {
   final List<Task> tasks;
   final String grade;
   final Function(Task, bool) updateTaskMark;
@@ -248,9 +284,24 @@ class TaskCard extends StatelessWidget {
           }
           return false;
         },
-        child: ListTile(
-          title: Text(task.title),
-          subtitle: Text(task.description),
+        child: ExpansionTile(
+          title: Text(task.title,
+              style: TextStyle(
+              color: Colors.indigo,
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'MadimiOne',)
+          ),
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5.0),
+              child: Text(task.description,style: TextStyle(
+                color: Colors.indigo,
+                fontSize: 15,
+                fontWeight: FontWeight.normal,
+                fontFamily: 'MadimiOne',)),
+            ),
+          ],
           trailing: Checkbox(
             value: task.mark,
             onChanged: (newValue) {
@@ -273,9 +324,6 @@ class TaskCard extends StatelessWidget {
               }
             },
           ),
-          onTap: () {
-            // Navigate to a page with detailed task information
-          },
         ),
       ),
     );

@@ -46,7 +46,7 @@ class Header extends StatelessWidget {
                   child: Text(
                     " $dynamicText",
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 25,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                       fontFamily: 'MadimiOne',
