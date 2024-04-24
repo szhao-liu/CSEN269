@@ -3,8 +3,9 @@ import '../../features/user_auth/firebase_auth_implementation/firebase_auth_serv
 
 class Header extends StatelessWidget {
   final String dynamicText;
+  final bool showBackArrow;
 
-  Header({required this.dynamicText});
+  Header({required this.dynamicText, this.showBackArrow = true});
 
   @override
   Widget build(BuildContext context) {
@@ -29,19 +30,20 @@ class Header extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Colors.black,
-                  size: 30,
+              if (showBackArrow) // Conditionally show the back arrow
+                IconButton(
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              Column(
-                children: [
-                  Text(
+              Expanded(
+                child: Center(
+                  child: Text(
                     " $dynamicText",
                     style: TextStyle(
                       fontSize: 20,
@@ -50,7 +52,7 @@ class Header extends StatelessWidget {
                       fontFamily: 'MadimiOne',
                     ),
                   ),
-                ],
+                ),
               ),
               SizedBox(width: 30),
             ],
@@ -59,4 +61,5 @@ class Header extends StatelessWidget {
       ),
     );
   }
+
 }

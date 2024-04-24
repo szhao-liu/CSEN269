@@ -27,15 +27,14 @@ class MyHomePage extends StatelessWidget {
             'assets/backgg.jpg', // Replace with your background image asset path
             fit: BoxFit.cover,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              CommonHeader.Header(dynamicText: "Your Grade"), // Use the Header from the common library
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                CommonHeader.Header(dynamicText: "Your Grade", showBackArrow: false),
+                SizedBox(height: 20),
+                Center(
+                  child: Text(
                     'Choose Your Grade',
                     style: TextStyle(
                       color: Colors.indigo,
@@ -44,37 +43,37 @@ class MyHomePage extends StatelessWidget {
                       fontFamily: 'MadimiOne',
                     ),
                   ),
-                ],
-              ),// Added CommonHeader.Header()
-              SizedBox(height: 30),
-              OptionCard(
-                title: '9th Grade',
-                onTap: () {
-                  navigateToQuiz(context, '9th Grade');
-                },
-              ),
-              SizedBox(height: 20),
-              OptionCard(
-                title: '10th Grade',
-                onTap: () {
-                  navigateToQuiz(context, '10th Grade');
-                },
-              ),
-              SizedBox(height: 20),
-              OptionCard(
-                title: '11th Grade',
-                onTap: () {
-                  navigateToQuiz(context, '11th Grade');
-                },
-              ),
-              SizedBox(height: 20),
-              OptionCard(
-                title: '12th Grade',
-                onTap: () {
-                  navigateToQuiz(context, '12th Grade');
-                },
-              ),
-            ],
+                ),
+                SizedBox(height: 30),
+                OptionCard(
+                  title: '9th Grade',
+                  onTap: () {
+                    navigateToQuiz(context, '9th Grade');
+                  },
+                ),
+                SizedBox(height: 20),
+                OptionCard(
+                  title: '10th Grade',
+                  onTap: () {
+                    navigateToQuiz(context, '10th Grade');
+                  },
+                ),
+                SizedBox(height: 20),
+                OptionCard(
+                  title: '11th Grade',
+                  onTap: () {
+                    navigateToQuiz(context, '11th Grade');
+                  },
+                ),
+                SizedBox(height: 20),
+                OptionCard(
+                  title: '12th Grade',
+                  onTap: () {
+                    navigateToQuiz(context, '12th Grade');
+                  },
+                ),
+              ],
+            ),
           ),
         ],
       ),

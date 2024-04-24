@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'Tasks.dart';
+import 'package:myapp/global/common/Header.dart' as CommonHeader; // Import the common Header file
 
 class MemoPage extends StatefulWidget {
   final Task task;
@@ -28,33 +29,68 @@ class _MemoPageState extends State<MemoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Memo'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(30.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Task: ${widget.task.title}'),
-            SizedBox(height: 30),
-            TextField(
-              controller: memoController,
-              onChanged: (value) {
-                // Save memo to Firestore whenever the text changes
-                saveMemoToFirestore(value);
-              },
-              decoration: InputDecoration(
-                hintText: 'Write your memo here...',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: null,
+      body: Stack(
+        children: [
+          Image.asset(
+            'assets/backgg.jpg', // Replace with your background image asset path
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          ),
+          Padding(
+            padding: EdgeInsets.all(0.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CommonHeader.Header(dynamicText: "Memo"), // Use the Header from the common library
+                SizedBox(height: 20),
+                Center(
+                  child: Text(
+                    'Task: ${widget.task.title}',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                      fontFamily: 'MadimiOne',
+                    ),
+                  ),
+                ),
+                SizedBox(height: 30),
+                Center(
+                  child: Container(
+                    width: 350, // Adjust the width as needed
+                    child: TextField(
+                      controller: memoController,
+                      onChanged: (value) {
+                        // Save memo to Firestore whenever the text changes
+                        saveMemoToFirestore(value);
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Write your memo here...',
+                        border: OutlineInputBorder(),
+                        hintStyle: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                          fontFamily: 'MadimiOne',
+                        ),
+                      ),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontFamily: 'MadimiOne',
+                      ),
+                      maxLines: null,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
+
 
   void loadMemo() {
     if (userUUID != null) {
