@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'Student_choose_grade.dart';
-import 'Quiz.dart'; // Import the common Quiz file
+import 'package:myapp/features/user_auth/presentation/pages/Tasks.dart';
 import 'package:myapp/global/common/Header.dart' as CommonHeader;
 
 void main() {
@@ -48,28 +47,28 @@ class MyHomePage extends StatelessWidget {
                 OptionCard(
                   title: '9th Grade',
                   onTap: () {
-                    navigateToQuiz(context, '9th Grade');
+                    navigateToTasks(context, '9th Grade');
                   },
                 ),
                 SizedBox(height: 20),
                 OptionCard(
                   title: '10th Grade',
                   onTap: () {
-                    navigateToQuiz(context, '10th Grade');
+                    navigateToTasks(context, '10th Grade');
                   },
                 ),
                 SizedBox(height: 20),
                 OptionCard(
                   title: '11th Grade',
                   onTap: () {
-                    navigateToQuiz(context, '11th Grade');
+                    navigateToTasks(context, '11th Grade');
                   },
                 ),
                 SizedBox(height: 20),
                 OptionCard(
                   title: '12th Grade',
                   onTap: () {
-                    navigateToQuiz(context, '12th Grade');
+                    navigateToTasks(context, '12th Grade');
                   },
                 ),
               ],
@@ -80,11 +79,11 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  void navigateToQuiz(BuildContext context, String grade) {
+  void navigateToTasks(BuildContext context, String grade) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Quiz(grade: grade),
+        builder: (context) => TasksPage(grade: grade),
       ),
     );
   }
