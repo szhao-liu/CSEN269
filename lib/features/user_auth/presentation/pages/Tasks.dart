@@ -2,7 +2,11 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/features/user_auth/presentation/pages/DocumentUpload.dart';
+import 'package:myapp/features/user_auth/presentation/pages/MeetingRecord.dart';
+import 'package:myapp/features/user_auth/presentation/pages/Video.dart';
 import 'package:myapp/global/common/Header.dart' as CommonHeader;
+import 'package:myapp/global/common/page_type.dart';
 import 'Memo.dart';
 
 class FrostedGlassBox extends StatelessWidget {
@@ -115,6 +119,7 @@ class _TasksPageState extends State<TasksPage> {
           title: doc['title'],
           description: doc['description'],
           mark: userTask != null ? userTask['mark'] : false,
+          pageType: PageTypeHelper.fromStringValue(doc['page_type']),
           rank: doc['rank'], // Use null-aware operator to handle null value
         );
       }).toList();
@@ -262,6 +267,24 @@ class TaskList extends StatelessWidget {
   }
 }
 
+Widget getPageWidget(Task task) {
+  switch (task.pageType) {
+    case PageType.memo:
+      return MemoPage(task: task);
+    case PageType.video:
+      return VideoPage(task: task);
+    case PageType.docUpload:
+      return DocumentUploadPage(task: task);
+    case PageType.dateTime:
+      return MeetingRecordPage(task: task);
+    case PageType.list:
+      return MeetingRecordPage(task: task);
+  // Add cases for other page types if needed
+    default:
+      return MemoPage(task: task); // Return a default page or show an error message if the page type is not recognized
+  }
+}
+
 class TaskCard extends StatelessWidget {
   final Task task;
   final String grade;
@@ -294,7 +317,7 @@ class TaskCard extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => MemoPage(task: task),
+                builder: (context) => getPageWidget(task),
               ),
             );
           }
@@ -357,6 +380,7 @@ class Task {
   final String title;
   final String description;
   final int rank;
+  final PageType pageType;
   bool mark;
 
   Task({
@@ -364,6 +388,7 @@ class Task {
     required this.title,
     required this.description,
     required this.mark,
+    required this.pageType,
     required this.rank,
   });
 }
