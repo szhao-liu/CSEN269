@@ -52,29 +52,68 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Document Display')),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ListTile(
-              title: Text('Task Name: ${widget.task.title}'),
-              subtitle: Text('Task Description: ${widget.task.description}'),
+      body: Stack(
+        children: [
+          // Background image
+          Positioned.fill(
+            child: Image.asset(
+              'assets/backgg.jpg', // Make sure the image is located in the assets folder and listed in pubspec.yaml
+              fit: BoxFit.cover,
             ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: documentUrls.length,
-              itemBuilder: (context, index) {
-                String documentName = Uri.decodeFull(documentUrls[index].split('%2F').last.split('?').first.replaceAll('%20', ' '));
-                return ListTile(
-                  title: Text(documentName),
-                  onTap: () {
-                    _openDocument(context, documentUrls[index]);
+          ),
+          // Content
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                // Custom header
+                SizedBox(height: 30,),
+                Container(
+                  padding: EdgeInsets.all(16.0),
+
+                  child: Text(
+                    'Resume Resources',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.indigo,
+                    ),
+                  ),
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: documentUrls.length,
+                  itemBuilder: (context, index) {
+                    String documentName = Uri.decodeFull(documentUrls[index].split('%2F').last.split('?').first.replaceAll('%20', ' '));
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                      child: Card(
+                        elevation: 4.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: ListTile(
+                          leading: Icon(Icons.description, color: Colors.indigo),
+                          title: Text(
+                            documentName,
+                            style: TextStyle(
+                              color: Colors.indigo,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          trailing: Icon(Icons.arrow_forward, color: Colors.indigo),
+                          onTap: () {
+                            _openDocument(context, documentUrls[index]);
+                          },
+                        ),
+                      ),
+                    );
                   },
-                );
-              },
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -112,7 +151,10 @@ class DocumentWebView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Document Viewer')),
+      appBar: AppBar(
+        title: Text("Document Viewer"),
+        backgroundColor: Colors.indigo,
+      ),
       body: WebView(
         initialUrl: downloadUrl,
         javascriptMode: JavascriptMode.unrestricted,

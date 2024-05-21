@@ -50,7 +50,7 @@ class _MemoPageState extends State<MemoPage> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18,
-                      color: Colors.black,
+                      color: Colors.indigo,
                       fontFamily: 'MadimiOne',
                     ),
                   ),
@@ -70,13 +70,13 @@ class _MemoPageState extends State<MemoPage> {
                         border: OutlineInputBorder(),
                         hintStyle: TextStyle(
                           fontSize: 16,
-                          color: Colors.black,
+                          color: Colors.indigo,
                           fontFamily: 'MadimiOne',
                         ),
                       ),
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.black,
+                        color: Colors.indigo,
                         fontFamily: 'MadimiOne',
                       ),
                       maxLines: null,

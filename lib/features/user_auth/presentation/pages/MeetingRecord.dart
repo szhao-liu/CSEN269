@@ -28,9 +28,9 @@ class MeetingRecord {
 
   Map<String, dynamic> toMap() {
     return {
-      'date': "",
-      'time': "",
-      'discussionNotes': "",
+      'date': date,
+      'time': time,
+      'discussionNotes': discussionNotes,
     };
   }
 }
@@ -56,23 +56,69 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Meeting Records')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: meetingRecords.isEmpty
-            ? Center(
-          child: Text('No meeting records available'),
-        )
-            : ListView.builder(
-          itemCount: meetingRecords.length,
-          itemBuilder: (context, index) => _buildMeetingRecordRow(meetingRecords[index]),
-        ),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              'assets/backgg.jpg',
+              fit: BoxFit.cover,
+            ),
+          ),
+          Column(
+            children: [
+              SizedBox(height: 45),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Text(
+                      'Meeting Notes',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.indigo,
+                      ),
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      'Enter the details of the meeting',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.indigo,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: meetingRecords.isEmpty
+                      ? Center(
+                    child: Text(
+                      'No meeting records available',
+                      style: TextStyle(
+                        color: Colors.indigo,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                      : ListView.builder(
+                    itemCount: meetingRecords.length,
+                    itemBuilder: (context, index) =>
+                        _buildMeetingRecordRow(meetingRecords[index]),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          addNewMeetingRecord();
-        },
+        onPressed: addNewMeetingRecord,
         child: Icon(Icons.add),
+        backgroundColor: Colors.indigo,
       ),
     );
   }
@@ -81,37 +127,105 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ListTile(
-          title: Text('Task Name: ${widget.task.title}'),
-          subtitle: Text('Task Description: ${widget.task.description}'),
-          trailing: IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: () {
-              removeMeetingRecord(record);
-            },
+        Card(
+          color: Colors.white,
+          margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+          elevation: 4.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
           ),
-        ),
-        TextFormField(
-          initialValue: record.date,
-          decoration: InputDecoration(labelText: 'Date'),
-          onChanged: (value) {
-            updateMeetingRecordList(record, date: value);
-          },
-        ),
-        TextFormField(
-          initialValue: record.time,
-          decoration: InputDecoration(labelText: 'Time'),
-          onChanged: (value) {
-            updateMeetingRecordList(record, time: value);
-          },
-        ),
-        TextFormField(
-          initialValue: record.discussionNotes,
-          decoration: InputDecoration(labelText: 'Meeting-Notes'),
-          maxLines: null,
-          onChanged: (value) {
-            updateMeetingRecordList(record, discussionNotes: value);
-          },
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Text(
+                //   'Task Name: ${widget.task.title}',
+                //   style: TextStyle(
+                //     color: Colors.indigo,
+                //     fontWeight: FontWeight.bold,
+                //     fontSize: 20,
+                //   ),
+                // ),
+                SizedBox(height: 8.0),
+                TextFormField(
+                  initialValue: record.date,
+                  decoration: InputDecoration(
+                    labelText: 'Date',
+                    labelStyle: TextStyle(color: Colors.indigo),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.indigo),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.indigo),
+                    ),
+                  ),
+                  style: TextStyle(
+                    color: Colors.indigo,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                  onChanged: (value) {
+                    updateMeetingRecordList(record, date: value);
+                  },
+                ),
+                SizedBox(height: 8.0),
+                TextFormField(
+                  initialValue: record.time,
+                  decoration: InputDecoration(
+                    labelText: 'Time',
+                    labelStyle: TextStyle(color: Colors.indigo),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.indigo),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.indigo),
+                    ),
+                  ),
+                  style: TextStyle(
+                    color: Colors.indigo,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  onChanged: (value) {
+                    updateMeetingRecordList(record, time: value);
+                  },
+                ),
+                SizedBox(height: 8.0),
+                TextFormField(
+                  initialValue: record.discussionNotes,
+                  decoration: InputDecoration(
+                    labelText: 'Add meeting notes...',
+                    labelStyle: TextStyle(color: Colors.indigo),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.indigo),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.indigo),
+                    ),
+                  ),
+                  style: TextStyle(
+                    color: Colors.indigo,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: null,
+                  onChanged: (value) {
+                    updateMeetingRecordList(record, discussionNotes: value);
+                  },
+                ),
+                SizedBox(height: 16.0),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      removeMeetingRecord(record);
+                    },
+                    color: Colors.red,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     );
@@ -128,12 +242,14 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
           .snapshots()
           .listen((snapshot) {
         setState(() {
-          meetingRecords = snapshot.docs.map((doc) => MeetingRecord(
+          meetingRecords = snapshot.docs
+              .map((doc) => MeetingRecord(
             docId: doc.id,
             date: doc['date'] ?? '',
             time: doc['time'] ?? '',
             discussionNotes: doc['discussionNotes'] ?? '',
-          )).toList();
+          ))
+              .toList();
         });
       });
     }
@@ -154,7 +270,8 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
     ).toMap());
   }
 
-  void updateMeetingRecordList(MeetingRecord record, {String? date, String? time, String? discussionNotes}) {
+  void updateMeetingRecordList(MeetingRecord record,
+      {String? date, String? time, String? discussionNotes}) {
     var meetingRecordRef = FirebaseFirestore.instance
         .collection('users')
         .doc(userUUID)

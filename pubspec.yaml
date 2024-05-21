@@ -33,7 +33,7 @@ dependencies:
   firebase_core: ^2.24.2
   cloud_firestore: ^4.14.0
   firebase_auth: ^4.16.0
-  firebase_storage: ^11.7.5
+  firebase_storage: ^11.6.9
   fluttertoast: ^8.2.4
   font_awesome_flutter: ^10.6.0
   google_sign_in: ^6.1.5
@@ -41,7 +41,8 @@ dependencies:
   hover: ^0.4.0
   cupertino_icons: ^1.0.2
   webview_flutter: ^2.0.13
-  url_launcher: ^6.0.0
+  url_launcher: ^6.0.20
+  file_picker: ^5.0.1
 
 
   # The following adds the Cupertino Icons font to your application.

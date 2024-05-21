@@ -161,7 +161,8 @@ class _TasksPageState extends State<TasksPage> {
   @override
   Widget build(BuildContext context) {
     double progress = calculateProgress(tasks);
-
+    int completedTasks = tasks.where((task) => task.mark).length;
+    int totalTasks = tasks.length;
     return Scaffold(
       body: Stack(
         children: [
@@ -190,7 +191,13 @@ class _TasksPageState extends State<TasksPage> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text("You can swipe left on each task bar for Memo"),
+                              title: Text(
+                                "You can swipe left on each task bar for Memo",
+                                style: TextStyle(
+                                  color: Colors.indigo,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                               actions: <Widget>[
                                 TextButton(
                                   onPressed: () {
@@ -211,14 +218,29 @@ class _TasksPageState extends State<TasksPage> {
                     ),
                   ),
                 SizedBox(height: 20),
-                SizedBox(
-                  height: 20, // Set the height
-                  child: LinearProgressIndicator(
-                    value: progress,
-                    minHeight: 20, // Set the height of the progress bar
-                    backgroundColor: Colors.grey[300], // Set background color
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.indigo), // Set progress color
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 20, // Set the height
+                        child: LinearProgressIndicator(
+                          value: progress,
+                          minHeight: 20, // Set the height of the progress bar
+                          backgroundColor: Colors.grey[300], // Set background color
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.indigo), // Set progress color
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8), // Adjust the spacing
+                    Text(
+                      '$completedTasks/$totalTasks',
+                      style: TextStyle(
+                        color: Colors.indigo,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 8), // Adjusted spacing
                 Expanded(
@@ -341,7 +363,7 @@ class TaskCard extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.indigo,
                   fontSize: 15,
-                  fontWeight: FontWeight.normal,
+                  fontWeight: FontWeight.bold, // Made font weight bold
                   fontFamily: 'MadimiOne',
                 ),
               ),
