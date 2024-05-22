@@ -55,32 +55,17 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
     return Scaffold(
       body: Stack(
         children: [
-          CommonHeader.Header(dynamicText: "Document Upload"), //
-          // Background image
           Positioned.fill(
             child: Image.asset(
               'assets/backgg.jpg', // Make sure the image is located in the assets folder and listed in pubspec.yaml
               fit: BoxFit.cover,
             ),
           ),
-          // Content
           SingleChildScrollView(
             child: Column(
               children: [
-                // Custom header
-                SizedBox(height: 30,),
-                Container(
-                  padding: EdgeInsets.all(16.0),
-
-                  child: Text(
-                    'Resume Resources',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.indigo,
-                    ),
-                  ),
-                ),
+                CommonHeader.Header(dynamicText: "Document Upload"),
+                SizedBox(height: 30),
                 ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),

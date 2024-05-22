@@ -1,5 +1,6 @@
 // lib/features/user_auth/presentation/pages/Tasks.dart
 
+import 'dart:async';
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -68,7 +69,6 @@ class TasksPage extends StatefulWidget {
 
 class _TasksPageState extends State<TasksPage> {
   late List<Task> tasks = [];
-  bool showSwipeIcon = true;
 
   @override
   void initState() {
@@ -176,67 +176,43 @@ class _TasksPageState extends State<TasksPage> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 20),
-                if (showSwipeIcon)
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: GestureDetector(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text(
-                                "You can swipe left on each task bar for Memo",
-                                style: TextStyle(
-                                  color: Colors.indigo,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text("OK"),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      child: Icon(
-                        Icons.swipe,
-                        size: 30,
-                        color: Colors.indigo,
-                      ),
-                    ),
-                  ),
-                SizedBox(height: 20),
-                Row(
+                Stack(
                   children: [
-                    Expanded(
-                      child: SizedBox(
-                        height: 20, // Set the height
-                        child: LinearProgressIndicator(
-                          value: progress,
-                          minHeight: 20, // Set the height of the progress bar
-                          backgroundColor: Colors.grey[300], // Set background color
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.indigo), // Set progress color
-                        ),
+                    Container(
+                      height: 20, // Set the height
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.lightGreen.withOpacity(0.3), // Lighter shade of green for background
                       ),
                     ),
-                    SizedBox(width: 8), // Adjust the spacing
-                    Text(
-                      '${progressPercent.toStringAsFixed(0)}%',
-                      style: TextStyle(
-                        color: Colors.indigo,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                    AnimatedContainer(
+                      duration: Duration(milliseconds: 500),
+                      width: MediaQuery.of(context).size.width * progress,
+                      height: 20, // Set the height
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.green, // Green color for progress
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 8.0),
+                          child: Text(
+                            '${progressPercent.toStringAsFixed(0)}%',
+                            style: TextStyle(
+                              color: Colors.black, // Green color for progress text
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -305,8 +281,7 @@ Widget getPageWidget(Task task) {
       return MemoPage(task: task); // Return a default page or show an error message if the page type is not recognized
   }
 }
-
-class TaskCard extends StatelessWidget {
+class TaskCard extends StatefulWidget {
   final Task task;
   final String grade;
   final Function(Task, bool) updateTaskMark;
@@ -318,10 +293,57 @@ class TaskCard extends StatelessWidget {
   });
 
   @override
+  _TaskCardState createState() => _TaskCardState();
+}
+
+class _TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Offset> _offsetAnimation;
+  late Timer _timer;
+  bool _isAnimationStopped = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _offsetAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(-0.1, 0.0),
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ))
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          setState(() {
+            _isAnimationStopped = true;
+          });
+        }
+      });
+
+    // Stop the animation after 5 seconds
+    _timer = Timer(const Duration(seconds: 2), () {
+      _controller.stop();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       child: Dismissible(
-        key: Key(task.id),
+        key: Key(widget.task.id),
         direction: DismissDirection.endToStart,
         background: Container(
           alignment: Alignment.centerRight,
@@ -338,59 +360,161 @@ class TaskCard extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => getPageWidget(task),
+                builder: (context) => getPageWidget(widget.task),
               ),
             );
           }
           return false;
         },
-        child: ExpansionTile(
-          title: Text(
-            task.title,
-            style: TextStyle(
-              color: Colors.indigo,
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'MadimiOne',
-            ),
-          ),
+        child: Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5.0),
-              child: Text(
-                task.description,
-                style: TextStyle(
-                  color: Colors.indigo,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold, // Made font weight bold
-                  fontFamily: 'MadimiOne',
+            if (!_isAnimationStopped)
+              SlideTransition(
+                position: _offsetAnimation,
+                child: ExpansionTile(
+                  title: Text(
+                    widget.task.title,
+                    style: TextStyle(
+                      color: Colors.indigo,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'MadimiOne',
+                    ),
+                  ),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      child: Text(
+                        widget.task.description,
+                        style: TextStyle(
+                          color: Colors.indigo,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold, // Made font weight bold
+                          fontFamily: 'MadimiOne',
+                        ),
+                      ),
+                    ),
+                  ],
+                  trailing: Checkbox(
+                    value: widget.task.mark,
+                    onChanged: (newValue) {
+                      if (newValue != null) {
+                        // Update Firestore document using the task's Id
+                        FirebaseFirestore.instance
+                            .collection('Checklist')
+                            .doc(widget.grade)
+                            .collection('tasks')
+                            .doc(widget.task.id)
+                            .update({'mark': newValue})
+                            .then((value) {
+                          print('Document updated successfully');
+                        }).catchError((error) {
+                          print('Failed to update document: $error');
+                          // Handle the error as needed
+                        });
+                        // Call the function to update the task mark
+                        widget.updateTaskMark(widget.task, newValue);
+                      }
+                    },
+                  ),
                 ),
               ),
-            ),
+            if (_isAnimationStopped)
+              Center(
+                child: ExpansionTile(
+                  title: Text(
+                    widget.task.title,
+                    style: TextStyle(
+                      color: Colors.indigo,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'MadimiOne',
+                    ),
+                  ),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      child: Text(
+                        widget.task.description,
+                        style: TextStyle(
+                          color: Colors.indigo,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold, // Made font weight bold
+                          fontFamily: 'MadimiOne',
+                        ),
+                      ),
+                    ),
+                  ],
+                  trailing: Checkbox(
+                    value: widget.task.mark,
+                    onChanged: (newValue) {
+                      if (newValue != null) {
+                        // Update Firestore document using the task's Id
+                        FirebaseFirestore.instance
+                            .collection('Checklist')
+                            .doc(widget.grade)
+                            .collection('tasks')
+                            .doc(widget.task.id)
+                            .update({'mark': newValue})
+                            .then((value) {
+                          print('Document updated successfully');
+                        }).catchError((error) {
+                          print('Failed to update document: $error');
+                          // Handle the error as needed
+                        });
+                        // Call the function to update the task mark
+                        widget.updateTaskMark(widget.task, newValue);
+                      }
+                    },
+                  ),
+                ),
+              ),
           ],
-          trailing: Checkbox(
-            value: task.mark,
-            onChanged: (newValue) {
-              if (newValue != null) {
-                // Update Firestore document using the task's Id
-                FirebaseFirestore.instance
-                    .collection('Checklist')
-                    .doc(grade)
-                    .collection('tasks')
-                    .doc(task.id)
-                    .update({'mark': newValue})
-                    .then((value) {
-                  print('Document updated successfully');
-                }).catchError((error) {
-                  print('Failed to update document: $error');
-                  // Handle the error as needed
-                });
-                // Call the function to update the task mark
-                updateTaskMark(task, newValue);
-              }
-            },
-          ),
         ),
+      ),
+    );
+  }
+}
+
+class TaskListPage extends StatelessWidget {
+  final List<Task> tasks;
+  final String grade;
+
+  TaskListPage({required this.tasks, required this.grade});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Task List'),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Swipe right on a task to open its memo page',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 16,
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: tasks.length,
+              itemBuilder: (context, index) {
+                return TaskCard(
+                  task: tasks[index],
+                  grade: grade,
+                  updateTaskMark: (task, newValue) {
+                    // Your updateTaskMark implementation here
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
