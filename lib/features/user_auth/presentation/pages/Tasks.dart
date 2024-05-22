@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/features/user_auth/presentation/pages/DocumentUpload.dart';
+import 'package:myapp/features/user_auth/presentation/pages/List.dart';
 import 'package:myapp/features/user_auth/presentation/pages/MeetingRecord.dart';
 import 'package:myapp/features/user_auth/presentation/pages/Video.dart';
 import 'package:myapp/global/common/Header.dart' as CommonHeader;
@@ -275,7 +276,7 @@ Widget getPageWidget(Task task) {
     case PageType.dateTime:
       return MeetingRecordPage(task: task);
     case PageType.list:
-      return MeetingRecordPage(task: task);
+      return ListPage(task: task);
   // Add cases for other page types if needed
     default:
       return MemoPage(task: task); // Return a default page or show an error message if the page type is not recognized

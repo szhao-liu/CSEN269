@@ -19,7 +19,7 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
         },
       )
           : null,
-      title: Text(dynamicText, style: TextStyle(fontFamily: 'MadimiOne')),
+      title: Text(dynamicText, style: TextStyle(fontFamily: 'MadimiOne',color: Colors.white)),
       backgroundColor: Colors.deepPurple,
       centerTitle: true,
     );

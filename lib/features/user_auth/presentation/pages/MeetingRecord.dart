@@ -41,6 +41,9 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
   String? userUUID;
   List<MeetingRecord> meetingRecords = [];
   StreamSubscription<QuerySnapshot>? _subscription;
+  final Map<String, TextEditingController> _dateControllers = {};
+  final Map<String, TextEditingController> _timeControllers = {};
+  final Map<String, TextEditingController> _notesControllers = {};
 
   @override
   void initState() {
@@ -52,6 +55,9 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
   @override
   void dispose() {
     _subscription?.cancel();
+    _dateControllers.values.forEach((controller) => controller.dispose());
+    _timeControllers.values.forEach((controller) => controller.dispose());
+    _notesControllers.values.forEach((controller) => controller.dispose());
     super.dispose();
   }
 
@@ -127,6 +133,10 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
   }
 
   Widget _buildMeetingRecordRow(MeetingRecord record) {
+    _dateControllers[record.docId] = TextEditingController(text: record.date);
+    _timeControllers[record.docId] = TextEditingController(text: record.time);
+    _notesControllers[record.docId] = TextEditingController(text: record.discussionNotes);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -145,8 +155,8 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
               children: [
                 SizedBox(height: 8.0),
                 TextFormField(
+                  controller: _dateControllers[record.docId],
                   key: ValueKey('${record.docId}-date'), // Unique key for each field
-                  initialValue: record.date,
                   decoration: InputDecoration(
                     labelText: 'Date',
                     labelStyle: TextStyle(color: Colors.indigo),
@@ -162,14 +172,15 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
+                  onTap: () => _selectDate(context, record),
                   onChanged: (value) {
                     updateMeetingRecord(record, date: value);
                   },
                 ),
                 SizedBox(height: 8.0),
                 TextFormField(
+                  controller: _timeControllers[record.docId],
                   key: ValueKey('${record.docId}-time'), // Unique key for each field
-                  initialValue: record.time,
                   decoration: InputDecoration(
                     labelText: 'Time',
                     labelStyle: TextStyle(color: Colors.indigo),
@@ -184,14 +195,15 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
                     color: Colors.indigo,
                     fontWeight: FontWeight.bold,
                   ),
+                  onTap: () => _selectTime(context, record),
                   onChanged: (value) {
                     updateMeetingRecord(record, time: value);
                   },
                 ),
                 SizedBox(height: 8.0),
                 TextFormField(
+                  controller: _notesControllers[record.docId],
                   key: ValueKey('${record.docId}-notes'), // Unique key for each field
-                  initialValue: record.discussionNotes,
                   decoration: InputDecoration(
                     labelText: 'Add meeting notes...',
                     labelStyle: TextStyle(color: Colors.indigo),
@@ -228,6 +240,36 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
         ),
       ],
     );
+  }
+
+  Future<void> _selectDate(BuildContext context, MeetingRecord record) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2015, 8),
+      lastDate: DateTime(2101),
+    );
+    if (pickedDate != null) {
+      String formattedDate = "${pickedDate.toLocal()}".split(' ')[0]; // Format date as YYYY-MM-DD
+      setState(() {
+        _dateControllers[record.docId]?.text = formattedDate;
+      });
+      updateMeetingRecord(record, date: formattedDate);
+    }
+  }
+
+  Future<void> _selectTime(BuildContext context, MeetingRecord record) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (pickedTime != null) {
+      String formattedTime = '${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}';
+      setState(() {
+        _timeControllers[record.docId]?.text = formattedTime;
+      });
+      updateMeetingRecord(record, time: formattedTime);
+    }
   }
 
   void loadMeetingNotes() {
