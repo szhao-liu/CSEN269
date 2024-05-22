@@ -12,7 +12,8 @@ class PageTypeHelper {
     PageType.dateTime: 'dateTime',
     PageType.list: 'list',
     PageType.memo: 'memo',
-    PageType.docUpload : 'docUpload'
+    PageType.docUpload : ''
+        ''
   };
 
   static String getStringValue(PageType pageType) {

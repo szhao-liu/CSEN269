@@ -163,6 +163,7 @@ class _TasksPageState extends State<TasksPage> {
     double progress = calculateProgress(tasks);
     int completedTasks = tasks.where((task) => task.mark).length;
     int totalTasks = tasks.length;
+    double progressPercent = (completedTasks/totalTasks)*100;
     return Scaffold(
       body: Stack(
         children: [
@@ -233,7 +234,7 @@ class _TasksPageState extends State<TasksPage> {
                     ),
                     SizedBox(width: 8), // Adjust the spacing
                     Text(
-                      '$completedTasks/$totalTasks',
+                      '${progressPercent.toStringAsFixed(0)}%',
                       style: TextStyle(
                         color: Colors.indigo,
                         fontSize: 16,
