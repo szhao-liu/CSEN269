@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'Tasks.dart'; // Import the Task class
+import 'package:myapp/global/common/Header.dart' as CommonHeader; // Import the common Header file
 
 class TaskListPage extends StatefulWidget {
   final Task task;
@@ -16,7 +17,7 @@ class _TaskListPageState extends State<TaskListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Tasks')),
+      appBar: CommonHeader.Header(dynamicText: "List"), //,
       body: ListView.builder(
         itemCount: subTasks.length,
         itemBuilder: (context, index) {

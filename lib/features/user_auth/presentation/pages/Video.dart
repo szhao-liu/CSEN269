@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Tasks.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:myapp/global/common/Header.dart' as CommonHeader;
 
 class VideoPage extends StatefulWidget {
   final Task task;
@@ -32,23 +33,14 @@ class _VideoPageState extends State<VideoPage> {
             fit: BoxFit.cover,
           ),
         ),
-
         child: Column(
-
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 55.0),
-            Padding(
-              padding: const EdgeInsets.all(0.0),
-              child: Text(
-                'Resources to improve your mental health',
-                style: TextStyle(
-                  fontSize: 19,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.indigo,
-                ),
-              ),
+            CommonHeader.Header(
+              dynamicText: "Videos",
+              showBackArrow: true,
             ),
+            SizedBox(height: 20.0),
             Expanded(
               child: ListView.builder(
                 itemCount: videos.length,
@@ -66,7 +58,7 @@ class _VideoPageState extends State<VideoPage> {
                             width: double.infinity,
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(0.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: Text(
                               videos[index].title,
                               style: TextStyle(

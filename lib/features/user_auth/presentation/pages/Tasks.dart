@@ -1,3 +1,5 @@
+// lib/features/user_auth/presentation/pages/Tasks.dart
+
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -148,8 +150,7 @@ class _TasksPageState extends State<TasksPage> {
         .doc(userUUID)
         .collection('tasks')
         .doc(task.id)
-        .set({'mark': newValue}, SetOptions(
-        merge: true)) // Use set with merge to create if not exists or update if exists
+        .set({'mark': newValue}, SetOptions(merge: true)) // Use set with merge to create if not exists or update if exists
         .then((value) {
       print('User task mark updated successfully');
     }).catchError((error) {
@@ -165,6 +166,7 @@ class _TasksPageState extends State<TasksPage> {
     int totalTasks = tasks.length;
     double progressPercent = (completedTasks/totalTasks)*100;
     return Scaffold(
+      appBar: CommonHeader.Header(dynamicText: "Tasks for ${widget.grade}"),
       body: Stack(
         children: [
           Positioned.fill(
@@ -178,10 +180,6 @@ class _TasksPageState extends State<TasksPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: EdgeInsets.all(0.0),
-                  child: CommonHeader.Header(dynamicText: "Tasks"),
-                ),
                 SizedBox(height: 20),
                 if (showSwipeIcon)
                   Align(

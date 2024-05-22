@@ -1,10 +1,8 @@
+// lib/main.dart
+
 import 'package:flutter/material.dart';
 import 'package:myapp/features/user_auth/presentation/pages/Tasks.dart';
 import 'package:myapp/global/common/Header.dart' as CommonHeader;
-
-void main() {
-  runApp(StudentChooseGrade());
-}
 
 class StudentChooseGrade extends StatelessWidget {
   @override
@@ -19,6 +17,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CommonHeader.Header(dynamicText: "Your Grade", showBackArrow: false),
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -30,7 +29,6 @@ class MyHomePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                CommonHeader.Header(dynamicText: "Your Grade", showBackArrow: false),
                 SizedBox(height: 20),
                 Center(
                   child: Text(

@@ -3,21 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'Tasks.dart';
 import 'dart:async';
+import 'package:myapp/global/common/Header.dart' as CommonHeader; // Import the common Header file
 
 class MeetingRecordPage extends StatefulWidget {
   final Task task;
 
-  const MeetingRecordPage({Key? key, required this.task}) : super(key: key);
+  const MeetingRecordPage({super.key, required this.task});
 
   @override
   _MeetingRecordPageState createState() => _MeetingRecordPageState();
 }
 
 class MeetingRecord {
-  final String docId;
-  final String date;
-  final String time;
-  final String discussionNotes;
+  String docId;
+  String date;
+  String time;
+  String discussionNotes;
 
   MeetingRecord({
     required this.docId,
@@ -28,6 +29,7 @@ class MeetingRecord {
 
   Map<String, dynamic> toMap() {
     return {
+      'docId': docId,
       'date': date,
       'time': time,
       'discussionNotes': discussionNotes,
@@ -38,22 +40,18 @@ class MeetingRecord {
 class _MeetingRecordPageState extends State<MeetingRecordPage> {
   String? userUUID;
   List<MeetingRecord> meetingRecords = [];
-  late StreamSubscription<QuerySnapshot> _subscription;
-  TextEditingController _dateController = TextEditingController();
-  TextEditingController _timeController = TextEditingController();
+  StreamSubscription<QuerySnapshot>? _subscription;
+
   @override
   void initState() {
     super.initState();
     userUUID = FirebaseAuth.instance.currentUser?.uid;
-
     loadMeetingNotes();
   }
 
   @override
   void dispose() {
-    _subscription.cancel();
-    _dateController.dispose();
-    _timeController.dispose();
+    _subscription?.cancel();
     super.dispose();
   }
 
@@ -70,6 +68,7 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
           ),
           Column(
             children: [
+              CommonHeader.Header(dynamicText: "Meeting Record"),
               SizedBox(height: 45),
               Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -126,230 +125,110 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
       ),
     );
   }
+
   Widget _buildMeetingRecordRow(MeetingRecord record) {
-    return Card(
-      color: Colors.white70,
-      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
-      elevation: 4.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextFormField(
-              controller: _dateController,
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: 'Date',
-                labelStyle: TextStyle(color: Colors.indigo),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.indigo),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Card(
+          key: ValueKey(record.docId), // Ensure unique key for each record
+          color: Colors.white,
+          margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+          elevation: 4.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 8.0),
+                TextFormField(
+                  key: ValueKey('${record.docId}-date'), // Unique key for each field
+                  initialValue: record.date,
+                  decoration: InputDecoration(
+                    labelText: 'Date',
+                    labelStyle: TextStyle(color: Colors.indigo),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.indigo),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.indigo),
+                    ),
+                  ),
+                  style: TextStyle(
+                    color: Colors.indigo,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                  onChanged: (value) {
+                    updateMeetingRecord(record, date: value);
+                  },
                 ),
-              ),
-              style: TextStyle(
-                color: Colors.indigo,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-              onTap: () => _selectDate(context, record),
-            ),
-            SizedBox(height: 8.0),
-            TextFormField(
-              controller: _timeController,
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: 'Time',
-                labelStyle: TextStyle(color: Colors.indigo),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.indigo),
+                SizedBox(height: 8.0),
+                TextFormField(
+                  key: ValueKey('${record.docId}-time'), // Unique key for each field
+                  initialValue: record.time,
+                  decoration: InputDecoration(
+                    labelText: 'Time',
+                    labelStyle: TextStyle(color: Colors.indigo),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.indigo),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.indigo),
+                    ),
+                  ),
+                  style: TextStyle(
+                    color: Colors.indigo,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  onChanged: (value) {
+                    updateMeetingRecord(record, time: value);
+                  },
                 ),
-              ),
-              style: TextStyle(
-                color: Colors.indigo,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-              onTap: () => _selectTime(context, record),
-            ),
-            SizedBox(height: 8.0),
-            TextFormField(
-              initialValue: record.discussionNotes,
-              decoration: InputDecoration(
-                labelText: 'Add meeting notes...',
-                labelStyle: TextStyle(color: Colors.indigo),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.indigo),
+                SizedBox(height: 8.0),
+                TextFormField(
+                  key: ValueKey('${record.docId}-notes'), // Unique key for each field
+                  initialValue: record.discussionNotes,
+                  decoration: InputDecoration(
+                    labelText: 'Add meeting notes...',
+                    labelStyle: TextStyle(color: Colors.indigo),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.indigo),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.indigo),
+                    ),
+                  ),
+                  style: TextStyle(
+                    color: Colors.indigo,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: null,
+                  onChanged: (value) {
+                    updateMeetingRecord(record, discussionNotes: value);
+                  },
                 ),
-              ),
-              style: TextStyle(
-                color: Colors.indigo,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-              maxLines: null,
-              onChanged: (value) {
-                updateMeetingRecordList(record, discussionNotes: value);
-              },
+                SizedBox(height: 16.0),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      removeMeetingRecord(record);
+                    },
+                    color: Colors.red,
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 16.0),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () {
-                  removeMeetingRecord(record);
-                },
-                color: Colors.red,
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
-
-  Future<void> _selectDate(BuildContext context, MeetingRecord record) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2015, 8),
-      lastDate: DateTime(2101),
-    );
-    if (pickedDate != null) {
-      setState(() {
-        _dateController.text = pickedDate.toString();
-      });
-      updateMeetingRecordList(record, date: pickedDate.toString());
-    }
-  }
-
-  Future<void> _selectTime(BuildContext context, MeetingRecord record) async {
-    final TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-    if (pickedTime != null) {
-      setState(() {
-        _timeController.text =
-        '${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}';
-      });
-      updateMeetingRecordList(
-          record,
-          time:
-          '${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}');
-    }
-  }
-
-  // Widget _buildMeetingRecordRow(MeetingRecord record) {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Card(
-  //         color: Colors.white,
-  //         margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
-  //         elevation: 4.0,
-  //         shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.circular(12.0),
-  //         ),
-  //         child: Padding(
-  //           padding: EdgeInsets.all(16.0),
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               // Text(
-  //               //   'Task Name: ${widget.task.title}',
-  //               //   style: TextStyle(
-  //               //     color: Colors.indigo,
-  //               //     fontWeight: FontWeight.bold,
-  //               //     fontSize: 20,
-  //               //   ),
-  //               // ),
-  //               SizedBox(height: 8.0),
-  //               TextFormField(
-  //                 initialValue: record.date,
-  //                 decoration: InputDecoration(
-  //                   labelText: 'Date',
-  //                   labelStyle: TextStyle(color: Colors.indigo),
-  //                   enabledBorder: UnderlineInputBorder(
-  //                     borderSide: BorderSide(color: Colors.indigo),
-  //                   ),
-  //                   focusedBorder: UnderlineInputBorder(
-  //                     borderSide: BorderSide(color: Colors.indigo),
-  //                   ),
-  //                 ),
-  //                 style: TextStyle(
-  //                   color: Colors.indigo,
-  //                   fontWeight: FontWeight.bold,
-  //                   fontSize: 16,
-  //                 ),
-  //                 onChanged: (value) {
-  //                   updateMeetingRecordList(record, date: value);
-  //                 },
-  //               ),
-  //               SizedBox(height: 8.0),
-  //               TextFormField(
-  //                 initialValue: record.time,
-  //                 decoration: InputDecoration(
-  //                   labelText: 'Time',
-  //                   labelStyle: TextStyle(color: Colors.indigo),
-  //                   enabledBorder: UnderlineInputBorder(
-  //                     borderSide: BorderSide(color: Colors.indigo),
-  //                   ),
-  //                   focusedBorder: UnderlineInputBorder(
-  //                     borderSide: BorderSide(color: Colors.indigo),
-  //                   ),
-  //                 ),
-  //                 style: TextStyle(
-  //                   color: Colors.indigo,
-  //                   fontWeight: FontWeight.bold,
-  //                 ),
-  //                 onChanged: (value) {
-  //                   updateMeetingRecordList(record, time: value);
-  //                 },
-  //               ),
-  //               SizedBox(height: 8.0),
-  //               TextFormField(
-  //                 initialValue: record.discussionNotes,
-  //                 decoration: InputDecoration(
-  //                   labelText: 'Add meeting notes...',
-  //                   labelStyle: TextStyle(color: Colors.indigo),
-  //                   enabledBorder: UnderlineInputBorder(
-  //                     borderSide: BorderSide(color: Colors.indigo),
-  //                   ),
-  //                   focusedBorder: UnderlineInputBorder(
-  //                     borderSide: BorderSide(color: Colors.indigo),
-  //                   ),
-  //                 ),
-  //                 style: TextStyle(
-  //                   color: Colors.indigo,
-  //                   fontWeight: FontWeight.bold,
-  //                 ),
-  //                 maxLines: null,
-  //                 onChanged: (value) {
-  //                   updateMeetingRecordList(record, discussionNotes: value);
-  //                 },
-  //               ),
-  //               SizedBox(height: 16.0),
-  //               Align(
-  //                 alignment: Alignment.bottomRight,
-  //                 child: IconButton(
-  //                   icon: Icon(Icons.delete),
-  //                   onPressed: () {
-  //                     removeMeetingRecord(record);
-  //                   },
-  //                   color: Colors.red,
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
 
   void loadMeetingNotes() {
     if (userUUID != null) {
@@ -376,21 +255,25 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
   }
 
   void addNewMeetingRecord() {
-    FirebaseFirestore.instance
+    var newRecordRef = FirebaseFirestore.instance
         .collection('users')
         .doc(userUUID)
         .collection('tasks')
         .doc(widget.task.id)
         .collection('meetingRecords')
-        .add(MeetingRecord(
-      docId: '',
+        .doc();
+
+    var newMeetingRecord = MeetingRecord(
+      docId: newRecordRef.id,
       date: '',
       time: '',
       discussionNotes: '',
-    ).toMap());
+    );
+
+    newRecordRef.set(newMeetingRecord.toMap());
   }
 
-  void updateMeetingRecordList(MeetingRecord record,
+  void updateMeetingRecord(MeetingRecord record,
       {String? date, String? time, String? discussionNotes}) {
     var meetingRecordRef = FirebaseFirestore.instance
         .collection('users')

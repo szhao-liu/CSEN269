@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart'; // Import webview_flutter
 import 'Tasks.dart'; // Import the Task class from your custom package
+import 'package:myapp/global/common/Header.dart' as CommonHeader; // Import the common Header file
 
 class DocumentUploadPage extends StatefulWidget {
   final Task task;
@@ -54,6 +55,7 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
     return Scaffold(
       body: Stack(
         children: [
+          CommonHeader.Header(dynamicText: "Document Upload"), //
           // Background image
           Positioned.fill(
             child: Image.asset(
