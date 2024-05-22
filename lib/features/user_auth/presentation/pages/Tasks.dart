@@ -279,7 +279,8 @@ Widget getPageWidget(Task task) {
       return ListPage(task: task);
   // Add cases for other page types if needed
     default:
-      return MemoPage(task: task); // Return a default page or show an error message if the page type is not recognized
+      return DocumentUploadPage(task: task);
+      //return MemoPage(task: task); // Return a default page or show an error message if the page type is not recognized
   }
 }
 class TaskCard extends StatefulWidget {
