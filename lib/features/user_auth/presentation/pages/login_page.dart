@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,6 +8,7 @@ import '../widgets/form_container_widget.dart';
 import '../../../../global/common/toast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:myapp/features/user_auth/presentation/pages/Tasks.dart';
 
 import '../../firebase_auth_implementation/firebase_auth_services.dart';
 
@@ -246,12 +248,33 @@ class _LoginPageState extends State<LoginPage> {
 
     if (user != null) {
       showToast(message: "User is successfully signed in");
-      Navigator.pushNamed(context, "/home");
+
+      // Check if the user's grade is present in the Firebase DB
+      DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      if (snapshot.exists && snapshot.data() != null && snapshot.data()!['grade'] != "") {
+        // If the user's grade is present, navigate directly to the corresponding grade
+        String userGrade = snapshot.data()!['grade'];
+        navigateToTasks(context, userGrade);
+      } else {
+        // If the user's grade is not present, navigate to the home page
+        Navigator.pushNamed(context, "/home");
+      }
     } else {
-      showToast(message: "some error occurred");
+      showToast(message: "Some error occurred");
     }
   }
-
+  void navigateToTasks(BuildContext context, String grade) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TasksPage(grade: grade),
+      ),
+    );
+  }
   _signInWithGoogle() async {
     final GoogleSignIn _googleSignIn = GoogleSignIn();
 

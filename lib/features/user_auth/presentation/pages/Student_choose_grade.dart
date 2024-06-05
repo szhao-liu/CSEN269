@@ -3,6 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/features/user_auth/presentation/pages/Tasks.dart';
 import 'package:myapp/global/common/Header.dart' as CommonHeader;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import '../../../../global/common/toast.dart';
 
 class StudentChooseGrade extends StatelessWidget {
   @override
@@ -12,8 +16,21 @@ class StudentChooseGrade extends StatelessWidget {
     );
   }
 }
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
 
-class MyHomePage extends StatelessWidget {
+class _MyHomePageState extends State<MyHomePage> {
+
+  String? userUUID;
+
+  @override
+  void initState() {
+    super.initState();
+    userUUID = FirebaseAuth.instance.currentUser?.uid;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,28 +62,36 @@ class MyHomePage extends StatelessWidget {
                 OptionCard(
                   title: '9th Grade',
                   onTap: () {
-                    navigateToTasks(context, '9th Grade');
+                    addGrade(userUUID, '9th Grade').then((_) {
+                      navigateToTasks(context, '9th Grade');
+                    });
                   },
                 ),
                 SizedBox(height: 20),
                 OptionCard(
                   title: '10th Grade',
                   onTap: () {
-                    navigateToTasks(context, '10th Grade');
+                    addGrade(userUUID, '10th Grade').then((_) {
+                      navigateToTasks(context, '10th Grade');
+                    });
                   },
                 ),
                 SizedBox(height: 20),
                 OptionCard(
                   title: '11th Grade',
                   onTap: () {
-                    navigateToTasks(context, '11th Grade');
+                    addGrade(userUUID, '11th Grade').then((_) {
+                      navigateToTasks(context, '11th Grade');
+                    });
                   },
                 ),
                 SizedBox(height: 20),
                 OptionCard(
                   title: '12th Grade',
                   onTap: () {
-                    navigateToTasks(context, '12th Grade');
+                    addGrade(userUUID, '12th Grade').then((_) {
+                      navigateToTasks(context, '12th Grade');
+                    });
                   },
                 ),
               ],
@@ -76,6 +101,27 @@ class MyHomePage extends StatelessWidget {
       ),
     );
   }
+  Future<void> addGrade(String? userUUID, String grade) async {
+    if (userUUID == null) {
+      print("User is not logged in");
+      return;
+    }
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userUUID)
+          .update({'grade': grade});
+      showToast(message: "User is successfully signed in");
+      //print("Grade added successfully");
+    } catch (e) {
+      //print("Failed to add grade: $e");
+      showToast(message: "Failed to add grade: $e");
+      // Rethrow the error to propagate it further if necessary
+      throw e;
+    }
+  }
+
+
 
   void navigateToTasks(BuildContext context, String grade) {
     Navigator.push(
