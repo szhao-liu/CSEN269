@@ -116,6 +116,14 @@ class _TasksPageState extends State<TasksPage> {
             // Handle the error as needed
           });
         }
+        List<String> documents = [];
+        try {
+          documents = List<String>.from(doc['documents']);
+        } catch (e) {
+          // Handle the exception, for example, print an error message
+          print('Error fetching documents: $e');
+          // You can also log the error or perform any other error handling as needed
+        }
 
         return Task(
           id: doc.id,
@@ -124,6 +132,7 @@ class _TasksPageState extends State<TasksPage> {
           mark: userTask != null ? userTask['mark'] : false,
           pageType: PageTypeHelper.fromStringValue(doc['page_type']),
           rank: doc['rank'], // Use null-aware operator to handle null value
+          documents: documents,
         );
       }).toList();
 
@@ -528,6 +537,7 @@ class Task {
   final String description;
   final int rank;
   final PageType pageType;
+  final List<String> documents;
   bool mark;
 
   Task({
@@ -537,5 +547,6 @@ class Task {
     required this.mark,
     required this.pageType,
     required this.rank,
+    required this.documents
   });
 }

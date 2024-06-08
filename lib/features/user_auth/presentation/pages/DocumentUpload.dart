@@ -1,52 +1,82 @@
-import 'dart:io' show Platform;
+import 'dart:io' show File, Platform;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:file_picker/file_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart'; // Import webview_flutter
+import '../../../../global/common/document_list.dart';
 import 'Tasks.dart'; // Import the Task class from your custom package
 import 'package:myapp/global/common/Header.dart' as CommonHeader; // Import the common Header file
 
 class DocumentUploadPage extends StatefulWidget {
   final Task task;
+  final String? userUUID = FirebaseAuth.instance.currentUser?.uid; // Add the user UUID
 
-  const DocumentUploadPage({Key? key, required this.task}) : super(key: key);
+  DocumentUploadPage({Key? key, required this.task}) : super(key: key);
 
   @override
   _DocumentUploadPageState createState() => _DocumentUploadPageState();
 }
 
 class _DocumentUploadPageState extends State<DocumentUploadPage> {
-  List<String> documentUrls = [];
+  List<String> uploadedResumeUrls = [];
 
   @override
   void initState() {
     super.initState();
-    listDocuments();
+    fetchUploadedResumes();
   }
 
-  Future<void> listDocuments() async {
+  Future<void> fetchUploadedResumes() async {
     try {
-      // Get a reference to the base directory in Firebase Storage
-      var baseDirectoryRef = firebase_storage.FirebaseStorage.instanceFor(
-          bucket: "gs://college-finder-54f2c.appspot.com"
-      ).ref().child("templates");
+      final resumesRef = firebase_storage.FirebaseStorage.instance.ref('resumes/${widget.userUUID}');
+      final listResult = await resumesRef.listAll();
 
-      // List all items (documents and subdirectories) in the base directory
-      var listResult = await baseDirectoryRef.listAll();
+      List<String> urls = [];
+      for (var item in listResult.items) {
+        String downloadUrl = await item.getDownloadURL();
+        urls.add(downloadUrl);
+      }
 
-      // Iterate through the items in the list result
-      listResult.items.forEach((itemRef) {
-        // Get the download URL of each document and add it to the documentUrls list
-        itemRef.getDownloadURL().then((downloadUrl) {
-          setState(() {
-            documentUrls.add(downloadUrl);
-          });
-        });
+      setState(() {
+        uploadedResumeUrls = urls;
       });
     } catch (e) {
-      // Handle errors
-      print('Error listing documents: $e');
+      print('Error fetching resumes: $e');
+    }
+  }
+
+  Future<void> uploadResume() async {
+    // Use FilePicker to select a file
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      String fileName = result.files.single.name;
+
+      // Upload the file to Firebase Storage
+      try {
+        await firebase_storage.FirebaseStorage.instance
+            .ref('resumes/${widget.userUUID}/$fileName')
+            .putFile(file);
+        String downloadUrl = await firebase_storage.FirebaseStorage.instance
+            .ref('resumes/${widget.userUUID}/$fileName')
+            .getDownloadURL();
+
+        setState(() {
+          uploadedResumeUrls.add(downloadUrl);
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Resume uploaded successfully')),
+        );
+      } catch (e) {
+        print('Error uploading resume: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error uploading resume')),
+        );
+      }
     }
   }
 
@@ -66,37 +96,42 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
               children: [
                 CommonHeader.Header(dynamicText: "Document Upload"),
                 SizedBox(height: 30),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: documentUrls.length,
-                  itemBuilder: (context, index) {
-                    String documentName = Uri.decodeFull(documentUrls[index].split('%2F').last.split('?').first.replaceAll('%20', ' '));
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                      child: Card(
-                        elevation: 4.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: ListTile(
-                          leading: Icon(Icons.description, color: Colors.indigo),
-                          title: Text(
-                            documentName,
-                            style: TextStyle(
-                              color: Colors.indigo,
-                              fontWeight: FontWeight.bold,
+                ElevatedButton(
+                  onPressed: uploadResume,
+                  child: Text('Upload Document'),
+                ),
+                SizedBox(height: 20),
+                if (uploadedResumeUrls.isNotEmpty)
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: uploadedResumeUrls.length,
+                    itemBuilder: (context, index) {
+                      String resumeUrl = uploadedResumeUrls[index];
+                      String resumeName = Uri.decodeFull(resumeUrl.split('%2F').last.split('?').first.replaceAll('%20', ' '));
+                      return ListTile(
+                        title: Text(resumeName),
+                        onTap: () => _openDocument(context, resumeUrl),
+                      );
+                    },
+                  ),
+                SizedBox(height: 30),
+                if (widget.task.documents.isNotEmpty)
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DocumentListPage(
+                              documents: widget.task.documents,
                             ),
                           ),
-                          trailing: Icon(Icons.arrow_forward, color: Colors.indigo),
-                          onTap: () {
-                            _openDocument(context, documentUrls[index]);
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                        );
+                      },
+                      child: Text('Help Needed?'),
+                    ),
+                  ),
               ],
             ),
           ),

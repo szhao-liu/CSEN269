@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../global/common/document_list.dart';
 import 'Tasks.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:myapp/global/common/Header.dart' as CommonHeader;
@@ -95,6 +96,23 @@ class _VideoPageState extends State<VideoPage> {
                 },
               ),
             ),
+            SizedBox(height: 30),
+            if (widget.task.documents.isNotEmpty)
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DocumentListPage(
+                          documents: widget.task.documents,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text('Help Needed?'),
+                ),
+              ),
           ],
         ),
       ),

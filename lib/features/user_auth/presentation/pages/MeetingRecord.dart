@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../../global/common/document_list.dart';
 import 'Tasks.dart';
 import 'dart:async';
 import 'package:myapp/global/common/Header.dart' as CommonHeader; // Import the common Header file
@@ -234,6 +235,23 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
                     color: Colors.red,
                   ),
                 ),
+                SizedBox(height: 30),
+                if (widget.task.documents.isNotEmpty)
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DocumentListPage(
+                              documents: widget.task.documents,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text('Help Needed?'),
+                    ),
+                  ),
               ],
             ),
           ),
