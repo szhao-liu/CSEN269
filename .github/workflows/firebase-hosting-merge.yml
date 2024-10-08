@@ -21,6 +21,6 @@ steps:
     uses: FirebaseExtended/action-hosting-deploy@v0
     with:
         repoToken: ${{ secrets.GITHUB_TOKEN }}
-        firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SLR_DEV_AD45A }}
+        firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_COLLEGE_FINDER_54F2C }}
         channelId: live
         projectId: college-finder-54f2c
