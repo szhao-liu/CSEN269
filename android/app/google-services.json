@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "36597009887",
+    "firebase_url": "https://college-finder-54f2c-default-rtdb.firebaseio.com",
     "project_id": "college-finder-54f2c",
     "storage_bucket": "college-finder-54f2c.appspot.com"
   },
@@ -12,7 +13,12 @@
           "package_name": "com.example.myapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "36597009887-u6emhir155pm4u4bqs4thvfv5bn0gm41.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBwlXZjDodx4lvfLnak8Hp7aMJb25I9z_o"
@@ -20,7 +26,55 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "36597009887-u6emhir155pm4u4bqs4thvfv5bn0gm41.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "36597009887-4espdosc119c6nik3uffa088aavovgfl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.frugal"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:36597009887:android:0fec54d9bc8e280453486a",
+        "android_client_info": {
+          "package_name": "com.frugal.CollegeFinder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "36597009887-u6emhir155pm4u4bqs4thvfv5bn0gm41.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwlXZjDodx4lvfLnak8Hp7aMJb25I9z_o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "36597009887-u6emhir155pm4u4bqs4thvfv5bn0gm41.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "36597009887-4espdosc119c6nik3uffa088aavovgfl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.frugal"
+              }
+            }
+          ]
         }
       }
     }
