@@ -105,8 +105,8 @@ flutter:
   fonts:
      - family: MadimiOne
        fonts:
-#         - asset: fonts/Schyler-Regular.ttf
-         - asset: fonts/MadimiOne-Regular.ttf
+         - asset: fonts/Schyler-Regular.ttf
+#          - asset: fonts/MadimiOne-Regular.ttf
 #           style: italic
   #   - family: Trajan Pro
   #     fonts:
