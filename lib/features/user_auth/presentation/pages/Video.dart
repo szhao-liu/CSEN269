@@ -110,7 +110,7 @@ class _VideoPageState extends State<VideoPage> {
                       ),
                     );
                   },
-                  child: Text('Help Needed?'),
+                  child: const Text('Help Needed?'),
                 ),
               ),
           ],
