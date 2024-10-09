@@ -107,6 +107,19 @@ class _MyHomePageState extends State<MyHomePage> {
       return;
     }
     try {
+
+      final userRef = FirebaseFirestore.instance.collection('users').doc(userUUID);
+
+      // Check if the user exists
+      final userSnapshot = await userRef.get();
+
+      if (!userSnapshot.exists) {
+        // User doesn't exist, create a new one
+        await userRef.set({
+          'grade': "",
+        });
+      }
+
       await FirebaseFirestore.instance
           .collection('users')
           .doc(userUUID)
