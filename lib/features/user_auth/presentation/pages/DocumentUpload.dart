@@ -7,7 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart'; // Import webview_flutter
 import '../../../../global/common/document_list.dart';
 import 'Tasks.dart'; // Import the Task class from your custom package
-import 'package:myapp/global/common/Header.dart' as CommonHeader; // Import the common Header file
+import 'package:college_finder/global/common/Header.dart' as CommonHeader; // Import the common Header file
 
 class DocumentUploadPage extends StatefulWidget {
   final Task task;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../global/common/document_list.dart';
 import 'Tasks.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:myapp/global/common/Header.dart' as CommonHeader;
+import 'package:college_finder/global/common/Header.dart' as CommonHeader;
 
 class VideoPage extends StatefulWidget {
   final Task task;

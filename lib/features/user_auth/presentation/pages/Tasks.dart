@@ -5,12 +5,12 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/features/user_auth/presentation/pages/DocumentUpload.dart';
-import 'package:myapp/features/user_auth/presentation/pages/List.dart';
-import 'package:myapp/features/user_auth/presentation/pages/MeetingRecord.dart';
-import 'package:myapp/features/user_auth/presentation/pages/Video.dart';
-import 'package:myapp/global/common/Header.dart' as CommonHeader;
-import 'package:myapp/global/common/page_type.dart';
+import 'package:college_finder/features/user_auth/presentation/pages/DocumentUpload.dart';
+import 'package:college_finder/features/user_auth/presentation/pages/List.dart';
+import 'package:college_finder/features/user_auth/presentation/pages/MeetingRecord.dart';
+import 'package:college_finder/features/user_auth/presentation/pages/Video.dart';
+import 'package:college_finder/global/common/Header.dart' as CommonHeader;
+import 'package:college_finder/global/common/page_type.dart';
 import 'Memo.dart';
 
 class FrostedGlassBox extends StatelessWidget {

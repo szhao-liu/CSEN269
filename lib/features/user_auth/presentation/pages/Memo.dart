@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../global/common/document_list.dart';
 import 'Tasks.dart';
-import 'package:myapp/global/common/Header.dart' as CommonHeader; // Import the common Header file
+import 'package:college_finder/global/common/Header.dart' as CommonHeader; // Import the common Header file
 
 class MemoPage extends StatefulWidget {
   final Task task;

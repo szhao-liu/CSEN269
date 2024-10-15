@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/global/common/showHelpDialog.dart';
+import 'package:college_finder/global/common/showHelpDialog.dart';
 
 class CommonFooter extends StatelessWidget {
   @override

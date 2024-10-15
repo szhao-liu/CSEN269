@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:myapp/global/common/Header.dart' as CommonHeader;
+import 'package:college_finder/global/common/Header.dart' as CommonHeader;
 
 class DocumentListPage extends StatefulWidget {
   final List<String> documents;

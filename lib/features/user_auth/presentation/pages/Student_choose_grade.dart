@@ -1,8 +1,8 @@
 // lib/main.dart
 
 import 'package:flutter/material.dart';
-import 'package:myapp/features/user_auth/presentation/pages/Tasks.dart';
-import 'package:myapp/global/common/Header.dart' as CommonHeader;
+import 'package:college_finder/features/user_auth/presentation/pages/Tasks.dart';
+import 'package:college_finder/global/common/Header.dart' as CommonHeader;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
