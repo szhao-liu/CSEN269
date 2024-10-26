@@ -61,11 +61,27 @@ class FrostedGlassBox extends StatelessWidget {
 
 class TasksPage extends StatefulWidget {
   final String grade;
+  final Color color;
 
-  TasksPage({required this.grade});
-
+  TasksPage({required this.grade, required this.color});
   @override
   _TasksPageState createState() => _TasksPageState();
+}
+
+  Color getColorForGrade(String grade) {
+    switch (grade) {
+      case '9th Grade':
+        return Colors.red[200]!; // For grade A
+      case '12th Grade':
+        return Colors.orange[200]!;  // For grade B
+      case '11th Grade':
+        return Colors.green[200]!; // For grade C
+      case '10th Grade':
+        return Colors.blue[200]!;    // For grade D
+      default:
+        return Colors.red;   // Default color for unknown grades
+    // Default color for unknown grades
+    }
 }
 
 class _TasksPageState extends State<TasksPage> {
@@ -116,6 +132,14 @@ class _TasksPageState extends State<TasksPage> {
             // Handle the error as needed
           });
         }
+        Color newcolor = getColorForGrade(widget.grade);
+        String colorHex = newcolor.value.toRadixString(16);
+        // Color taskColor = Color(int.parse(colorHex, radix: 16)); // Convert it to Color
+        // Remove '#' and convert to Color
+        if (colorHex.startsWith('#')) {
+          colorHex = colorHex.substring(1); // Remove '#'
+        }
+        Color taskColor = Color(int.parse('FF$colorHex', radix: 16)); // Convert to Color with full opacity
         List<String> documents = [];
         try {
           documents = List<String>.from(doc['documents']);
@@ -133,6 +157,7 @@ class _TasksPageState extends State<TasksPage> {
           pageType: PageTypeHelper.fromStringValue(doc['page_type']),
           rank: doc['rank'], // Use null-aware operator to handle null value
           documents: documents,
+          color: taskColor
         );
       }).toList();
 
@@ -175,6 +200,15 @@ class _TasksPageState extends State<TasksPage> {
     int completedTasks = tasks.where((task) => task.mark).length;
     int totalTasks = tasks.length;
     double progressPercent = (completedTasks/totalTasks)*100;
+    Color newcolor = getColorForGrade(widget.grade);
+
+    String colorHex = newcolor.value.toRadixString(16);
+    // Color taskColor = Color(int.parse(colorHex, radix: 16)); // Convert it to Color
+    // Remove '#' and convert to Color
+    if (colorHex.startsWith('#')) {
+      colorHex = colorHex.substring(1); // Remove '#'
+    }
+    Color taskColor = Color(int.parse('FF$colorHex', radix: 16)); // Convert to Color with full opacity
     return Scaffold(
       appBar: CommonHeader.Header(dynamicText: "Tasks for ${widget.grade}"),
       body: Stack(
@@ -235,6 +269,7 @@ class _TasksPageState extends State<TasksPage> {
                     theChild: TaskList(
                       tasks: tasks,
                       grade: widget.grade,
+                      color:taskColor,
                       updateTaskMark: updateTaskMark,
                     ),
                   ),
@@ -252,9 +287,11 @@ class TaskList extends StatelessWidget {
   final List<Task> tasks;
   final String grade;
   final Function(Task, bool) updateTaskMark;
+  final Color color;
 
   TaskList({
     required this.tasks,
+    required this.color,
     required this.grade,
     required this.updateTaskMark,
   });
@@ -267,6 +304,7 @@ class TaskList extends StatelessWidget {
         return TaskCard(
           task: tasks[index],
           grade: grade,
+          color: color,
           updateTaskMark: updateTaskMark,
         );
       },
@@ -295,11 +333,13 @@ Widget getPageWidget(Task task) {
 class TaskCard extends StatefulWidget {
   final Task task;
   final String grade;
+  final Color color;
   final Function(Task, bool) updateTaskMark;
 
   TaskCard({
     required this.task,
     required this.grade,
+    required this.color,
     required this.updateTaskMark,
   });
 
@@ -353,6 +393,7 @@ class _TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     return Card(
+      color:widget.color,
       child: Dismissible(
         key: Key(widget.task.id),
         direction: DismissDirection.endToStart,
@@ -490,8 +531,9 @@ class _TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin
 class TaskListPage extends StatelessWidget {
   final List<Task> tasks;
   final String grade;
+  final Color color;
 
-  TaskListPage({required this.tasks, required this.grade});
+  TaskListPage({required this.tasks, required this.grade, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -518,6 +560,7 @@ class TaskListPage extends StatelessWidget {
                 return TaskCard(
                   task: tasks[index],
                   grade: grade,
+                  color: color,
                   updateTaskMark: (task, newValue) {
                     // Your updateTaskMark implementation here
                   },
@@ -538,6 +581,7 @@ class Task {
   final int rank;
   final PageType pageType;
   final List<String> documents;
+  final Color color;
   bool mark;
 
   Task({
@@ -547,6 +591,7 @@ class Task {
     required this.mark,
     required this.pageType,
     required this.rank,
+    required this.color,
     required this.documents
   });
 }

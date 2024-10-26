@@ -258,7 +258,7 @@ class _LoginPageState extends State<LoginPage> {
       if (snapshot.exists && snapshot.data() != null && snapshot.data()!['grade'] != "") {
         // If the user's grade is present, navigate directly to the corresponding grade
         String userGrade = snapshot.data()!['grade'];
-        navigateToTasks(context, userGrade);
+        navigateToTasks(context, userGrade, Colors.cyan);
       } else {
         // If the user's grade is not present, navigate to the home page
         Navigator.pushNamed(context, "/home");
@@ -267,11 +267,11 @@ class _LoginPageState extends State<LoginPage> {
       showToast(message: "Some error occurred");
     }
   }
-  void navigateToTasks(BuildContext context, String grade) {
+  void navigateToTasks(BuildContext context, String grade, Color color) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TasksPage(grade: grade),
+        builder: (context) => TasksPage(grade: grade, color: color),
       ),
     );
   }
