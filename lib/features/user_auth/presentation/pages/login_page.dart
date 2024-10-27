@@ -1,12 +1,12 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:college_finder/global/common/grade.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'sign_up_page.dart';
 import '../widgets/form_container_widget.dart';
 import '../../../../global/common/toast.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:college_finder/features/user_auth/presentation/pages/Tasks.dart';
 
@@ -257,7 +257,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (snapshot.exists && snapshot.data() != null && snapshot.data()!['grade'] != "") {
         // If the user's grade is present, navigate directly to the corresponding grade
-        String userGrade = snapshot.data()!['grade'];
+        Grade userGrade = getGradeFromString(snapshot.data()!['grade']);
         navigateToTasks(context, userGrade, Colors.cyan);
       } else {
         // If the user's grade is not present, navigate to the home page
@@ -267,11 +267,11 @@ class _LoginPageState extends State<LoginPage> {
       showToast(message: "Some error occurred");
     }
   }
-  void navigateToTasks(BuildContext context, String grade, Color color) {
+  void navigateToTasks(BuildContext context, Grade grade, Color color) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TasksPage(grade: grade, color: color),
+        builder: (context) => TasksPage(grade: grade),
       ),
     );
   }

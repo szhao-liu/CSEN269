@@ -94,7 +94,7 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
           SingleChildScrollView(
             child: Column(
               children: [
-                CommonHeader.Header(dynamicText: "Document Upload"),
+                CommonHeader.Header(dynamicText: "Document Upload", grade: widget.task.grade),
                 SizedBox(height: 30),
                 ElevatedButton(
                   onPressed: uploadResume,

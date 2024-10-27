@@ -1,5 +1,3 @@
-// lib/features/user_auth/presentation/pages/Tasks.dart
-
 import 'dart:async';
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,6 +9,7 @@ import 'package:college_finder/features/user_auth/presentation/pages/MeetingReco
 import 'package:college_finder/features/user_auth/presentation/pages/Video.dart';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
 import 'package:college_finder/global/common/page_type.dart';
+import '../../../../global/common/grade.dart';
 import 'Memo.dart';
 
 class FrostedGlassBox extends StatelessWidget {
@@ -60,31 +59,15 @@ class FrostedGlassBox extends StatelessWidget {
 }
 
 class TasksPage extends StatefulWidget {
-  final String grade;
-  final Color color;
+  final Grade grade;
 
-  TasksPage({required this.grade, required this.color});
+  TasksPage({required this.grade});
   @override
   _TasksPageState createState() => _TasksPageState();
 }
 
-  Color getColorForGrade(String grade) {
-    switch (grade) {
-      case '9th Grade':
-        return Colors.red[200]!; // For grade A
-      case '12th Grade':
-        return Colors.orange[200]!;  // For grade B
-      case '11th Grade':
-        return Colors.green[200]!; // For grade C
-      case '10th Grade':
-        return Colors.blue[200]!;    // For grade D
-      default:
-        return Colors.red;   // Default color for unknown grades
-    // Default color for unknown grades
-    }
-}
-
 class _TasksPageState extends State<TasksPage> {
+  late Grade selectedGrade;
   late List<Task> tasks = [];
 
   @override
@@ -93,11 +76,18 @@ class _TasksPageState extends State<TasksPage> {
     fetchAndSetTasks(widget.grade);
   }
 
-  Future<void> fetchAndSetTasks(String grade) async {
+  void _onGradeChanged(Grade newGrade) {
+    setState(() {
+      selectedGrade = newGrade;
+      fetchAndSetTasks(selectedGrade);
+    });
+  }
+
+  Future<void> fetchAndSetTasks(Grade grade) async {
     String? userUUID = FirebaseAuth.instance.currentUser?.uid;
     final querySnapshotTasks = await FirebaseFirestore.instance
         .collection('Checklist')
-        .doc(grade)
+        .doc(grade.grade)
         .collection('tasks')
         .get();
 
@@ -132,14 +122,7 @@ class _TasksPageState extends State<TasksPage> {
             // Handle the error as needed
           });
         }
-        Color newcolor = getColorForGrade(widget.grade);
-        String colorHex = newcolor.value.toRadixString(16);
-        // Color taskColor = Color(int.parse(colorHex, radix: 16)); // Convert it to Color
-        // Remove '#' and convert to Color
-        if (colorHex.startsWith('#')) {
-          colorHex = colorHex.substring(1); // Remove '#'
-        }
-        Color taskColor = Color(int.parse('FF$colorHex', radix: 16)); // Convert to Color with full opacity
+
         List<String> documents = [];
         try {
           documents = List<String>.from(doc['documents']);
@@ -157,7 +140,7 @@ class _TasksPageState extends State<TasksPage> {
           pageType: PageTypeHelper.fromStringValue(doc['page_type']),
           rank: doc['rank'], // Use null-aware operator to handle null value
           documents: documents,
-          color: taskColor
+          grade: grade
         );
       }).toList();
 
@@ -200,17 +183,9 @@ class _TasksPageState extends State<TasksPage> {
     int completedTasks = tasks.where((task) => task.mark).length;
     int totalTasks = tasks.length;
     double progressPercent = (completedTasks/totalTasks)*100;
-    Color newcolor = getColorForGrade(widget.grade);
 
-    String colorHex = newcolor.value.toRadixString(16);
-    // Color taskColor = Color(int.parse(colorHex, radix: 16)); // Convert it to Color
-    // Remove '#' and convert to Color
-    if (colorHex.startsWith('#')) {
-      colorHex = colorHex.substring(1); // Remove '#'
-    }
-    Color taskColor = Color(int.parse('FF$colorHex', radix: 16)); // Convert to Color with full opacity
     return Scaffold(
-      appBar: CommonHeader.Header(dynamicText: "Tasks for ${widget.grade}"),
+      appBar: CommonHeader.Header(dynamicText: "Checklist", grade: widget.grade, onGradeChanged: _onGradeChanged),
       body: Stack(
         children: [
           Positioned.fill(
@@ -269,7 +244,6 @@ class _TasksPageState extends State<TasksPage> {
                     theChild: TaskList(
                       tasks: tasks,
                       grade: widget.grade,
-                      color:taskColor,
                       updateTaskMark: updateTaskMark,
                     ),
                   ),
@@ -285,13 +259,11 @@ class _TasksPageState extends State<TasksPage> {
 
 class TaskList extends StatelessWidget {
   final List<Task> tasks;
-  final String grade;
+  final Grade grade;
   final Function(Task, bool) updateTaskMark;
-  final Color color;
 
   TaskList({
     required this.tasks,
-    required this.color,
     required this.grade,
     required this.updateTaskMark,
   });
@@ -304,7 +276,6 @@ class TaskList extends StatelessWidget {
         return TaskCard(
           task: tasks[index],
           grade: grade,
-          color: color,
           updateTaskMark: updateTaskMark,
         );
       },
@@ -332,14 +303,12 @@ Widget getPageWidget(Task task) {
 }
 class TaskCard extends StatefulWidget {
   final Task task;
-  final String grade;
-  final Color color;
+  final Grade grade;
   final Function(Task, bool) updateTaskMark;
 
   TaskCard({
     required this.task,
     required this.grade,
-    required this.color,
     required this.updateTaskMark,
   });
 
@@ -389,26 +358,44 @@ class _TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin
     _timer.cancel();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Card(
-      color:widget.color,
       child: Dismissible(
         key: Key(widget.task.id),
         direction: DismissDirection.endToStart,
-        background: Container(
-          alignment: Alignment.centerRight,
-          padding: EdgeInsets.only(right: 20.0),
-          color: Colors.green,
-          child: Icon(Icons.add_card_rounded, color: Colors.white),
+        background: Stack(
+          children: [
+            Container(
+              alignment: Alignment.centerRight,
+              padding: EdgeInsets.only(right: 20.0),
+              color: Colors.green,
+              child: Icon(Icons.add_card_rounded, color: Colors.white),
+            ),
+            Positioned.fill(
+              right: 20.0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: List.generate(
+                  3,
+                      (index) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.white.withOpacity(0.6),
+                      size: 16,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
         onDismissed: (direction) {
           // Handle swipe action (optional)
         },
         confirmDismiss: (direction) async {
           if (direction == DismissDirection.endToStart) {
-            // Swipe right to open memo page
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -423,52 +410,78 @@ class _TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin
             if (!_isAnimationStopped)
               SlideTransition(
                 position: _offsetAnimation,
-                child: ExpansionTile(
-                  title: Text(
-                    widget.task.title,
-                    style: TextStyle(
-                      color: Colors.indigo,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'MadimiOne',
-                    ),
-                  ),
+                child: Stack(
+                  alignment: Alignment.centerRight,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                      child: Text(
-                        widget.task.description,
+                    ExpansionTile(
+                      title: Text(
+                        widget.task.title,
                         style: TextStyle(
                           color: Colors.indigo,
                           fontSize: 15,
-                          fontWeight: FontWeight.bold, // Made font weight bold
+                          fontWeight: FontWeight.bold,
                           fontFamily: 'MadimiOne',
                         ),
                       ),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                          child: Text(
+                            widget.task.description,
+                            style: TextStyle(
+                              color: Colors.indigo,
+                              fontSize: 15,
+                              fontFamily: 'MadimiOne',
+                            ),
+                          ),
+                        ),
+                      ],
+                      trailing: Checkbox(
+                        value: widget.task.mark,
+                        onChanged: (newValue) {
+                          if (newValue != null) {
+                            FirebaseFirestore.instance
+                                .collection('Checklist')
+                                .doc(widget.grade.grade)
+                                .collection('tasks')
+                                .doc(widget.task.id)
+                                .update({'mark': newValue})
+                                .then((value) {
+                              print('Document updated successfully');
+                            }).catchError((error) {
+                              print('Failed to update document: $error');
+                            });
+                            widget.updateTaskMark(widget.task, newValue);
+                          }
+                        },
+                      ),
                     ),
+                    // Add arrows overlay
+                    if (widget.task.rank == 1) // Replace with logic to check first task
+                      Positioned(
+                        right: 60.0,
+                        child: Row(
+                          children: List.generate(
+                            3,
+                                (index) => Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                              child: Icon(
+                                Icons.arrow_back_ios_new_sharp,
+                                color: Colors.black.withOpacity(0.4),
+                                size: 16,
+                                shadows: [
+                                  Shadow(
+                                    blurRadius: 4.0,
+                                    color: Colors.black.withOpacity(0.3),
+                                    offset: Offset(2, 2),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
-                  trailing: Checkbox(
-                    value: widget.task.mark,
-                    onChanged: (newValue) {
-                      if (newValue != null) {
-                        // Update Firestore document using the task's Id
-                        FirebaseFirestore.instance
-                            .collection('Checklist')
-                            .doc(widget.grade)
-                            .collection('tasks')
-                            .doc(widget.task.id)
-                            .update({'mark': newValue})
-                            .then((value) {
-                          print('Document updated successfully');
-                        }).catchError((error) {
-                          print('Failed to update document: $error');
-                          // Handle the error as needed
-                        });
-                        // Call the function to update the task mark
-                        widget.updateTaskMark(widget.task, newValue);
-                      }
-                    },
-                  ),
                 ),
               ),
             if (_isAnimationStopped)
@@ -491,7 +504,7 @@ class _TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin
                         style: TextStyle(
                           color: Colors.indigo,
                           fontSize: 15,
-                          fontWeight: FontWeight.bold, // Made font weight bold
+                          fontWeight: FontWeight.bold,
                           fontFamily: 'MadimiOne',
                         ),
                       ),
@@ -501,10 +514,9 @@ class _TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin
                     value: widget.task.mark,
                     onChanged: (newValue) {
                       if (newValue != null) {
-                        // Update Firestore document using the task's Id
                         FirebaseFirestore.instance
                             .collection('Checklist')
-                            .doc(widget.grade)
+                            .doc(widget.grade.grade)
                             .collection('tasks')
                             .doc(widget.task.id)
                             .update({'mark': newValue})
@@ -512,9 +524,7 @@ class _TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin
                           print('Document updated successfully');
                         }).catchError((error) {
                           print('Failed to update document: $error');
-                          // Handle the error as needed
                         });
-                        // Call the function to update the task mark
                         widget.updateTaskMark(widget.task, newValue);
                       }
                     },
@@ -530,10 +540,9 @@ class _TaskCardState extends State<TaskCard> with SingleTickerProviderStateMixin
 
 class TaskListPage extends StatelessWidget {
   final List<Task> tasks;
-  final String grade;
-  final Color color;
+  final Grade grade;
 
-  TaskListPage({required this.tasks, required this.grade, required this.color});
+  TaskListPage({required this.tasks, required this.grade});
 
   @override
   Widget build(BuildContext context) {
@@ -560,7 +569,6 @@ class TaskListPage extends StatelessWidget {
                 return TaskCard(
                   task: tasks[index],
                   grade: grade,
-                  color: color,
                   updateTaskMark: (task, newValue) {
                     // Your updateTaskMark implementation here
                   },
@@ -581,7 +589,7 @@ class Task {
   final int rank;
   final PageType pageType;
   final List<String> documents;
-  final Color color;
+  final Grade grade;
   bool mark;
 
   Task({
@@ -591,7 +599,7 @@ class Task {
     required this.mark,
     required this.pageType,
     required this.rank,
-    required this.color,
+    required this.grade,
     required this.documents
   });
 }

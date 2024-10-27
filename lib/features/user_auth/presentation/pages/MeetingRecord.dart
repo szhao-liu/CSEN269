@@ -75,7 +75,7 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
           ),
           Column(
             children: [
-              CommonHeader.Header(dynamicText: "Meeting Record"),
+              CommonHeader.Header(dynamicText: "Meeting Record", grade: widget.task.grade),
               SizedBox(height: 45),
               Padding(
                 padding: const EdgeInsets.all(16.0),

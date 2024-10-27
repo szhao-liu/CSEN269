@@ -2,15 +2,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-
 import 'features/app/splash_screen/splash_screen.dart';
 import 'features/user_auth/presentation/pages/CommonFooter.dart';
 import 'features/user_auth/presentation/pages/Student_choose_grade.dart';
 import 'features/user_auth/presentation/pages/Tasks.dart';
 import 'features/user_auth/presentation/pages/login_page.dart';
 import 'features/user_auth/presentation/pages/sign_up_page.dart';
-
-
+import 'global/common/grade.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,7 +53,8 @@ class CollegeFinder extends StatelessWidget {
             return MaterialPageRoute(builder: (context) => StudentChooseGrade());
           case '/tasks':
           // Extract grade from the route arguments
-            final String grade = settings.arguments as String;
+            final String gradeArg = settings.arguments as String;
+            final Grade grade = getGradeFromString(gradeArg); // Convert string to Grade
             return MaterialPageRoute(
               builder: (context) => TasksPage(grade: grade),
             );

@@ -1,3 +1,4 @@
+import 'package:college_finder/global/common/grade.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -43,7 +44,7 @@ class _MemoPageState extends State<MemoPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CommonHeader.Header(dynamicText: "Memo"), // Use the Header from the common library
+                CommonHeader.Header(dynamicText: "Memo", grade : widget.task.grade), // Use the Header from the common library
                 Center(
                   child: Text(
                     'Task: ${widget.task.title}',

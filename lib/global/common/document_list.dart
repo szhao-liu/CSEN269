@@ -68,7 +68,7 @@ class _DocumentListPageState extends State<DocumentListPage> {
           ),
           Column(
             children: [
-              CommonHeader.Header(dynamicText: "References"),
+              CommonHeader.Header(dynamicText: "References", grade: null),
               Expanded(
                 child: ListView.builder(
                   itemCount: widget.documents.length,

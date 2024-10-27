@@ -92,7 +92,7 @@ class _ListPage extends State<ListPage> {
           ),
           Column(
             children: [
-              CommonHeader.Header(dynamicText: "List Entries"),
+              CommonHeader.Header(dynamicText: "List Entries", grade: widget.task.grade),
               SizedBox(height: 45),
               Expanded(
                 child: Padding(

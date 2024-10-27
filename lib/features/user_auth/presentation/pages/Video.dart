@@ -39,6 +39,7 @@ class _VideoPageState extends State<VideoPage> {
           children: [
             CommonHeader.Header(
               dynamicText: "Videos",
+              grade: widget.task.grade,
               showBackArrow: true,
             ),
             SizedBox(height: 20.0),
