@@ -28,12 +28,6 @@ class _VideoPageState extends State<VideoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/backgg.jpg'),
-            fit: BoxFit.cover,
-          ),
-        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -54,6 +48,9 @@ class _VideoPageState extends State<VideoPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Positioned.fill(
+                            child: Container(color: Color(0xFFF9F9F9)),
+                          ),
                           Image.network(
                             videos[index].thumbnailUrl,
                             fit: BoxFit.cover,
@@ -111,7 +108,7 @@ class _VideoPageState extends State<VideoPage> {
                       ),
                     );
                   },
-                  child: const Text('Help Needed?'),
+                  child: const Text('Help Needed?', style: TextStyle(fontFamily: 'Cereal'),),
                 ),
               ),
           ],

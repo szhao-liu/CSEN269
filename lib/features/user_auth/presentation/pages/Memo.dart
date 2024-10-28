@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../global/common/document_list.dart';
 import 'Tasks.dart';
-import 'package:college_finder/global/common/Header.dart' as CommonHeader; // Import the common Header file
+import 'package:college_finder/global/common/Header.dart' as CommonHeader;
 
 class MemoPage extends StatefulWidget {
   final Task task;
@@ -22,9 +22,7 @@ class _MemoPageState extends State<MemoPage> {
   @override
   void initState() {
     super.initState();
-    // Get the current user's UUID
     userUUID = FirebaseAuth.instance.currentUser?.uid;
-    // Load existing memo if available
     loadMemo();
   }
 
@@ -33,18 +31,16 @@ class _MemoPageState extends State<MemoPage> {
     return Scaffold(
       body: Stack(
         children: [
-          Image.asset(
-            'assets/backgg.jpg', // Replace with your background image asset path
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
+          Positioned.fill(
+            child: Container(color: Color(0xFFF9F9F9)),
           ),
           Padding(
-            padding: EdgeInsets.all(0.0),
+            padding: EdgeInsets.symmetric(horizontal: 0.0), // Padding around main content except Header
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CommonHeader.Header(dynamicText: "Memo", grade : widget.task.grade), // Use the Header from the common library
+                CommonHeader.Header(dynamicText: "Memo", grade: widget.task.grade),
+                SizedBox(height: 20),
                 Center(
                   child: Text(
                     'Task: ${widget.task.title}',
@@ -53,40 +49,45 @@ class _MemoPageState extends State<MemoPage> {
                       fontSize: 18,
                       color: Colors.indigo,
                       fontFamily: 'Cereal',
-                      fontWeight: FontWeight.w700
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
-                SizedBox(height: 30),
-                Center(
-                  child: Container(
-                    width: 350, // Adjust the width as needed
-                    child: TextField(
-                      controller: memoController,
-                      onChanged: (value) {
-                        // Save memo to Firestore whenever the text changes
-                        saveMemoToFirestore(value);
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'Write your memo here...',
-                        border: OutlineInputBorder(),
-                        hintStyle: TextStyle(
+                SizedBox(height: 20),
+                Expanded( // Allows the memo container to take more space
+                  child: Center(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      child: TextField(
+                        controller: memoController,
+                        onChanged: (value) {
+                          saveMemoToFirestore(value);
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Write your memo here...',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+                          hintStyle: TextStyle(
+                            fontSize: 16,
+                            color: Colors.indigo[300],
+                            fontFamily: 'Cereal',
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                        style: TextStyle(
                           fontSize: 16,
                           color: Colors.indigo,
                           fontFamily: 'Cereal',
-                          fontWeight: FontWeight.w300
                         ),
+                        maxLines: null,
+                        minLines: 10, // Increased the minimum lines to create a larger text area
                       ),
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.indigo,
-                        fontFamily: 'Cereal',
-                      ),
-                      maxLines: null,
                     ),
                   ),
                 ),
-                SizedBox(height: 30),
+                SizedBox(height: 20),
                 if (widget.task.documents.isNotEmpty)
                   Center(
                     child: ElevatedButton(
@@ -100,9 +101,16 @@ class _MemoPageState extends State<MemoPage> {
                           ),
                         );
                       },
-                      child: Text('Help Needed?'),
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      child: Text('Help Needed?', style: TextStyle(fontFamily: 'Cereal')),
                     ),
                   ),
+                SizedBox(height: 20),
               ],
             ),
           ),
@@ -143,14 +151,12 @@ class _MemoPageState extends State<MemoPage> {
         print('Memo saved to Firestore successfully');
       }).catchError((error) {
         print('Failed to save memo to Firestore: $error');
-        // Handle the error as needed
       });
     }
   }
 
   @override
   void dispose() {
-    // Dispose the memo controller to prevent memory leaks
     memoController.dispose();
     super.dispose();
   }

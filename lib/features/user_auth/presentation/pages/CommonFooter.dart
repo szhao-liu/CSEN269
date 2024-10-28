@@ -27,7 +27,7 @@ class CommonFooter extends StatelessWidget {
             },
             child: Text(
               'Get Help',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.white, fontFamily: 'Cereal'),
             ),
           ),
         ],

@@ -39,37 +39,24 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(
-            'assets/backgg.jpg', // Replace with your background image asset path
-            fit: BoxFit.cover,
+          Positioned.fill(
+            child: Container(color: Color(0xFFF9F9F9)),
           ),
           SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(height: 20),
-                Center(
-                  child: Text(
-                    'Choose Your Grade',
-                    style: TextStyle(
-                      color: Colors.indigo,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'MadimiOne',
-                    ),
-                  ),
-                ),
                 SizedBox(height: 30),
                 // Use a loop to generate OptionCard for each grade
                 for (Grade grade in Grade.values)
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20.0),
+                    padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
                     child: OptionCard(
                       title: grade.grade,
                       color: grade.fixedColor,
                       onTap: () {
                         addGrade(userUUID, grade.grade).then((_) {
-                          navigateToTasks(context, grade, grade.fixedColor);
+                          navigateToTasks(context, grade);
                         });
                       },
                     ),
@@ -108,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void navigateToTasks(BuildContext context, Grade grade, Color color) {
+  void navigateToTasks(BuildContext context, Grade grade) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -150,7 +137,7 @@ class OptionCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20,
                 color: Colors.deepPurple[400],
-                fontFamily: 'MadimiOne',
+                fontFamily: 'Cereal',
               ),
             ),
           ),

@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../global/common/document_list.dart';
 import 'Tasks.dart';
 import 'dart:async';
-import 'package:college_finder/global/common/Header.dart' as CommonHeader; // Import the common Header file
+import 'package:college_finder/global/common/Header.dart' as CommonHeader;
 
 class ListPage extends StatefulWidget {
   final Task task;
@@ -67,7 +67,7 @@ class _ListPage extends State<ListPage> {
   void initState() {
     super.initState();
     userUUID = FirebaseAuth.instance.currentUser?.uid;
-    loadMeetingNotes();
+    loadMeetingNotes(); // Start real-time listener
   }
 
   @override
@@ -85,10 +85,7 @@ class _ListPage extends State<ListPage> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              'assets/backgg.jpg',
-              fit: BoxFit.cover,
-            ),
+            child: Container(color: Color(0xFFF9F9F9)),
           ),
           Column(
             children: [
@@ -112,7 +109,7 @@ class _ListPage extends State<ListPage> {
                             'Enter the accomplished tasks',
                             style: TextStyle(
                               fontSize: 20,
-                              fontFamily: 'MadimiOne',
+                              fontFamily: 'Cereal',
                               color: Colors.indigo,
                             ),
                           ),
@@ -125,6 +122,7 @@ class _ListPage extends State<ListPage> {
                                 style: TextStyle(
                                   color: Colors.indigo,
                                   fontWeight: FontWeight.bold,
+                                  fontFamily: 'Cereal',
                                 ),
                               ),
                             )
@@ -179,8 +177,12 @@ class _ListPage extends State<ListPage> {
   }
 
   Widget _buildMeetingRecordRow(MeetingRecord record) {
-    _notesControllers[record.docId] =
-        TextEditingController(text: record.discussionNotes);
+    // Ensure the controller for "discussionNotes" is initialized and updated
+    if (_notesControllers[record.docId] == null) {
+      _notesControllers[record.docId] = TextEditingController(text: record.discussionNotes);
+    } else {
+      _notesControllers[record.docId]?.text = record.discussionNotes;
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -199,7 +201,10 @@ class _ListPage extends State<ListPage> {
                   Column(
                     children: record.entries.map((entry) {
                       return CheckboxListTile(
-                        title: Text(entry.text),
+                        title: Text(
+                          entry.text,
+                          style: TextStyle(fontFamily: 'Cereal'),
+                        ),
                         value: entry.isChecked,
                         onChanged: (bool? value) {
                           setState(() {
@@ -219,7 +224,7 @@ class _ListPage extends State<ListPage> {
                     key: ValueKey('${record.docId}-entry'),
                     decoration: InputDecoration(
                       hintText: 'Enter the completed task...',
-                      hintStyle: TextStyle(color: Colors.grey),
+                      hintStyle: TextStyle(color: Colors.grey, fontFamily: 'Cereal'),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.indigo),
                       ),
@@ -230,6 +235,7 @@ class _ListPage extends State<ListPage> {
                     style: TextStyle(
                       color: Colors.indigo,
                       fontWeight: FontWeight.bold,
+                      fontFamily: 'Cereal',
                     ),
                     onFieldSubmitted: (value) {
                       addNewEntry(record, value);
@@ -267,19 +273,30 @@ class _ListPage extends State<ListPage> {
           .listen((snapshot) {
         setState(() {
           meetingRecords = snapshot.docs.map((doc) {
-            List<MeetingEntry> entries = [];
-            if (doc['entries'] != null) {
-              entries = (doc['entries'] as List)
-                  .map((e) => MeetingEntry.fromMap(e))
-                  .toList();
-            }
+            List<MeetingEntry> entries = (doc['entries'] as List?)
+                ?.map((e) => MeetingEntry.fromMap(e))
+                .toList() ?? [];
+
             return MeetingRecord(
               docId: doc.id,
               discussionNotes: doc['discussionNotes'] ?? '',
               entries: entries,
             );
           }).toList();
+
+          // Update TextEditingController for each meeting record
+          for (var record in meetingRecords) {
+            if (_notesControllers[record.docId] == null) {
+              _notesControllers[record.docId] = TextEditingController(text: record.discussionNotes);
+            } else {
+              _notesControllers[record.docId]?.text = record.discussionNotes;
+            }
+          }
+
+          print("Meeting records retrieved: ${meetingRecords.length} records found");
         });
+      }, onError: (error) {
+        print("Error retrieving meeting records: $error");
       });
     }
   }
@@ -299,7 +316,11 @@ class _ListPage extends State<ListPage> {
       entries: [],
     );
 
-    newRecordRef.set(newMeetingRecord.toMap());
+    newRecordRef.set(newMeetingRecord.toMap()).then((_) {
+      print("New meeting record added with ID: ${newRecordRef.id}");
+    }).catchError((error) {
+      print("Failed to add new meeting record: $error");
+    });
   }
 
   void addNewEntry(MeetingRecord record, String entryText) {
@@ -318,6 +339,10 @@ class _ListPage extends State<ListPage> {
 
     meetingRecordRef.update({
       'entries': record.entries.map((e) => e.toMap()).toList(),
+    }).then((_) {
+      print("New entry added to meeting record with ID: ${record.docId}");
+    }).catchError((error) {
+      print("Failed to add new entry: $error");
     });
   }
 
@@ -333,7 +358,11 @@ class _ListPage extends State<ListPage> {
     var updateData = <String, dynamic>{};
     if (discussionNotes != null) updateData['discussionNotes'] = discussionNotes;
 
-    meetingRecordRef.update(updateData);
+    meetingRecordRef.update(updateData).then((_) {
+      print("Meeting record updated for ID: ${record.docId}");
+    }).catchError((error) {
+      print("Failed to update meeting record: $error");
+    });
 
     setState(() {
       if (discussionNotes != null) record.discussionNotes = discussionNotes;
@@ -348,7 +377,13 @@ class _ListPage extends State<ListPage> {
         .doc(widget.task.id)
         .collection('meetingRecords')
         .doc(record.docId)
-        .delete();
+        .delete()
+        .then((_) {
+      print("Meeting record removed with ID: ${record.docId}");
+    })
+        .catchError((error) {
+      print("Failed to remove meeting record: $error");
+    });
 
     setState(() {
       meetingRecords.remove(record);

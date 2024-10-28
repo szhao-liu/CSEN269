@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../global/common/document_list.dart';
 import 'Tasks.dart';
 import 'dart:async';
-import 'package:college_finder/global/common/Header.dart' as CommonHeader; // Import the common Header file
+import 'package:college_finder/global/common/Header.dart' as CommonHeader;
 
 class MeetingRecordPage extends StatefulWidget {
   final Task task;
@@ -68,10 +68,7 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              'assets/backgg.jpg',
-              fit: BoxFit.cover,
-            ),
+            child: Container(color: Color(0xFFF9F9F9)),
           ),
           Column(
             children: [
@@ -142,7 +139,7 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Card(
-          key: ValueKey(record.docId), // Ensure unique key for each record
+          key: ValueKey(record.docId),
           color: Colors.white,
           margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
           elevation: 4.0,
@@ -157,7 +154,7 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
                 SizedBox(height: 8.0),
                 TextFormField(
                   controller: _dateControllers[record.docId],
-                  key: ValueKey('${record.docId}-date'), // Unique key for each field
+                  key: ValueKey('${record.docId}-date'),
                   decoration: InputDecoration(
                     labelText: 'Date',
                     labelStyle: TextStyle(color: Colors.indigo),
@@ -181,7 +178,7 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
                 SizedBox(height: 8.0),
                 TextFormField(
                   controller: _timeControllers[record.docId],
-                  key: ValueKey('${record.docId}-time'), // Unique key for each field
+                  key: ValueKey('${record.docId}-time'),
                   decoration: InputDecoration(
                     labelText: 'Time',
                     labelStyle: TextStyle(color: Colors.indigo),
@@ -204,7 +201,7 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
                 SizedBox(height: 8.0),
                 TextFormField(
                   controller: _notesControllers[record.docId],
-                  key: ValueKey('${record.docId}-notes'), // Unique key for each field
+                  key: ValueKey('${record.docId}-notes'),
                   decoration: InputDecoration(
                     labelText: 'Add meeting notes...',
                     labelStyle: TextStyle(color: Colors.indigo),
@@ -235,23 +232,6 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
                     color: Colors.red,
                   ),
                 ),
-                SizedBox(height: 30),
-                if (widget.task.documents.isNotEmpty)
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DocumentListPage(
-                              documents: widget.task.documents,
-                            ),
-                          ),
-                        );
-                      },
-                      child: Text('Help Needed?'),
-                    ),
-                  ),
               ],
             ),
           ),
@@ -268,7 +248,7 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
       lastDate: DateTime(2101),
     );
     if (pickedDate != null) {
-      String formattedDate = "${pickedDate.toLocal()}".split(' ')[0]; // Format date as YYYY-MM-DD
+      String formattedDate = "${pickedDate.toLocal()}".split(' ')[0];
       setState(() {
         _dateControllers[record.docId]?.text = formattedDate;
       });
@@ -309,6 +289,7 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
             discussionNotes: doc['discussionNotes'] ?? '',
           ))
               .toList();
+          meetingRecords.sort((a, b) => a.docId.compareTo(b.docId));
         });
       });
     }
@@ -330,7 +311,9 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
       discussionNotes: '',
     );
 
-    newRecordRef.set(newMeetingRecord.toMap());
+    newRecordRef.set(newMeetingRecord.toMap()).catchError((error) {
+      print("Failed to add meeting record: $error");
+    });
   }
 
   void updateMeetingRecord(MeetingRecord record,
@@ -348,7 +331,9 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
     if (time != null) updateData['time'] = time;
     if (discussionNotes != null) updateData['discussionNotes'] = discussionNotes;
 
-    meetingRecordRef.update(updateData);
+    meetingRecordRef.update(updateData).catchError((error) {
+      print("Failed to update meeting record: $error");
+    });
   }
 
   void removeMeetingRecord(MeetingRecord record) {
@@ -359,6 +344,9 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
         .doc(widget.task.id)
         .collection('meetingRecords')
         .doc(record.docId)
-        .delete();
+        .delete()
+        .catchError((error) {
+      print("Failed to delete meeting record: $error");
+    });
   }
 }

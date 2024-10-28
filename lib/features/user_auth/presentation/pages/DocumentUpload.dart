@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:file_picker/file_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:webview_flutter/webview_flutter.dart'; // Import webview_flutter
+import 'package:webview_flutter/webview_flutter.dart';
 import '../../../../global/common/document_list.dart';
-import 'Tasks.dart'; // Import the Task class from your custom package
-import 'package:college_finder/global/common/Header.dart' as CommonHeader; // Import the common Header file
+import 'Tasks.dart';
+import 'package:college_finder/global/common/Header.dart' as CommonHeader;
 
 class DocumentUploadPage extends StatefulWidget {
   final Task task;
-  final String? userUUID = FirebaseAuth.instance.currentUser?.uid; // Add the user UUID
+  final String? userUUID = FirebaseAuth.instance.currentUser?.uid;
 
   DocumentUploadPage({Key? key, required this.task}) : super(key: key);
 
@@ -48,14 +48,12 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
   }
 
   Future<void> uploadResume() async {
-    // Use FilePicker to select a file
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if (result != null) {
       File file = File(result.files.single.path!);
       String fileName = result.files.single.name;
 
-      // Upload the file to Firebase Storage
       try {
         await firebase_storage.FirebaseStorage.instance
             .ref('resumes/${widget.userUUID}/$fileName')
@@ -86,38 +84,119 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              'assets/backgg.jpg', // Make sure the image is located in the assets folder and listed in pubspec.yaml
-              fit: BoxFit.cover,
-            ),
+            child: Container(color: Color(0xFFF9F9F9)),
           ),
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                CommonHeader.Header(dynamicText: "Document Upload", grade: widget.task.grade),
-                SizedBox(height: 30),
-                ElevatedButton(
-                  onPressed: uploadResume,
-                  child: Text('Upload Document'),
-                ),
-                SizedBox(height: 20),
-                if (uploadedResumeUrls.isNotEmpty)
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: uploadedResumeUrls.length,
-                    itemBuilder: (context, index) {
-                      String resumeUrl = uploadedResumeUrls[index];
-                      String resumeName = Uri.decodeFull(resumeUrl.split('%2F').last.split('?').first.replaceAll('%20', ' '));
-                      return ListTile(
-                        title: Text(resumeName),
-                        onTap: () => _openDocument(context, resumeUrl),
-                      );
-                    },
+          Column(
+            children: [
+              CommonHeader.Header(dynamicText: "Document Upload", grade: widget.task.grade),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 40),
+                        Center(
+                          child: Column(
+                            children: [
+                              // Drop Zone
+                              Container(
+                                padding: EdgeInsets.all(16.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: Colors.grey.shade400, width: 2),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Icon(Icons.upload_file, size: 40, color: Colors.indigo),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'Drag & Drop your resume here or click to upload',
+                                      style: TextStyle(
+                                        color: Colors.indigo,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(height: 12),
+                                    ElevatedButton(
+                                      onPressed: uploadResume,
+                                      child: Text('Upload Document'),
+                                      style: ElevatedButton.styleFrom(
+                                        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                                        backgroundColor: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              SizedBox(height: 30),
+
+                              // Uploaded Documents
+                              if (uploadedResumeUrls.isNotEmpty)
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Uploaded Documents',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.indigo,
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: uploadedResumeUrls.length,
+                                      itemBuilder: (context, index) {
+                                        String resumeUrl = uploadedResumeUrls[index];
+                                        String resumeName = Uri.decodeFull(
+                                            resumeUrl.split('%2F').last.split('?').first.replaceAll('%20', ' '));
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                          child: Card(
+                                            elevation: 2,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                            child: ListTile(
+                                              contentPadding: EdgeInsets.all(8.0),
+                                              title: Text(
+                                                resumeName,
+                                                style: TextStyle(
+                                                    color: Colors.indigo, fontWeight: FontWeight.w500),
+                                              ),
+                                              trailing: Icon(Icons.open_in_new, color: Colors.indigo),
+                                              onTap: () => _openDocument(context, resumeUrl),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                SizedBox(height: 30),
-                if (widget.task.documents.isNotEmpty)
-                  Center(
+                ),
+              ),
+              SizedBox(height: 20),
+              if (widget.task.documents.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: Center(
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.push(
@@ -130,10 +209,17 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
                         );
                       },
                       child: Text('Help Needed?'),
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
                     ),
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
         ],
       ),
@@ -141,7 +227,6 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
   }
 
   Future<void> _openDocument(BuildContext context, String downloadUrl) async {
-    // Open the selected document using the download URL inside a WebView
     if (Platform.isIOS || Platform.isAndroid) {
       Navigator.push(
         context,
@@ -150,8 +235,6 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
         ),
       );
     } else {
-      // Provide an alternative solution for macOS
-      // For example, you can launch the URL in the default browser
       await launchURL(downloadUrl);
     }
   }
