@@ -52,7 +52,8 @@ class _MemoPageState extends State<MemoPage> {
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.indigo,
-                      fontFamily: 'MadimiOne',
+                      fontFamily: 'Cereal',
+                      fontWeight: FontWeight.w700
                     ),
                   ),
                 ),
@@ -72,13 +73,14 @@ class _MemoPageState extends State<MemoPage> {
                         hintStyle: TextStyle(
                           fontSize: 16,
                           color: Colors.indigo,
-                          fontFamily: 'MadimiOne',
+                          fontFamily: 'Cereal',
+                          fontWeight: FontWeight.w300
                         ),
                       ),
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.indigo,
-                        fontFamily: 'MadimiOne',
+                        fontFamily: 'Cereal',
                       ),
                       maxLines: null,
                     ),

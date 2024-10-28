@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:36597009887:android:e97af98db4a0597b53486a",
         "android_client_info": {
-          "package_name": "com.frugal.CollegeFinder"
+          "package_name": "com.example.myapp"
         }
       },
       "oauth_client": [

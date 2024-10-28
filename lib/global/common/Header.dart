@@ -45,35 +45,39 @@ class _HeaderState extends State<Header> {
       title: Text(
         widget.dynamicText,
         style: TextStyle(
-          fontFamily: 'MadimiOne',
-          color: Colors.white,
+          fontFamily: 'Cereal',
+          fontWeight: FontWeight.w900,
+          color: Colors.black,
         ),
       ),
       actions: [
         if (widget.onGradeChanged != null)
           DropdownButton<Grade>(
             value: selectedGrade,
-            dropdownColor: Colors.deepPurple[100],
-            style: TextStyle(fontFamily: 'MadimiOne',
-              color: Colors.white),
+            dropdownColor: Color(0xFFD9D9D9),
+            style: TextStyle(
+              fontFamily: 'Cereal',
+              fontWeight: FontWeight.w500,
+              color: Color(0xFF0560FB),
+            ),
             underline: SizedBox(),
-            icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+            icon: Icon(Icons.arrow_drop_down, color: Colors.black),
             items: Grade.values.map((Grade grade) {
               return DropdownMenuItem<Grade>(
-                value: grade,
+                value: grade, // Use the Grade enum directly as value
                 child: Row(
                   children: [
                     Container(
                       width: 16,
                       height: 16,
-                        decoration: BoxDecoration(
-                          color: grade.fixedColor, // Use the fixedColor associated with the grade
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2), // Add white border with width of 2
-                        ),
+                      decoration: BoxDecoration(
+                        color: getColorForGrade(grade), // Get color based on the grade
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 2), // Add white border
+                      ),
                     ),
-                    const SizedBox(width: 8),
-                    Text(grade.grade), // Display the grade name next to the color circle
+                    const SizedBox(width: 8), // Space between the color indicator and text
+                    Text(grade.grade.split(" ")[0]), // Display only the trimmed grade (9th, 10th, etc.)
                   ],
                 ),
               );
@@ -81,14 +85,14 @@ class _HeaderState extends State<Header> {
             onChanged: (Grade? newGrade) {
               if (newGrade != null) {
                 setState(() {
-                  selectedGrade = newGrade;
+                  selectedGrade = newGrade; // Update the selected grade
                 });
-                widget.onGradeChanged!(newGrade);
+                widget.onGradeChanged!(newGrade); // Call the callback with the new grade
               }
             },
           ),
       ],
-      backgroundColor: selectedGrade?.fixedColor ?? Colors.deepPurple,
+      backgroundColor: Colors.white,
       centerTitle: true,
     );
   }

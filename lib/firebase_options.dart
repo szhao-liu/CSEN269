@@ -42,40 +42,39 @@ class DefaultFirebaseOptions {
         );
     }
   }
-
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDlHIpB5cigryoPknfOXc4ZxSmeMy2XUkM',
+    apiKey: 'AIzaSyBwlXZjDodx4lvfLnak8Hp7aMJb25I9z_o',
     appId: '1:36597009887:web:ec70ce4c91ed441c53486a',
     messagingSenderId: '36597009887',
     projectId: 'college-finder-54f2c',
     authDomain: 'college-finder-54f2c.firebaseapp.com',
     storageBucket: 'college-finder-54f2c.appspot.com',
-    measurementId: 'G-5HMR6JQ6YV',
+    measurementId: 'G-5HMR6JQ6YV', // Retained from your original code if still applicable
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBwlXZjDodx4lvfLnak8Hp7aMJb25I9z_o',
-    appId: '1:36597009887:android:e97af98db4a0597b53486a',
+    appId: '1:36597009887:android:0fec54d9bc8e280453486a',
     messagingSenderId: '36597009887',
     projectId: 'college-finder-54f2c',
     storageBucket: 'college-finder-54f2c.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyA3k33Dg7GCpM4rTktKBPLdVc709rYx5qw',
-    appId: '1:36597009887:ios:5f301596657efff153486a',
+    apiKey: 'AIzaSyBwlXZjDodx4lvfLnak8Hp7aMJb25I9z_o',
+    appId: '1:36597009887:ios:5f301596657efff153486a', // Adjust if there's an updated appId for iOS
     messagingSenderId: '36597009887',
     projectId: 'college-finder-54f2c',
     storageBucket: 'college-finder-54f2c.appspot.com',
-    iosBundleId: 'com.example.myapp',
+    iosBundleId: 'com.frugal', // Updated from the google-services.json file
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyA3k33Dg7GCpM4rTktKBPLdVc709rYx5qw',
-    appId: '1:36597009887:ios:499333b7bd084be353486a',
+    apiKey: 'AIzaSyBwlXZjDodx4lvfLnak8Hp7aMJb25I9z_o',
+    appId: '1:36597009887:ios:499333b7bd084be353486a', // Retained from your original code if still applicable
     messagingSenderId: '36597009887',
     projectId: 'college-finder-54f2c',
     storageBucket: 'college-finder-54f2c.appspot.com',
-    iosBundleId: 'com.example.myapp.RunnerTests',
+    iosBundleId: 'com.frugal.RunnerTests', // Adjusted based on your app setup if necessary
   );
 }
