@@ -18,14 +18,17 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
 
   bool isSigningUp = false;
+  String? errorMessage; // Error message for password mismatch
 
   @override
   void dispose() {
     _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -43,8 +46,7 @@ class _SignUpPageState extends State<SignUpPage> {
           Center(
             child: Container(
               width: 350, // Adjust the width of the box as needed
-              height: 450, // Adjust the height of the box as needed
-
+              height: 500, // Increased height to fit error message
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.9), // Adjust the opacity and color as needed
                 borderRadius: BorderRadius.circular(20),
@@ -57,7 +59,12 @@ class _SignUpPageState extends State<SignUpPage> {
                   SizedBox(height: 10),
                   Text(
                     "REGISTER",
-                    style: TextStyle(color: Colors.blue, fontSize: 35, fontWeight: FontWeight.bold,fontFamily: 'MadimiOne',),
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 35,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Cereal',
+                    ),
                   ),
                   SizedBox(height: 30),
                   FormContainerWidget(
@@ -79,30 +86,38 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   SizedBox(height: 10),
                   FormContainerWidget(
-                    controller: _passwordController,
+                    controller: _confirmPasswordController,
                     hintText: "Confirm Password",
                     isPasswordField: true,
                   ),
-                  SizedBox(height: 30),
+                  if (errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        errorMessage!,
+                        style: TextStyle(color: Colors.red, fontSize: 14),
+                      ),
+                    ),
+                  SizedBox(height: 20),
                   GestureDetector(
-                    onTap: () {
-                      _signUp();
-                    },
+                    onTap: _signUp,
                     child: Container(
                       width: 400,
                       height: 45,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
                         gradient: LinearGradient(
-                          colors: [Colors.blue ?? Colors.transparent, Colors.cyanAccent[100] ?? Colors.transparent
+                          colors: [
+                            Colors.blue ?? Colors.transparent,
+                            Colors.cyanAccent[100] ?? Colors.transparent,
                           ],
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withOpacity(0.5), // You can adjust the color and opacity
+                            color: Colors.grey.withOpacity(0.5),
                             spreadRadius: 2,
                             blurRadius: 5,
-                            offset: Offset(0, 3), // Adjust the offset as needed
+                            offset: Offset(0, 3),
                           ),
                         ],
                       ),
@@ -111,7 +126,12 @@ class _SignUpPageState extends State<SignUpPage> {
                             ? CircularProgressIndicator(color: Colors.white)
                             : Text(
                           "SIGN UP",
-                          style: TextStyle(fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold,fontFamily: 'MadimiOne',),
+                          style: TextStyle(
+                            fontSize: 25,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Cereal',
+                          ),
                         ),
                       ),
                     ),
@@ -121,8 +141,11 @@ class _SignUpPageState extends State<SignUpPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text("Already have an account?",
-                          style: TextStyle(fontSize: 15,color: Colors.black,
-                            fontFamily: 'MadimiOne',)),
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.black,
+                            fontFamily: 'Cereal',
+                          )),
                       SizedBox(width: 5),
                       GestureDetector(
                         onTap: () {
@@ -134,7 +157,10 @@ class _SignUpPageState extends State<SignUpPage> {
                         },
                         child: Text(
                           "Login",
-                          style: TextStyle(color: Colors.blue,fontFamily: 'MadimiOne',),
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontFamily: 'Cereal',
+                          ),
                         ),
                       ),
                     ],
@@ -151,22 +177,33 @@ class _SignUpPageState extends State<SignUpPage> {
   void _signUp() async {
     setState(() {
       isSigningUp = true;
+      errorMessage = null; // Reset error message
     });
 
     String username = _usernameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
+    String confirmPassword = _confirmPasswordController.text;
+
+    if (password != confirmPassword) {
+      setState(() {
+        errorMessage = 'Passwords do not match';
+        isSigningUp = false;
+      });
+      return;
+    }
 
     User? user = await _auth.signUpWithEmailAndPassword(email, password, username);
 
     setState(() {
       isSigningUp = false;
     });
+
     if (user != null) {
-      showToast(message: "User is successfully created");
+      showToast(message: "User successfully created");
       Navigator.pushNamed(context, "/home");
     } else {
-      showToast(message: "Some error happened");
+      showToast(message: "An error occurred. Please try again.");
     }
   }
 }

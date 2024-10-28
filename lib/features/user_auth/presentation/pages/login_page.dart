@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_finder/global/common/grade.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,9 +8,7 @@ import '../widgets/form_container_widget.dart';
 import '../../../../global/common/toast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:college_finder/features/user_auth/presentation/pages/Tasks.dart';
-
 import '../../firebase_auth_implementation/firebase_auth_services.dart';
-
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -24,8 +21,9 @@ class _LoginPageState extends State<LoginPage> {
   bool _isSigning = false;
   final FirebaseAuthService _auth = FirebaseAuthService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
@@ -59,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                     color: Colors.white,
                     fontSize: 60,
                     fontWeight: FontWeight.bold,
-                    fontFamily: 'MadimiOne',
+                    fontFamily: 'Cereal',
                   ),
                 ),
                 SizedBox(height: 50),
@@ -67,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
                   alignment: Alignment.center,
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                    width: 400, // Set your desired width
+                    width: 400,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
@@ -81,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
                             color: Colors.blue,
                             fontSize: 45,
                             fontWeight: FontWeight.bold,
-                            fontFamily: 'MadimiOne',
+                            fontFamily: 'Cereal',
                           ),
                         ),
                         SizedBox(height: 30),
@@ -95,12 +93,11 @@ class _LoginPageState extends State<LoginPage> {
                           controller: _passwordController,
                           hintText: "Password",
                           isPasswordField: true,
+                          onFieldSubmitted: (_) => _signIn(), // Login on Enter
                         ),
                         SizedBox(height: 30),
                         GestureDetector(
-                          onTap: () {
-                            _signIn();
-                          },
+                          onTap: _signIn,
                           child: Container(
                             width: double.infinity,
                             height: 45,
@@ -132,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                                   fontSize: 25,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: 'MadimiOne',
+                                  fontFamily: 'Cereal',
                                 ),
                               ),
                             ),
@@ -140,9 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         SizedBox(height: 20),
                         GestureDetector(
-                          onTap: () {
-                            _signInWithGoogle();
-                          },
+                          onTap: _signInWithGoogle,
                           child: Container(
                             width: double.infinity,
                             height: 45,
@@ -167,16 +162,14 @@ class _LoginPageState extends State<LoginPage> {
                                     height: 25,
                                     width: 25,
                                   ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
+                                  SizedBox(width: 10),
                                   Text(
                                     "Sign in with Google",
                                     style: TextStyle(
                                       fontSize: 15,
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
-                                      fontFamily: 'MadimiOne',
+                                      fontFamily: 'Cereal',
                                     ),
                                   ),
                                 ],
@@ -193,12 +186,10 @@ class _LoginPageState extends State<LoginPage> {
                               style: TextStyle(
                                 fontSize: 15,
                                 color: Colors.black,
-                                fontFamily: 'MadimiOne',
+                                fontFamily: 'Cereal',
                               ),
                             ),
-                            SizedBox(
-                              width: 5,
-                            ),
+                            SizedBox(width: 5),
                             GestureDetector(
                               onTap: () {
                                 Navigator.pushAndRemoveUntil(
@@ -214,7 +205,7 @@ class _LoginPageState extends State<LoginPage> {
                                 style: TextStyle(
                                   color: Colors.blue,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: 'MadimiOne',
+                                  fontFamily: 'Cereal',
                                 ),
                               ),
                             ),
@@ -237,8 +228,16 @@ class _LoginPageState extends State<LoginPage> {
       _isSigning = true;
     });
 
-    String email = _emailController.text;
-    String password = _passwordController.text;
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      showToast(message: "Email and password cannot be empty");
+      setState(() {
+        _isSigning = false;
+      });
+      return;
+    }
 
     User? user = await _auth.signInWithEmailAndPassword(email, password);
 
@@ -267,6 +266,7 @@ class _LoginPageState extends State<LoginPage> {
       showToast(message: "Some error occurred");
     }
   }
+
   void navigateToTasks(BuildContext context, Grade grade, Color color) {
     Navigator.push(
       context,
@@ -275,9 +275,8 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-  _signInWithGoogle() async {
-    final GoogleSignIn _googleSignIn = GoogleSignIn();
 
+  Future<void> _signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
 
@@ -290,11 +289,30 @@ class _LoginPageState extends State<LoginPage> {
           accessToken: googleSignInAuthentication.accessToken,
         );
 
-        await _firebaseAuth.signInWithCredential(credential);
-        Navigator.pushNamed(context, "/home");
+        UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
+        User? user = userCredential.user;
+
+        if (user != null) {
+          // Check if the user already exists in Firestore
+          DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .get();
+
+          if (!snapshot.exists) {
+            // Create a new user document if it doesn't exist
+            await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+              'email': user.email,
+              'name': user.displayName,
+              'grade': "", // Default grade as empty if not provided
+            });
+          }
+
+          Navigator.pushNamed(context, "/home");
+        }
       }
     } catch (e) {
-      showToast(message: "some error occurred $e");
+      showToast(message: "An error occurred: $e");
     }
   }
 }
