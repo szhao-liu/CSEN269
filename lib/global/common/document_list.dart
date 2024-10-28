@@ -1,8 +1,8 @@
-import 'dart:io' show File, Platform;
+import 'dart:io' show File;
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart'; // Import Syncfusion PDF Viewer
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
 
 class DocumentListPage extends StatefulWidget {
@@ -23,7 +23,7 @@ class _DocumentListPageState extends State<DocumentListPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DocumentWebView(downloadUrl: url),
+        builder: (context) => PdfViewerPage(pdfUrl: url),
       ),
     );
   }
@@ -61,10 +61,7 @@ class _DocumentListPageState extends State<DocumentListPage> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              'assets/backgg.jpg', // Ensure the image asset is correctly located
-              fit: BoxFit.cover,
-            ),
+            child: Container(color: Color(0xFFF9F9F9)),
           ),
           Column(
             children: [
@@ -103,10 +100,10 @@ class _DocumentListPageState extends State<DocumentListPage> {
   }
 }
 
-class DocumentWebView extends StatelessWidget {
-  final String downloadUrl;
+class PdfViewerPage extends StatelessWidget {
+  final String pdfUrl;
 
-  const DocumentWebView({Key? key, required this.downloadUrl}) : super(key: key);
+  const PdfViewerPage({Key? key, required this.pdfUrl}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -115,10 +112,7 @@ class DocumentWebView extends StatelessWidget {
         title: Text("Document Viewer"),
         backgroundColor: Colors.indigo,
       ),
-      body: WebView(
-        initialUrl: downloadUrl,
-        javascriptMode: JavascriptMode.unrestricted,
-      ),
+      body: SfPdfViewer.network(pdfUrl), // Use Syncfusion PDF Viewer for viewing PDFs
     );
   }
 }

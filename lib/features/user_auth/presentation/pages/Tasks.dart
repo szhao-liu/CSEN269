@@ -213,7 +213,7 @@ class _TasksPageState extends State<TasksPage> {
                       style: TextStyle(
                         fontSize: 20,
                         fontFamily: "Cereal",
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),

@@ -3,11 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:file_picker/file_picker.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart'; // Import Syncfusion PDF Viewer
 import '../../../../global/common/document_list.dart';
 import 'Tasks.dart';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
+import 'package:flutter/foundation.dart' show Uint8List, kIsWeb;
 
 class DocumentUploadPage extends StatefulWidget {
   final Task task;
@@ -47,24 +47,30 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
     }
   }
 
+
   Future<void> uploadResume() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if (result != null) {
-      File file = File(result.files.single.path!);
+      // File name
       String fileName = result.files.single.name;
 
       try {
-        await firebase_storage.FirebaseStorage.instance
-            .ref('resumes/${widget.userUUID}/$fileName')
-            .putFile(file);
-        String downloadUrl = await firebase_storage.FirebaseStorage.instance
-            .ref('resumes/${widget.userUUID}/$fileName')
-            .getDownloadURL();
-
-        setState(() {
-          uploadedResumeUrls.add(downloadUrl);
-        });
+        if (kIsWeb) {
+          // For Web
+          Uint8List? fileBytes = result.files.single.bytes;
+          if (fileBytes != null) {
+            await firebase_storage.FirebaseStorage.instance
+                .ref('resumes/$fileName')
+                .putData(fileBytes);
+          }
+        } else {
+          // For Mobile platforms (iOS/Android)
+          File file = File(result.files.single.path!);
+          await firebase_storage.FirebaseStorage.instance
+              .ref('resumes/$fileName')
+              .putFile(file);
+        }
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Resume uploaded successfully')),
@@ -176,7 +182,12 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
                                                     color: Colors.indigo, fontWeight: FontWeight.w500),
                                               ),
                                               trailing: Icon(Icons.open_in_new, color: Colors.indigo),
-                                              onTap: () => _openDocument(context, resumeUrl),
+                                              onTap: () => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => PdfViewerPage(pdfUrl: resumeUrl),
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         );
@@ -225,33 +236,12 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
       ),
     );
   }
-
-  Future<void> _openDocument(BuildContext context, String downloadUrl) async {
-    if (Platform.isIOS || Platform.isAndroid) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DocumentWebView(downloadUrl: downloadUrl),
-        ),
-      );
-    } else {
-      await launchURL(downloadUrl);
-    }
-  }
-
-  Future<void> launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
 }
 
-class DocumentWebView extends StatelessWidget {
-  final String downloadUrl;
+class PdfViewerPage extends StatelessWidget {
+  final String pdfUrl;
 
-  const DocumentWebView({Key? key, required this.downloadUrl}) : super(key: key);
+  const PdfViewerPage({Key? key, required this.pdfUrl}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -260,10 +250,7 @@ class DocumentWebView extends StatelessWidget {
         title: Text("Document Viewer"),
         backgroundColor: Colors.indigo,
       ),
-      body: WebView(
-        initialUrl: downloadUrl,
-        javascriptMode: JavascriptMode.unrestricted,
-      ),
+      body: SfPdfViewer.network(pdfUrl), // Display PDF using Syncfusion PDF Viewer
     );
   }
 }

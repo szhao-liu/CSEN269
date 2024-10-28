@@ -58,7 +58,7 @@ class _HeaderState extends State<Header> {
             style: TextStyle(
               fontFamily: 'Cereal',
               fontWeight: FontWeight.w500,
-              color: Color(0xFF0560FB),
+              color: Colors.black,
             ),
             underline: SizedBox(),
             icon: Icon(Icons.arrow_drop_down, color: Colors.black),
@@ -92,7 +92,7 @@ class _HeaderState extends State<Header> {
             },
           ),
       ],
-      backgroundColor: Colors.white,
+      backgroundColor: selectedGrade == null ? Colors.blueAccent : selectedGrade?.fixedColor,
       centerTitle: true,
     );
   }
