@@ -9,6 +9,7 @@ import 'package:college_finder/features/user_auth/presentation/pages/MeetingReco
 import 'package:college_finder/features/user_auth/presentation/pages/Video.dart';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
 import 'package:college_finder/global/common/page_type.dart';
+import '../../../../global/common/chat_window.dart';
 import '../../../../global/common/grade.dart';
 import 'Memo.dart';
 
@@ -276,6 +277,27 @@ class _TasksPageState extends State<TasksPage> {
               ),
             ),
           ],
+        ),
+      ),
+      floatingActionButton: Align(
+        alignment: Alignment.bottomRight,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChatWindow(
+                    userUUID: FirebaseAuth.instance.currentUser?.uid,
+                    grade: widget.grade,
+                  ),
+                ),
+              );
+            },
+            child: Icon(Icons.chat_rounded),
+            backgroundColor: Color(0xFF0560FB),
+          ),
         ),
       ),
     );

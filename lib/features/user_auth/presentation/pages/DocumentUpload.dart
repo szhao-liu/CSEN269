@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:file_picker/file_picker.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart'; // Import Syncfusion PDF Viewer
+import '../../../../global/common/chat_window.dart';
 import '../../../../global/common/document_list.dart';
 import 'Tasks.dart';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
@@ -233,6 +234,21 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
             ],
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChatWindow(
+                userUUID: widget.userUUID,
+                grade: widget.task.grade,
+              ),
+            ),
+          );
+        },
+        child: Icon(Icons.chat_rounded),
+        backgroundColor: Color(0xFF0560FB),
       ),
     );
   }

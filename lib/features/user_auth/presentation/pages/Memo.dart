@@ -2,6 +2,7 @@ import 'package:college_finder/global/common/grade.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../../global/common/chat_window.dart';
 import '../../../../global/common/document_list.dart';
 import 'Tasks.dart';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
@@ -29,17 +30,18 @@ class _MemoPageState extends State<MemoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar:
+          CommonHeader.Header(dynamicText: "Memo", grade: widget.task.grade),
       body: Stack(
         children: [
           Positioned.fill(
             child: Container(color: Color(0xFFF9F9F9)),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 0.0), // Padding around main content except Header
+            padding: EdgeInsets.symmetric(horizontal: 0.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CommonHeader.Header(dynamicText: "Memo", grade: widget.task.grade),
                 SizedBox(height: 20),
                 Center(
                   child: Text(
@@ -54,7 +56,7 @@ class _MemoPageState extends State<MemoPage> {
                   ),
                 ),
                 SizedBox(height: 20),
-                Expanded( // Allows the memo container to take more space
+                Expanded(
                   child: Center(
                     child: Container(
                       width: MediaQuery.of(context).size.width * 0.9,
@@ -68,7 +70,8 @@ class _MemoPageState extends State<MemoPage> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 20.0),
                           hintStyle: TextStyle(
                             fontSize: 16,
                             color: Colors.indigo[300],
@@ -82,7 +85,7 @@ class _MemoPageState extends State<MemoPage> {
                           fontFamily: 'Cereal',
                         ),
                         maxLines: null,
-                        minLines: 10, // Increased the minimum lines to create a larger text area
+                        minLines: 10,
                       ),
                     ),
                   ),
@@ -102,12 +105,14 @@ class _MemoPageState extends State<MemoPage> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 24.0, vertical: 12.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                       ),
-                      child: Text('Help Needed?', style: TextStyle(fontFamily: 'Cereal')),
+                      child: Text('Help Needed?',
+                          style: TextStyle(fontFamily: 'Cereal')),
                     ),
                   ),
                 SizedBox(height: 20),
@@ -115,6 +120,21 @@ class _MemoPageState extends State<MemoPage> {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChatWindow(
+                userUUID: userUUID,
+                grade: widget.task.grade,
+              ),
+            ),
+          );
+        },
+        child: Icon(Icons.chat_rounded),
+        backgroundColor: Color(0xFF0560FB),
       ),
     );
   }
@@ -146,8 +166,7 @@ class _MemoPageState extends State<MemoPage> {
           .doc(userUUID)
           .collection('tasks')
           .doc(widget.task.id)
-          .set({'memo': memo}, SetOptions(merge: true))
-          .then((value) {
+          .set({'memo': memo}, SetOptions(merge: true)).then((value) {
         print('Memo saved to Firestore successfully');
       }).catchError((error) {
         print('Failed to save memo to Firestore: $error');

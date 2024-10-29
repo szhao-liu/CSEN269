@@ -1,9 +1,12 @@
 import 'dart:io' show File;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart'; // Import Syncfusion PDF Viewer
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
+
+import 'chat_window.dart';
 
 class DocumentListPage extends StatefulWidget {
   final List<String> documents;
@@ -95,6 +98,20 @@ class _DocumentListPageState extends State<DocumentListPage> {
             ],
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChatWindow(
+                userUUID: FirebaseAuth.instance.currentUser?.uid
+              ),
+            ),
+          );
+        },
+        child: Icon(Icons.chat_rounded),
+        backgroundColor: Color(0xFF0560FB),
       ),
     );
   }

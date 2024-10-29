@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../../global/common/chat_window.dart';
 import '../../../../global/common/document_list.dart';
 import 'Tasks.dart';
 import 'dart:async';
@@ -172,6 +173,21 @@ class _ListPage extends State<ListPage> {
             ],
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChatWindow(
+                userUUID: userUUID,
+                grade: widget.task.grade,
+              ),
+            ),
+          );
+        },
+        child: Icon(Icons.chat_rounded),
+        backgroundColor: Color(0xFF0560FB),
       ),
     );
   }

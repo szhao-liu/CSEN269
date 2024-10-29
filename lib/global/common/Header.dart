@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../features/user_auth/presentation/pages/Student_choose_grade.dart';
 import 'grade.dart';
 
 class Header extends StatefulWidget implements PreferredSizeWidget {
@@ -52,7 +53,7 @@ class _HeaderState extends State<Header> {
       ),
       actions: [
         if (widget.onGradeChanged != null)
-          DropdownButton<Grade>(
+          DropdownButton<dynamic>(
             value: selectedGrade,
             dropdownColor: Color(0xFFD9D9D9),
             style: TextStyle(
@@ -62,32 +63,62 @@ class _HeaderState extends State<Header> {
             ),
             underline: SizedBox(),
             icon: Icon(Icons.arrow_drop_down, color: Colors.black),
-            items: Grade.values.map((Grade grade) {
-              return DropdownMenuItem<Grade>(
-                value: grade, // Use the Grade enum directly as value
+            items: [
+              DropdownMenuItem<dynamic>(
+                value: null,
                 child: Row(
                   children: [
-                    Container(
-                      width: 16,
-                      height: 16,
-                      decoration: BoxDecoration(
-                        color: getColorForGrade(grade), // Get color based on the grade
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2), // Add white border
-                      ),
-                    ),
-                    const SizedBox(width: 8), // Space between the color indicator and text
-                    Text(grade.grade.split(" ")[0]), // Display only the trimmed grade (9th, 10th, etc.)
+                    // Display small colored circles representing each grade
+                    ...Grade.values.map((Grade grade) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                        child: Container(
+                          width: 16,
+                          height: 16,
+                          decoration: BoxDecoration(
+                            color: getColorForGrade(grade),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    const SizedBox(width: 8),
                   ],
                 ),
-              );
-            }).toList(),
-            onChanged: (Grade? newGrade) {
-              if (newGrade != null) {
+              ),
+              ...Grade.values.map((Grade grade) {
+                return DropdownMenuItem<Grade>(
+                  value: grade,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 16,
+                        height: 16,
+                        decoration: BoxDecoration(
+                          color: getColorForGrade(grade),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(grade.grade.split(" ")[0]),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ],
+            onChanged: (dynamic newGrade) {
+              if (newGrade == null) {
+                // Navigate to the StudentChooseGrade page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => StudentChooseGrade()),
+                );
+              } else if (newGrade is Grade) {
                 setState(() {
-                  selectedGrade = newGrade; // Update the selected grade
+                  selectedGrade = newGrade;
                 });
-                widget.onGradeChanged!(newGrade); // Call the callback with the new grade
+                widget.onGradeChanged!(newGrade);
               }
             },
           ),
