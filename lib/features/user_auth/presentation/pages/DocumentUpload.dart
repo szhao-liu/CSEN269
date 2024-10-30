@@ -62,14 +62,14 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
           Uint8List? fileBytes = result.files.single.bytes;
           if (fileBytes != null) {
             await firebase_storage.FirebaseStorage.instance
-                .ref('resumes/$fileName')
+                .ref('resumes/${widget.userUUID}/$fileName')
                 .putData(fileBytes);
           }
         } else {
           // For Mobile platforms (iOS/Android)
           File file = File(result.files.single.path!);
           await firebase_storage.FirebaseStorage.instance
-              .ref('resumes/$fileName')
+              .ref('resumes/${widget.userUUID}/$fileName')
               .putFile(file);
         }
 

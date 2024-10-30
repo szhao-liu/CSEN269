@@ -1,6 +1,6 @@
-import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
 
@@ -161,38 +161,13 @@ class _ChatWindowState extends State<ChatWindow> {
 
 Future<String> sendQueryToGeminiAPI(String query) async {
   String apiKey = 'AIzaSyCsa9_aQLJy08PzBnrgy42yVM7vmhXr5ok';
-  Uri url = Uri.parse(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=$apiKey');
+  final model = GenerativeModel(
+    model: 'gemini-1.5-flash-latest',
+    apiKey: apiKey,
+  );
 
-  Map<String, String> headers = {
-    'Content-Type': 'application/json',
-  };
-
-  Map<String, dynamic> body = {
-    'contents': [
-      {
-        'parts': [
-          {'text': query}
-        ]
-      }
-    ]
-  };
-
-  http.Response response = await http.post(url, headers: headers, body: jsonEncode(body));
-
-  if (response.statusCode == 200) {
-    Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-    try {
-      String aiResponse = jsonResponse['candidates'][0]['content']['parts'][0]['text'];
-      return aiResponse;
-    } catch (e) {
-      print('Error parsing response: $e');
-      throw Exception('Unexpected response format');
-    }
-  } else {
-    print('Error ${response.statusCode}: ${response.body}');
-    throw Exception('Failed to fetch data: ${response.statusCode}');
-  }
+  final response = await model.generateContent([Content.text(query)]);
+  return response.text.toString();
 }
 
 class Message {
