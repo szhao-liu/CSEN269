@@ -69,7 +69,7 @@ class _HeaderState extends State<Header> {
                 child: Row(
                   children: [
                     // Display small colored circles representing each grade
-                    ...Grade.values.map((Grade grade) {
+                    ...Grade.values.take(2).map((Grade grade) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 2.0),
                         child: Container(
@@ -82,7 +82,7 @@ class _HeaderState extends State<Header> {
                         ),
                       );
                     }).toList(),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 1),
                   ],
                 ),
               ),

@@ -1,16 +1,86 @@
-# myapp
+# 🎓 CollegeFinder App
 
-A new Flutter project.
+CollegeFinder is a Flutter app that helps students and aspiring applicants find the best colleges suited to their academic interests, budget, and location preferences. With a user-friendly interface and comprehensive filters, CollegeFinder simplifies the college search process by delivering relevant information and recommendations at the user's fingertips.
 
-## Getting Started
+## 🚀 Features
 
-This project is a starting point for a Flutter application.
+- **Search Colleges**: Find colleges by name, location, or specific criteria.
+- **Filter Options**: Filter results based on factors like ranking, tuition cost, location, program, and more.
+- **College Details**: View detailed information for each college, including programs offered, tuition fees, admission requirements, and campus facilities.
+- **Favorites**: Save favorite colleges for quick access later.
+- **Recommendations**: Get personalized college recommendations based on profile preferences.
+- **Location-Based Search**: Find colleges close to your current location.
 
-A few resources to get you started if this is your first Flutter project:
+## 📱 Screenshots
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+_Add screenshots of the main screens to showcase the UI and app functionality._
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🛠️ Installation
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/username/CollegeFinder.git
+   cd CollegeFinder
+
+2. **Install dependencies**:
+   ```bash
+   flutter pub get
+   
+3. **Configure API keys**:
+- Add your API keys (e.g., for college data API, map APIs) in a .env file for secure management.
+- Set up environment variables by adding a .env file in the project root.
+
+4. **Run the app**:
+   ```bash
+   flutter run
+
+🔑 Environment Variables
+Create a .env file in the root directory with the following:
+    ```bash
+   COLLEGE_API_KEY=your_college_api_key
+   MAP_API_KEY=your_map_api_key
+
+🧩 Dependencies
+   flutter_riverpod: For state management
+   http: For API calls
+   flutter_dotenv: For managing API keys and environment variables
+   geolocator: For location-based services
+   cached_network_image: To cache college images
+
+📂 Folder Structure
+   lib/
+      screens/: Contains all screen widgets (e.g., home screen, details screen, search screen).
+      widgets/: Contains reusable widgets.
+      models/: Defines data models for College, Program, and other related entities.
+      providers/: State management providers (e.g., college provider, search provider).
+      services/: API services and external data-fetching logic.
+      utils/: Utility functions and constants.
+
+🔍 Usage
+   Search for Colleges:
+      On the home screen, enter keywords or use filters to search for colleges.
+   View College Details:
+      Tap on any college in the list to view its details.
+   Save Favorites:
+      Use the "favorite" icon to save a college for later reference.
+   View Recommended Colleges:
+      Get recommendations based on saved preferences and search history.
+
+🌐 API Usage
+   CollegeFinder relies on third-party APIs to fetch college data. Ensure you have valid API keys, as noted in the installation section.
+
+🛠️ Development & Contribution
+   Fork the repository.
+      Create a new branch for your feature:
+   bash
+      git checkout -b feature-name
+    Commit your changes and push to the branch:
+   bash
+      git commit -m "Add new feature"
+      git push origin feature-name
+      Open a pull request.
+   
+👥 Contributors 
+   Your Name - Sudarshan Mehta
+📜 License
+   This project is licensed under the MIT License.
