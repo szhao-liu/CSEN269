@@ -260,7 +260,7 @@ class _LoginPageState extends State<LoginPage> {
         navigateToTasks(context, userGrade, Colors.cyan);
       } else {
         // If the user's grade is not present, navigate to the home page
-        Navigator.pushNamed(context, "/home");
+        Navigator.pushNamed(context, "/welcomePage");
       }
     } else {
       showToast(message: "Some error occurred");
@@ -308,7 +308,7 @@ class _LoginPageState extends State<LoginPage> {
             });
           }
 
-          Navigator.pushNamed(context, "/home");
+          Navigator.pushNamed(context, "/welcomePage");
         }
       }
     } catch (e) {

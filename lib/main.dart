@@ -1,3 +1,4 @@
+import 'package:college_finder/features/user_auth/presentation/pages/WelcomePage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +52,8 @@ class CollegeFinder extends StatelessWidget {
             return MaterialPageRoute(builder: (context) => SignUpPage());
           case '/home':
             return MaterialPageRoute(builder: (context) => StudentChooseGrade());
+          case '/welcomePage':
+            return MaterialPageRoute(builder: (context) => WelcomePage());
           case '/tasks':
           // Extract grade from the route arguments
             final String gradeArg = settings.arguments as String;
