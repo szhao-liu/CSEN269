@@ -24,29 +24,12 @@ class WelcomePage extends StatelessWidget {
                 SizedBox(height: 30),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Text(
-                    "Discover the best colleges suited for you! Our app helps you explore various educational institutions, compare courses, and make informed decisions.",
-                    style: TextStyle(fontSize: 18, color: Colors.black54),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                SizedBox(height: 40),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Text(
-                    "Features:",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
                   child: Column(
                     children: [
-                      FeatureCard(title: "Explore Colleges", description: "Find colleges that match your interests."),
-                      FeatureCard(title: "Compare Courses", description: "Evaluate different courses offered by various institutions."),
-                      FeatureCard(title: "User-Friendly Interface", description: "Navigate through the app seamlessly."),
+                      _buildFeatureCard(0, "The checklist will help you keep track of everything you need to get ready for college.", Colors.yellow[200]!, Colors.pink[100]!),
+                      _buildFeatureCard(1, "Click on each tab to see a detailed explanation of the term. Then, swipe to complete a simple task related to it.", Colors.yellow[200]!, Colors.pink[100]!),
+                      _buildFeatureCard(0, "We’ve also added a chat box feature, allowing you to interact with an AI to explore additional options related to your process.", Colors.yellow[200]!, Colors.pink[100]!),
+                      _buildFeatureCard(1, "Everything here is carefully chosen, so you can trust it to guide you in the right direction. You’ve got this!", Colors.yellow[200]!, Colors.pink[100]!),
                     ],
                   ),
                 ),
@@ -55,18 +38,13 @@ class WelcomePage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 60.0),
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, "/home");  // Use named route
+                      Navigator.pushNamed(context, "/home");
                     },
                     child: Container(
                       height: 45,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.blue, // Start color of the gradient
-                            Colors.cyanAccent[100]!, // End color of the gradient
-                          ],
-                        ),
+                        color: Colors.blueAccent, // Use blueAccent color
                         boxShadow: [
                           BoxShadow(
                             color: Colors.grey.withOpacity(0.5),
@@ -106,7 +84,7 @@ class WelcomePage extends StatelessWidget {
                   );
                 },
                 child: Icon(Icons.chat_rounded, color: Colors.white),
-                backgroundColor: Colors.blue, // Match with the gradient's start color
+                backgroundColor: Colors.blue,
               ),
             ),
           ),
@@ -114,44 +92,45 @@ class WelcomePage extends StatelessWidget {
       ),
     );
   }
-}
 
-class FeatureCard extends StatelessWidget {
-  final String title;
-  final String description;
-
-  FeatureCard({required this.title, required this.description});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      padding: EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: Offset(0, 3),
+  // Method to create feature cards with alternating alignment and gradient colors
+  Widget _buildFeatureCard(int index, String description, Color color1, Color color2) {
+    return Align(
+      alignment: index % 2 == 0 ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 10),
+        padding: EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          gradient: LinearGradient(
+            colors: [color1, color2], // Two colors for the gradient
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 5),
-          Text(
-            description,
-            style: TextStyle(fontSize: 16, color: Colors.black54),
-          ),
-        ],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 5),
+            Text(
+              description,
+              style: TextStyle(
+                fontFamily: 'Cereal', // You can customize this with your desired font
+                fontSize: 18, // You can adjust this as per your design
+                fontWeight: FontWeight.normal,
+                color: Colors.black, // Text color should be white for better readability
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -38,7 +38,7 @@ class _SignUpPageState extends State<SignUpPage> {
       body: Stack(
         children: [
           Image.asset(
-            'assets/grad2.jpg', // Replace with your background image asset path
+            'assets/bb.png', // Replace with your background image asset path
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
@@ -108,8 +108,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         borderRadius: BorderRadius.circular(30),
                         gradient: LinearGradient(
                           colors: [
-                            Colors.blue ?? Colors.transparent,
-                            Colors.cyanAccent[100] ?? Colors.transparent,
+                            Colors.blue[200]!, // Blue color
+                            Colors.greenAccent[100]!, // Green accent color
                           ],
                         ),
                         boxShadow: [

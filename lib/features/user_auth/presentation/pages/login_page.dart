@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
         height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/grad2.jpg'),
+            image: AssetImage('assets/bb.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -105,8 +105,8 @@ class _LoginPageState extends State<LoginPage> {
                               borderRadius: BorderRadius.circular(20),
                               gradient: LinearGradient(
                                 colors: [
-                                  Colors.blue ?? Colors.transparent,
-                                  Colors.cyanAccent[100] ?? Colors.transparent,
+                                  Colors.blue[200] ?? Colors.transparent, // Blue color with 200 shade
+                                  Colors.greenAccent[100] ?? Colors.transparent, // GreenAccent with 100 shade
                                 ],
                               ),
                               boxShadow: [
@@ -124,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Colors.white,
                               )
                                   : Text(
-                                "Login",
+                                "LOGIN",
                                 style: TextStyle(
                                   fontSize: 25,
                                   color: Colors.white,
