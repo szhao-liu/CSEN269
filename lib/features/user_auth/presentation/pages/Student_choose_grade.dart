@@ -115,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> addGrade(String? userUUID, String grade) async {
     if (userUUID == null) {
-      print("User is not logged in");
+      print("User didnt login");
       return;
     }
     try {
