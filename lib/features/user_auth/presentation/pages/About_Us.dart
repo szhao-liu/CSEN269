@@ -30,7 +30,7 @@ class AboutUsPage extends StatelessWidget {
                     ),
                     SizedBox(height: 16),
                     Text(
-                      "Located in the heart of Silicon Valley, Santa Clara University blends high-tech innovation with a social consciousness grounded in the Jesuit educational tradition.",
+                      "Located in the heart of Silicon Valley, Santa Clara University blends high-tech innovation with a social consciousness grounded in the Jesuit educational tradition.We are committed to leaving the world a better place. We pursue new technology, encourage creativity, engage with our communities, and share an entrepreneurial mindset. Our goal is to help shape the next generation of leaders and global thinkers.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 16,
@@ -47,7 +47,7 @@ class AboutUsPage extends StatelessWidget {
                     ),
                     SizedBox(height: 16),
                     Text(
-                      "Thriving Neighbors is a community-engaged learning program connecting SCU with the predominantly Latino Greater Washington community in San Jose. It fosters collaboration among SCU members, local agencies, and Latino communities to advance equity and inclusion.",
+                      "Thriving Neighbors is a community-engaged learning program connecting SCU with the predominantly Latino Greater Washington community in San Jose. It fosters collaboration among SCU members, local agencies, and Latino communities to advance equity and inclusion.The program focuses on enhancing K-12 education in STEM and leadership, co-creating programs for capacity building, and providing SCU students with hands-on learning opportunities.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 16,
@@ -64,7 +64,7 @@ class AboutUsPage extends StatelessWidget {
                     ),
                     SizedBox(height: 16),
                     Text(
-                      "The Frugal Innovation Hub, at its core, fulfills Santa Clara University's comprehensive and holistic Jesuit mission while simultaneously actualizing the School of Engineering as a humanitarian-technology leader in Silicon Valley.",
+                      "The Frugal Innovation Hub, at its core, fulfills Santa Clara University's comprehensive and holistic Jesuit mission while simultaneously actualizing the School of Engineering as a humanitarian-technology leader in Silicon Valley.The program is positioned with the resources, strategic alignment, and impetus to become the nucleus of humanitarian technology development, research, and implementation on a global stage.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 16,
