@@ -3,16 +3,19 @@ import 'package:college_finder/features/user_auth/presentation/pages/Tasks.dart'
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:showcaseview/showcaseview.dart';
 import '../../../../global/common/chat_window.dart';
-import '../../../../global/common/grade.dart'; // Ensure the path is correct
+import '../../../../global/common/grade.dart';
 import '../../../../global/common/toast.dart';
 
 class StudentChooseGrade extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MyHomePage(),
+    return ShowCaseWidget(
+      builder: (context) => MaterialApp(
+
+        home: MyHomePage(),
+      ),
     );
   }
 }
@@ -23,12 +26,26 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  final GlobalKey _chatButtonKey = GlobalKey();
+  final Map<Grade, GlobalKey> _gradeKeys = {
+    for (var grade in Grade.values) grade: GlobalKey(),
+  };
+
   String? userUUID;
 
   @override
   void initState() {
     super.initState();
     userUUID = FirebaseAuth.instance.currentUser?.uid;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ShowCaseWidget.of(context).startShowCase([
+
+        ..._gradeKeys.values,
+        _chatButtonKey,
+      ]);
+    });
   }
 
   @override
@@ -47,19 +64,22 @@ class _MyHomePageState extends State<MyHomePage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 SizedBox(height: 30),
-                // Use a loop to generate OptionCard for each grade
                 for (Grade grade in Grade.values)
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 20.0, horizontal: 30.0),
-                    child: OptionCard(
-                      title: grade.grade,
-                      color: grade.fixedColor,
-                      onTap: () {
-                        addGrade(userUUID, grade.grade).then((_) {
-                          navigateToTasks(context, grade);
-                        });
-                      },
+                    child: Showcase(
+                      key: _gradeKeys[grade]!,
+                      description: "Choose ${grade.grade} if you are in grade ${grade.grade}.",
+                      child: OptionCard(
+                        title: grade.grade,
+                        color: grade.fixedColor,
+                        onTap: () {
+                          addGrade(userUUID, grade.grade).then((_) {
+                            navigateToTasks(context, grade);
+                          });
+                        },
+                      ),
                     ),
                   ),
               ],
@@ -69,18 +89,22 @@ class _MyHomePageState extends State<MyHomePage> {
             alignment: Alignment.bottomRight,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: FloatingActionButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChatWindow(
-                          userUUID: userUUID), // Pass userUUID if needed
-                    ),
-                  );
-                },
-                child: Icon(Icons.chat_rounded),
-                backgroundColor: Color(0xFF0560FB),
+              child: Showcase(
+                key: _chatButtonKey,
+                description: "Tap here to open the chat window.",
+                child: FloatingActionButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChatWindow(
+                            userUUID: userUUID),
+                      ),
+                    );
+                  },
+                  child: Icon(Icons.chat_rounded),
+                  backgroundColor: Color(0xFF0560FB),
+                ),
               ),
             ),
           ),
@@ -91,18 +115,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> addGrade(String? userUUID, String grade) async {
     if (userUUID == null) {
-      print("User is not logged in");
+      print("User didnt login");
       return;
     }
     try {
       final userRef =
       FirebaseFirestore.instance.collection('users').doc(userUUID);
 
-      // Check if the user exists
       final userSnapshot = await userRef.get();
 
       if (!userSnapshot.exists) {
-        // User doesn't exist, create a new one
         await userRef.set({
           'grade': "",
         });
@@ -121,7 +143,8 @@ class _MyHomePageState extends State<MyHomePage> {
       context,
       MaterialPageRoute(
         builder: (context) =>
-            TasksPage(grade: grade), // Pass the grade object if needed
+            TasksPage(grade: grade),
+
       ),
     );
   }
@@ -141,15 +164,13 @@ class OptionCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30.0),
-          color: color, // Set the background color
+          color: color,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.2),
-              // Adjust the color and opacity as needed
               spreadRadius: 2,
               blurRadius: 5,
-              offset: Offset(
-                  0, 3), // Offset to create a little shadow below the container
+              offset: Offset(0, 3),
             ),
           ],
         ),

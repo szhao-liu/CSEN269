@@ -34,20 +34,20 @@ _Add screenshots of the main screens to showcase the UI and app functionality._
    ```bash
    flutter run
 
-🔑 Environment Variables
+5. **🔑 Environment Variables**:
 Create a .env file in the root directory with the following:
     ```bash
    COLLEGE_API_KEY=your_college_api_key
    MAP_API_KEY=your_map_api_key
 
-🧩 Dependencies
+6. **🧩 Dependencies**: 
    flutter_riverpod: For state management
    http: For API calls
    flutter_dotenv: For managing API keys and environment variables
    geolocator: For location-based services
    cached_network_image: To cache college images
 
-📂 Folder Structure
+7. **📂 Folder Structure**
    lib/
       screens/: Contains all screen widgets (e.g., home screen, details screen, search screen).
       widgets/: Contains reusable widgets.
@@ -56,7 +56,7 @@ Create a .env file in the root directory with the following:
       services/: API services and external data-fetching logic.
       utils/: Utility functions and constants.
 
-🔍 Usage
+8. **🔍 Usage**:
    Search for Colleges:
       On the home screen, enter keywords or use filters to search for colleges.
    View College Details:
@@ -66,10 +66,10 @@ Create a .env file in the root directory with the following:
    View Recommended Colleges:
       Get recommendations based on saved preferences and search history.
 
-🌐 API Usage
+9. **🌐 API Usage**:
    CollegeFinder relies on third-party APIs to fetch college data. Ensure you have valid API keys, as noted in the installation section.
 
-🛠️ Development & Contribution
+10.   **🛠️ Development & Contribution**
    Fork the repository.
       Create a new branch for your feature:
    bash
@@ -80,7 +80,7 @@ Create a .env file in the root directory with the following:
       git push origin feature-name
       Open a pull request.
    
-👥 Contributors 
-   Your Name - Sudarshan Mehta
+11. **👥 Contributors**: 
+   Your Name - Sudarshan Mehta, Sonam Yegde, Anwitha Arbi
 📜 License
    This project is licensed under the MIT License.
