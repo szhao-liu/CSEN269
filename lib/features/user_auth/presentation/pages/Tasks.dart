@@ -124,11 +124,20 @@ class _TasksPageState extends State<TasksPage> {
         }
 
         List<String> documents = [];
+        List<String> links = [];
         try {
           documents = List<String>.from(doc['documents']);
         } catch (e) {
           // Handle the exception, for example, print an error message
           print('Error fetching documents: $e');
+          // You can also log the error or perform any other error handling as needed
+        }
+
+        try {
+          links = List<String>.from(doc['link']);
+        } catch (e) {
+          // Handle the exception, for example, print an error message
+          print('Error fetching links: $e');
           // You can also log the error or perform any other error handling as needed
         }
 
@@ -141,6 +150,7 @@ class _TasksPageState extends State<TasksPage> {
             rank: doc['rank'],
             // Use null-aware operator to handle null value
             documents: documents,
+            links: links,
             grade: grade);
       }).toList();
 
@@ -607,6 +617,7 @@ class Task {
   final int rank;
   final PageType pageType;
   final List<String> documents;
+  final List<String> links;
   final Grade grade;
   bool mark;
 
@@ -617,5 +628,6 @@ class Task {
     required this.pageType,
     required this.rank,
     required this.grade,
+    required this.links,
     required this.documents});
 }

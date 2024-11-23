@@ -111,7 +111,7 @@ class _MemoPageState extends State<MemoPage> {
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                       ),
-                      child: Text('Help Needed?',
+                      child: Text('References',
                           style: TextStyle(fontFamily: 'Cereal')),
                     ),
                   ),

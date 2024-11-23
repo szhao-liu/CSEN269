@@ -220,7 +220,7 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
                           ),
                         );
                       },
-                      child: Text('Help Needed?'),
+                      child: Text('References'),
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                         backgroundColor: Colors.green,

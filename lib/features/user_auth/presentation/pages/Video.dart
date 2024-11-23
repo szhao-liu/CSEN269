@@ -16,18 +16,22 @@ class VideoPage extends StatefulWidget {
 }
 
 class _VideoPageState extends State<VideoPage> {
-  // Define a list of videos
-  final List<Video> videos = [
-    Video(
-      title: 'Tips for a strong career',
-      thumbnailUrl: 'https://img.youtube.com/vi/b_ZFjw-eEGo/maxresdefault.jpg',
-      videoUrl: 'https://www.youtube.com/watch?v=b_ZFjw-eEGo',
-    ),
-    // Add other videos here
-  ];
+  // Function to parse video details from task links
+  List<Map<String, String>> parseVideos(List<String> links) {
+    return links.map((link) {
+      final videoId = Uri.parse(link).queryParameters['v'] ?? '';
+      return {
+        'title': 'Video', // Default title (can enhance this by fetching actual titles via API)
+        'thumbnailUrl': 'https://img.youtube.com/vi/$videoId/maxresdefault.jpg',
+        'videoUrl': link,
+      };
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final List<Map<String, String>> videoData = parseVideos(widget.task.links);
+
     return Scaffold(
       appBar: CommonHeader.Header(
         dynamicText: "Videos",
@@ -37,16 +41,17 @@ class _VideoPageState extends State<VideoPage> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Container(color: Color(0xFFF9F9F9)),
+            child: Container(color: const Color(0xFFF9F9F9)),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               Expanded(
                 child: ListView.builder(
-                  itemCount: videos.length,
+                  itemCount: videoData.length,
                   itemBuilder: (context, index) {
+                    final video = videoData[index];
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Card(
@@ -55,15 +60,15 @@ class _VideoPageState extends State<VideoPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Image.network(
-                              videos[index].thumbnailUrl,
+                              video['thumbnailUrl'] ?? '',
                               fit: BoxFit.cover,
                               width: double.infinity,
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                videos[index].title,
-                                style: TextStyle(
+                                video['title'] ?? 'Video Title',
+                                style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -71,15 +76,15 @@ class _VideoPageState extends State<VideoPage> {
                             ),
                             InkWell(
                               onTap: () async {
-                                final url = videos[index].videoUrl;
+                                final url = video['videoUrl']!;
                                 if (await canLaunch(url)) {
                                   await launch(url);
                                 } else {
                                   throw 'Could not launch $url';
                                 }
                               },
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
                                 child: Text(
                                   'Watch Video',
                                   style: TextStyle(
@@ -110,12 +115,12 @@ class _VideoPageState extends State<VideoPage> {
                       );
                     },
                     child: const Text(
-                      'Help Needed?',
+                      'References',
                       style: TextStyle(fontFamily: 'Cereal'),
                     ),
                   ),
                 ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
             ],
           ),
         ],
@@ -132,17 +137,9 @@ class _VideoPageState extends State<VideoPage> {
             ),
           );
         },
-        child: Icon(Icons.chat_rounded),
-        backgroundColor: Color(0xFF0560FB),
+        child: const Icon(Icons.chat_rounded),
+        backgroundColor: const Color(0xFF0560FB),
       ),
     );
   }
-}
-
-class Video {
-  final String title;
-  final String thumbnailUrl;
-  final String videoUrl;
-
-  Video({required this.title, required this.thumbnailUrl, required this.videoUrl});
 }

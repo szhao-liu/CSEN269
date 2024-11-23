@@ -9,26 +9,13 @@ import 'features/user_auth/presentation/pages/Student_choose_grade.dart';
 import 'features/user_auth/presentation/pages/Tasks.dart';
 import 'features/user_auth/presentation/pages/login_page.dart';
 import 'features/user_auth/presentation/pages/sign_up_page.dart';
+import 'firebase_options.dart';
 import 'global/common/grade.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize Firebase
-  if (kIsWeb) {
-    await Firebase.initializeApp(
-      options: FirebaseOptions(
-        apiKey: "AIzaSyBwlXZjDodx4lvfLnak8Hp7aMJb25I9z_o",
-        appId: "1:36597009887:android:e97af98db4a0597b53486a",
-        messagingSenderId: "36597009887",
-        projectId: "college-finder-54f2c",
-        // Your web Firebase config options
-      ),
-    );
-  } else {
-    await Firebase.initializeApp();
-  }
-
+  await Firebase.initializeApp(options:
+  DefaultFirebaseOptions.currentPlatform);
   runApp(CollegeFinder());
 }
 
