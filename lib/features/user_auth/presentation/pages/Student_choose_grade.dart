@@ -7,6 +7,7 @@ import 'package:showcaseview/showcaseview.dart';
 import '../../../../global/common/chat_window.dart';
 import '../../../../global/common/grade.dart';
 import '../../../../global/common/toast.dart';
+import 'package:college_finder/global/common/Get_Help.dart';
 
 class StudentChooseGrade extends StatelessWidget {
   @override
@@ -85,25 +86,50 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
           ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Showcase(
-                key: _chatButtonKey,
-                description: "Tap here to open the chat window.",
-                child: FloatingActionButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ChatWindow(
-                            userUUID: userUUID),
-                      ),
-                    );
-                  },
-                  child: Icon(Icons.chat_rounded),
-                  backgroundColor: Color(0xFF0560FB),
+          // Align(
+          //   alignment: Alignment.bottomRight,
+          //   child: Padding(
+          //     padding: const EdgeInsets.all(16.0),
+          //     child: Showcase(
+          //       key: _chatButtonKey,
+          //       description: "Tap here to open the chat window.",
+          //       child: FloatingActionButton(
+          //         onPressed: () {
+          //           Navigator.push(
+          //             context,
+          //             MaterialPageRoute(
+          //               builder: (context) => ChatWindow(
+          //                   userUUID: userUUID),
+          //             ),
+          //           );
+          //         },
+          //         child: Icon(Icons.chat_rounded),
+          //         backgroundColor: Color(0xFF0560FB),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          Positioned(
+            bottom: 20,
+            right: 20,  // Positioned to the bottom right
+            child: GestureDetector(
+              onTap: () {
+                // Navigate to GetHelpPage when the button is pressed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GetHelpPage()),
+                );
+              },
+              child: CircleAvatar(
+                radius: 25, // Smaller size for the button
+                backgroundColor: Colors.blueAccent,
+                child: Text(
+                  "?",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,  // Adjusted font size for the "?" text
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

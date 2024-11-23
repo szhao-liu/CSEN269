@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:file_picker/file_picker.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart'; // Import Syncfusion PDF Viewer
-import '../../../../global/common/chat_window.dart';
 import '../../../../global/common/document_list.dart';
 import 'Tasks.dart';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
 import 'package:flutter/foundation.dart' show Uint8List, kIsWeb;
+import 'package:college_finder/global/common/Get_Help.dart';
 
 class DocumentUploadPage extends StatefulWidget {
   final Task task;
@@ -47,7 +47,6 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
       print('Error fetching resumes: $e');
     }
   }
-
 
   Future<void> uploadResume() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
@@ -233,22 +232,32 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
                 ),
             ],
           ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChatWindow(
-                userUUID: widget.userUUID,
-                grade: widget.task.grade,
+          Positioned(
+            bottom: 20,
+            right: 20,  // Positioned to the bottom right
+            child: GestureDetector(
+              onTap: () {
+                // Navigate to GetHelpPage when the button is pressed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GetHelpPage()),
+                );
+              },
+              child: CircleAvatar(
+                radius: 25, // Smaller size for the button
+                backgroundColor: Colors.blueAccent,
+                child: Text(
+                  "?",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,  // Adjusted font size for the "?" text
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
-          );
-        },
-        child: Icon(Icons.chat_rounded),
-        backgroundColor: Color(0xFF0560FB),
+          ),
+        ],
       ),
     );
   }

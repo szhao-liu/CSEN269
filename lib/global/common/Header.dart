@@ -7,6 +7,7 @@ class Header extends StatefulWidget implements PreferredSizeWidget {
   final bool showBackArrow;
   final Grade? grade;
   final ValueChanged<Grade>? onGradeChanged;
+  final List<Widget>? actions; // Added actions parameter
 
   const Header({
     Key? key,
@@ -14,6 +15,7 @@ class Header extends StatefulWidget implements PreferredSizeWidget {
     required this.grade,
     this.onGradeChanged,
     this.showBackArrow = true,
+    this.actions, // Initialize actions parameter
   }) : super(key: key);
 
   @override
@@ -52,6 +54,7 @@ class _HeaderState extends State<Header> {
         ),
       ),
       actions: [
+        if (widget.actions != null) ...widget.actions!, // Add custom actions
         if (widget.onGradeChanged != null)
           DropdownButton<dynamic>(
             value: selectedGrade,

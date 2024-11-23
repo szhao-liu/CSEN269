@@ -1,15 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
-import 'package:college_finder/global/common/chat_window.dart';
+import 'package:college_finder/global/common/Get_Help.dart'; // Import the GetHelpPage
+import 'About_Us.dart'; // Import your About_Us.dart file
 
 class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CommonHeader.Header(
-        dynamicText: "Welcome to College Finder",
+        dynamicText: "",
         grade: null,
         showBackArrow: false,
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.group,  // Group of people icon
+              size: 30,  // Increase the size of the icon
+              color: Colors.black,
+            ), // Replaced the "i" icon with a team icon
+            tooltip: 'About Us',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AboutUsPage()),
+              );
+            },
+          ),
+        ],
       ),
       body: Stack(
         fit: StackFit.expand,
@@ -22,14 +39,41 @@ class WelcomePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 SizedBox(height: 30),
+                // Large Welcome text with customized colors
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Welcome",
+                          style: TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue, // Blue color for 'Welcome'
+                          ),
+                        ),
+                        TextSpan(
+                          text: " to your College Prep Journey",
+                          style: TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black, // Black color for the rest of the text
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                // Updated Feature Cards with the new text
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30.0),
                   child: Column(
                     children: [
-                      _buildFeatureCard(0, "The checklist will help you keep track of everything you need to get ready for college.", Colors.yellow[200]!, Colors.pink[100]!),
-                      _buildFeatureCard(1, "Click on each tab to see a detailed explanation of the term. Then, swipe to complete a simple task related to it.", Colors.yellow[200]!, Colors.pink[100]!),
-                      _buildFeatureCard(0, "We’ve also added a chat box feature, allowing you to interact with an AI to explore additional options related to your process.", Colors.yellow[200]!, Colors.pink[100]!),
-                      _buildFeatureCard(1, "Everything here is carefully chosen, so you can trust it to guide you in the right direction. You’ve got this!", Colors.yellow[200]!, Colors.pink[100]!),
+                      _buildFeatureCard(0, "This app will help you keep track of everything you need to get ready for college.", Colors.yellow[200]!, Colors.pink[100]!),
+                      _buildFeatureCard(1, "Each grade has its own tasks, but it’s a good idea to explore them all to see the big picture and understand what’s ahead.", Colors.yellow[200]!, Colors.pink[100]!),
+                      _buildFeatureCard(2, "Everything here is carefully chosen, so you can trust it to guide you in the right direction. You’ve got this!", Colors.yellow[200]!, Colors.pink[100]!),
                     ],
                   ),
                 ),
@@ -44,7 +88,7 @@ class WelcomePage extends StatelessWidget {
                       height: 45,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        color: Colors.blueAccent, // Use blueAccent color
+                        color: Colors.blueAccent,
                         boxShadow: [
                           BoxShadow(
                             color: Colors.grey.withOpacity(0.5),
@@ -70,21 +114,29 @@ class WelcomePage extends StatelessWidget {
               ],
             ),
           ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: FloatingActionButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChatWindow(userUUID: null),
-                    ),
-                  );
-                },
-                child: Icon(Icons.chat_rounded, color: Colors.white),
-                backgroundColor: Colors.blue,
+          // Positioned "?" button at the bottom right corner with smaller size
+          Positioned(
+            bottom: 20,
+            right: 20,  // Positioned to the bottom right
+            child: GestureDetector(
+              onTap: () {
+                // Navigate to GetHelpPage when the button is pressed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GetHelpPage()),
+                );
+              },
+              child: CircleAvatar(
+                radius: 25, // Smaller size for the button
+                backgroundColor: Colors.blueAccent,
+                child: Text(
+                  "?",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,  // Adjusted font size for the "?" text
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
           ),
@@ -103,7 +155,7 @@ class WelcomePage extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
           gradient: LinearGradient(
-            colors: [color1, color2], // Two colors for the gradient
+            colors: [color1, color2],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -123,10 +175,10 @@ class WelcomePage extends StatelessWidget {
             Text(
               description,
               style: TextStyle(
-                fontFamily: 'Cereal', // You can customize this with your desired font
-                fontSize: 18, // You can adjust this as per your design
+                fontFamily: 'Cereal',
+                fontSize: 18,
                 fontWeight: FontWeight.normal,
-                color: Colors.black, // Text color should be white for better readability
+                color: Colors.black,
               ),
             ),
           ],

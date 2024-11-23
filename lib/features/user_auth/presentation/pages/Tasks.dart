@@ -12,6 +12,7 @@ import 'package:college_finder/global/common/page_type.dart';
 import '../../../../global/common/chat_window.dart';
 import '../../../../global/common/grade.dart';
 import 'Memo.dart';
+import 'package:college_finder/global/common/Get_Help.dart';
 
 class FrostedGlassBox extends StatelessWidget {
   const FrostedGlassBox({
@@ -276,30 +277,56 @@ class _TasksPageState extends State<TasksPage> {
                 ],
               ),
             ),
+            Positioned(
+              bottom: 20,
+              right: 20,  // Positioned to the bottom right
+              child: GestureDetector(
+                onTap: () {
+                  // Navigate to GetHelpPage when the button is pressed
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => GetHelpPage()),
+                  );
+                },
+                child: CircleAvatar(
+                  radius: 25, // Smaller size for the button
+                  backgroundColor: Colors.blueAccent,
+                  child: Text(
+                    "?",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 25,  // Adjusted font size for the "?" text
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
-      floatingActionButton: Align(
-        alignment: Alignment.bottomRight,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChatWindow(
-                    userUUID: FirebaseAuth.instance.currentUser?.uid,
-                    grade: widget.grade,
-                  ),
-                ),
-              );
-            },
-            child: Icon(Icons.chat_rounded),
-            backgroundColor: Color(0xFF0560FB),
-          ),
-        ),
-      ),
+
+      // floatingActionButton: Align(
+      //   alignment: Alignment.bottomRight,
+      //   child: Padding(
+      //     padding: const EdgeInsets.all(16.0),
+      //     child: FloatingActionButton(
+      //       onPressed: () {
+      //         Navigator.push(
+      //           context,
+      //           MaterialPageRoute(
+      //             builder: (context) => ChatWindow(
+      //               userUUID: FirebaseAuth.instance.currentUser?.uid,
+      //               grade: widget.grade,
+      //             ),
+      //           ),
+      //         );
+      //       },
+      //       child: Icon(Icons.chat_rounded),
+      //       backgroundColor: Color(0xFF0560FB),
+      //     ),
+      //   ),
+      // ),
     );
   }
 }
