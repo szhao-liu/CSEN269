@@ -1,15 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
-import 'package:college_finder/global/common/chat_window.dart';
+import 'package:college_finder/global/common/Get_Help.dart'; // Import the GetHelpPage
+import 'About_Us.dart'; // Import your About_Us.dart file
 
 class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CommonHeader.Header(
-        dynamicText: "Welcome to College Finder",
+        dynamicText: "",
         grade: null,
         showBackArrow: false,
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.group,  // Group of people icon
+              size: 30,  // Increase the size of the icon
+              color: Colors.black,
+            ), // Replaced the "i" icon with a team icon
+            tooltip: 'About Us',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AboutUsPage()),
+              );
+            },
+          ),
+        ],
       ),
       body: Stack(
         fit: StackFit.expand,
@@ -22,31 +39,41 @@ class WelcomePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 SizedBox(height: 30),
+                // Large Welcome text with customized colors
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Text(
-                    "Discover the best colleges suited for you! Our app helps you explore various educational institutions, compare courses, and make informed decisions.",
-                    style: TextStyle(fontSize: 18, color: Colors.black54),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                SizedBox(height: 40),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Text(
-                    "Features:",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Welcome",
+                          style: TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue, // Blue color for 'Welcome'
+                          ),
+                        ),
+                        TextSpan(
+                          text: " to your College Prep Journey",
+                          style: TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black, // Black color for the rest of the text
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(height: 20),
+                // Updated Feature Cards with the new text
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30.0),
                   child: Column(
                     children: [
-                      FeatureCard(title: "Explore Colleges", description: "Find colleges that match your interests."),
-                      FeatureCard(title: "Compare Courses", description: "Evaluate different courses offered by various institutions."),
-                      FeatureCard(title: "User-Friendly Interface", description: "Navigate through the app seamlessly."),
+                      _buildFeatureCard(0, "This app will help you keep track of everything you need to get ready for college.", Colors.yellow[200]!, Colors.pink[100]!),
+                      _buildFeatureCard(1, "Each grade has its own tasks, but it’s a good idea to explore them all to see the big picture and understand what’s ahead.", Colors.yellow[200]!, Colors.pink[100]!),
+                      _buildFeatureCard(2, "Everything here is carefully chosen, so you can trust it to guide you in the right direction. You’ve got this!", Colors.yellow[200]!, Colors.pink[100]!),
                     ],
                   ),
                 ),
@@ -55,18 +82,13 @@ class WelcomePage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 60.0),
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, "/home");  // Use named route
+                      Navigator.pushNamed(context, "/home");
                     },
                     child: Container(
                       height: 45,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.blue, // Start color of the gradient
-                            Colors.cyanAccent[100]!, // End color of the gradient
-                          ],
-                        ),
+                        color: Colors.blueAccent,
                         boxShadow: [
                           BoxShadow(
                             color: Colors.grey.withOpacity(0.5),
@@ -92,21 +114,29 @@ class WelcomePage extends StatelessWidget {
               ],
             ),
           ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: FloatingActionButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChatWindow(userUUID: null),
-                    ),
-                  );
-                },
-                child: Icon(Icons.chat_rounded, color: Colors.white),
-                backgroundColor: Colors.blue, // Match with the gradient's start color
+          // Positioned "?" button at the bottom right corner with smaller size
+          Positioned(
+            bottom: 20,
+            right: 20,  // Positioned to the bottom right
+            child: GestureDetector(
+              onTap: () {
+                // Navigate to GetHelpPage when the button is pressed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GetHelpPage()),
+                );
+              },
+              child: CircleAvatar(
+                radius: 25, // Smaller size for the button
+                backgroundColor: Colors.blueAccent,
+                child: Text(
+                  "?",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,  // Adjusted font size for the "?" text
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
           ),
@@ -114,44 +144,45 @@ class WelcomePage extends StatelessWidget {
       ),
     );
   }
-}
 
-class FeatureCard extends StatelessWidget {
-  final String title;
-  final String description;
-
-  FeatureCard({required this.title, required this.description});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      padding: EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: Offset(0, 3),
+  // Method to create feature cards with alternating alignment and gradient colors
+  Widget _buildFeatureCard(int index, String description, Color color1, Color color2) {
+    return Align(
+      alignment: index % 2 == 0 ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 10),
+        padding: EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          gradient: LinearGradient(
+            colors: [color1, color2],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 5),
-          Text(
-            description,
-            style: TextStyle(fontSize: 16, color: Colors.black54),
-          ),
-        ],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 5),
+            Text(
+              description,
+              style: TextStyle(
+                fontFamily: 'Cereal',
+                fontSize: 18,
+                fontWeight: FontWeight.normal,
+                color: Colors.black,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

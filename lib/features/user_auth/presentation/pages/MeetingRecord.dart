@@ -6,6 +6,7 @@ import '../../../../global/common/document_list.dart';
 import 'Tasks.dart';
 import 'dart:async';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
+import 'package:college_finder/global/common/Get_Help.dart';
 
 class MeetingRecordPage extends StatefulWidget {
   final Task task;
@@ -132,20 +133,45 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
             backgroundColor: Colors.indigo,
           ),
           SizedBox(height: 16),
-          FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChatWindow(
-                    userUUID: FirebaseAuth.instance.currentUser?.uid,
-                    grade: widget.task.grade,
+          // FloatingActionButton(
+          //   onPressed: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => ChatWindow(
+          //           userUUID: FirebaseAuth.instance.currentUser?.uid,
+          //           grade: widget.task.grade,
+          //         ),
+          //       ),
+          //     );
+          //   },
+          //   child: Icon(Icons.chat_rounded),
+          //   backgroundColor: Color(0xFF0560FB),
+          // ),
+          Positioned(
+            bottom: 20,
+            right: 20,  // Positioned to the bottom right
+            child: GestureDetector(
+              onTap: () {
+                // Navigate to GetHelpPage when the button is pressed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GetHelpPage()),
+                );
+              },
+              child: CircleAvatar(
+                radius: 25, // Smaller size for the button
+                backgroundColor: Colors.blueAccent,
+                child: Text(
+                  "?",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,  // Adjusted font size for the "?" text
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              );
-            },
-            child: Icon(Icons.chat_rounded),
-            backgroundColor: Color(0xFF0560FB),
+              ),
+            ),
           ),
         ],
       ),

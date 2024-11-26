@@ -12,6 +12,7 @@ import 'package:college_finder/global/common/page_type.dart';
 import '../../../../global/common/chat_window.dart';
 import '../../../../global/common/grade.dart';
 import 'Memo.dart';
+import 'package:college_finder/global/common/Get_Help.dart';
 
 class FrostedGlassBox extends StatelessWidget {
   const FrostedGlassBox({
@@ -124,11 +125,20 @@ class _TasksPageState extends State<TasksPage> {
         }
 
         List<String> documents = [];
+        List<String> links = [];
         try {
           documents = List<String>.from(doc['documents']);
         } catch (e) {
           // Handle the exception, for example, print an error message
           print('Error fetching documents: $e');
+          // You can also log the error or perform any other error handling as needed
+        }
+
+        try {
+          links = List<String>.from(doc['link']);
+        } catch (e) {
+          // Handle the exception, for example, print an error message
+          print('Error fetching links: $e');
           // You can also log the error or perform any other error handling as needed
         }
 
@@ -141,6 +151,7 @@ class _TasksPageState extends State<TasksPage> {
             rank: doc['rank'],
             // Use null-aware operator to handle null value
             documents: documents,
+            links: links,
             grade: grade);
       }).toList();
 
@@ -276,30 +287,56 @@ class _TasksPageState extends State<TasksPage> {
                 ],
               ),
             ),
+            Positioned(
+              bottom: 20,
+              right: 20,  // Positioned to the bottom right
+              child: GestureDetector(
+                onTap: () {
+                  // Navigate to GetHelpPage when the button is pressed
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => GetHelpPage()),
+                  );
+                },
+                child: CircleAvatar(
+                  radius: 25, // Smaller size for the button
+                  backgroundColor: Colors.blueAccent,
+                  child: Text(
+                    "?",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 25,  // Adjusted font size for the "?" text
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
-      floatingActionButton: Align(
-        alignment: Alignment.bottomRight,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChatWindow(
-                    userUUID: FirebaseAuth.instance.currentUser?.uid,
-                    grade: widget.grade,
-                  ),
-                ),
-              );
-            },
-            child: Icon(Icons.chat_rounded),
-            backgroundColor: Color(0xFF0560FB),
-          ),
-        ),
-      ),
+
+      // floatingActionButton: Align(
+      //   alignment: Alignment.bottomRight,
+      //   child: Padding(
+      //     padding: const EdgeInsets.all(16.0),
+      //     child: FloatingActionButton(
+      //       onPressed: () {
+      //         Navigator.push(
+      //           context,
+      //           MaterialPageRoute(
+      //             builder: (context) => ChatWindow(
+      //               userUUID: FirebaseAuth.instance.currentUser?.uid,
+      //               grade: widget.grade,
+      //             ),
+      //           ),
+      //         );
+      //       },
+      //       child: Icon(Icons.chat_rounded),
+      //       backgroundColor: Color(0xFF0560FB),
+      //     ),
+      //   ),
+      // ),
     );
   }
 }
@@ -607,6 +644,7 @@ class Task {
   final int rank;
   final PageType pageType;
   final List<String> documents;
+  final List<String> links;
   final Grade grade;
   bool mark;
 
@@ -617,5 +655,6 @@ class Task {
     required this.pageType,
     required this.rank,
     required this.grade,
+    required this.links,
     required this.documents});
 }
