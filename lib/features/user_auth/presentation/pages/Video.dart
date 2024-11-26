@@ -138,36 +138,15 @@ class _VideoPageState extends State<VideoPage> {
               child: CircleAvatar(
                 radius: 25, // Smaller size for the button
                 backgroundColor: Colors.blueAccent,
-                child: Text(
-                  "?",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 25,  // Adjusted font size for the "?" text
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Image.asset(
+                  'assets/help.png',  // Ensure this path is correct
+                  fit: BoxFit.cover,  // Ensures the image fits within the circle
                 ),
               ),
             ),
-
           ),
         ],
-
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     Navigator.push(
-      //       context,
-      //       MaterialPageRoute(
-      //         builder: (context) => ChatWindow(
-      //           userUUID: FirebaseAuth.instance.currentUser?.uid,
-      //           grade: widget.task.grade,
-      //         ),
-      //       ),
-      //     );
-      //   },
-      //   child: Icon(Icons.chat_rounded),
-      //   backgroundColor: Color(0xFF0560FB),
-      // ),
     );
   }
 }

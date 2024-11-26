@@ -129,17 +129,15 @@ class WelcomePage extends StatelessWidget {
               child: CircleAvatar(
                 radius: 25, // Smaller size for the button
                 backgroundColor: Colors.blueAccent,
-                child: Text(
-                  "?",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 25,  // Adjusted font size for the "?" text
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Image.asset(
+                  'assets/help.png',  // Replace with the correct path to your image
+                  fit: BoxFit.cover,  // Ensures the image fits within the circle
                 ),
               ),
             ),
           ),
+
+
         ],
       ),
     );

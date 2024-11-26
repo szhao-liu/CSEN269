@@ -123,13 +123,9 @@ class _MyHomePageState extends State<MyHomePage> {
               child: CircleAvatar(
                 radius: 25, // Smaller size for the button
                 backgroundColor: Colors.blueAccent,
-                child: Text(
-                  "?",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 25,  // Adjusted font size for the "?" text
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Image.asset(
+                  'assets/help.png',  // Ensure this path is correct
+                  fit: BoxFit.cover,  // Ensures the image fits within the circle
                 ),
               ),
             ),
