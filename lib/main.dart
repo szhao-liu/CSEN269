@@ -46,7 +46,7 @@ class CollegeFinder extends StatelessWidget {
             final String gradeArg = settings.arguments as String;
             final Grade grade = getGradeFromString(gradeArg); // Convert string to Grade
             return MaterialPageRoute(
-              builder: (context) => TasksPage(grade: grade,isNeedTour: false),
+              builder: (context) => TasksPage(grade: grade),
             );
           case '/choosegrade':
             return MaterialPageRoute(builder: (context) => StudentChooseGrade());

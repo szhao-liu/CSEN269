@@ -9,7 +9,6 @@ import 'package:college_finder/features/user_auth/presentation/pages/MeetingReco
 import 'package:college_finder/features/user_auth/presentation/pages/Video.dart';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
 import 'package:college_finder/global/common/page_type.dart';
-import 'package:showcaseview/showcaseview.dart';
 import '../../../../global/common/chat_window.dart';
 import '../../../../global/common/grade.dart';
 import 'Memo.dart';
@@ -63,11 +62,8 @@ class FrostedGlassBox extends StatelessWidget {
 
 class TasksPage extends StatefulWidget {
   Grade grade;
-  bool isNeedTour;
 
-  TasksPage({required this.grade, required this.isNeedTour});
-
-
+  TasksPage({required this.grade});
 
   @override
   _TasksPageState createState() => _TasksPageState();
@@ -75,27 +71,12 @@ class TasksPage extends StatefulWidget {
 
 class _TasksPageState extends State<TasksPage> {
   late List<Task> tasks = [];
-  GlobalKey _progressBarKey = GlobalKey();
-  GlobalKey _taskListKey = GlobalKey();
 
-
-
-    void initState() {
-      super.initState();
-      fetchAndSetTasks(widget.grade);
-
-      // Only start the showcase if isNeedTour is true
-      if (widget.isNeedTour) {
-        // Ensures the showcase logic only runs if the flag is true
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          // Check that the widget is mounted and keys are available before starting the showcase
-          if (mounted && _progressBarKey != null && _taskListKey != null) {
-            ShowCaseWidget.of(context)?.startShowCase([_progressBarKey, _taskListKey]);
-          }
-        });
-      }
-    }
-
+  @override
+  void initState() {
+    super.initState();
+    fetchAndSetTasks(widget.grade);
+  }
 
   void _onGradeChanged(Grade newGrade) {
     setState(() {
@@ -237,86 +218,53 @@ class _TasksPageState extends State<TasksPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Only show the showcase if isNeedTour is true
-                  if (widget.isNeedTour)
-                    Showcase(
-                      key: _progressBarKey,
-                      description: 'This bar shows your task progress.',
-                      child: Stack(
-                        children: [
-                          Container(
-                            height: 20,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.lightGreen.withOpacity(0.3),
-                            ),
-                          ),
-                          AnimatedContainer(
-                            duration: Duration(milliseconds: 500),
-                            width: MediaQuery.of(context).size.width * progress,
-                            height: 20,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.green,
-                            ),
-                          ),
-                          Positioned.fill(
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Padding(
-                                padding: EdgeInsets.only(right: 8.0),
-                                child: Text(
-                                  '${progressPercent.toStringAsFixed(0)}%',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                  Container(
+                    margin: EdgeInsets.only(bottom: 20),
+                    child: Text(
+                      widget.grade.grade,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: "Cereal",
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                  // Regular progress bar and task list if the tour is not needed
-                  if (!widget.isNeedTour)
-                    Column(
-                      children: [
-                        Container(
-                          height: 20,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.lightGreen.withOpacity(0.3),
-                          ),
+                  ),
+                  Stack(
+                    children: [
+                      Container(
+                        height: 20,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.lightGreen.withOpacity(0.3),
                         ),
-                        AnimatedContainer(
-                          duration: Duration(milliseconds: 500),
-                          width: MediaQuery.of(context).size.width * progress,
-                          height: 20,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.green,
-                          ),
+                      ),
+                      AnimatedContainer(
+                        duration: Duration(milliseconds: 500),
+                        width: MediaQuery.of(context).size.width * progress,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.green,
                         ),
-                        Positioned.fill(
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 8.0),
-                              child: Text(
-                                '${progressPercent.toStringAsFixed(0)}%',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                      ),
+                      Positioned.fill(
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 8.0),
+                            child: Text(
+                              '${progressPercent.toStringAsFixed(0)}%',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
                   SizedBox(height: 8),
                   Text(
                     'Progress',
@@ -327,30 +275,15 @@ class _TasksPageState extends State<TasksPage> {
                     ),
                   ),
                   SizedBox(height: 8),
-                  if (widget.isNeedTour)
-                    Showcase(
-                      key: _taskListKey,
-                      description: 'These are the list of tasks to completed. Swipe right to fill in the details of the completed tasks',
-                      child: FrostedGlassBox(
-                        theWidth: double.infinity,
-                        theHeight: MediaQuery.of(context).size.height * 0.7,
-                        theChild: TaskList(
-                          tasks: tasks,
-                          grade: widget.grade,
-                          updateTaskMark: updateTaskMark,
-                        ),
-                      ),
+                  FrostedGlassBox(
+                    theWidth: double.infinity,
+                    theHeight: MediaQuery.of(context).size.height * 0.7,
+                    theChild: TaskList(
+                      tasks: tasks,
+                      grade: widget.grade,
+                      updateTaskMark: updateTaskMark,
                     ),
-                  if (!widget.isNeedTour)
-                    FrostedGlassBox(
-                      theWidth: double.infinity,
-                      theHeight: MediaQuery.of(context).size.height * 0.7,
-                      theChild: TaskList(
-                        tasks: tasks,
-                        grade: widget.grade,
-                        updateTaskMark: updateTaskMark,
-                      ),
-                    ),
+                  ),
                 ],
               ),
             ),
@@ -368,9 +301,13 @@ class _TasksPageState extends State<TasksPage> {
                 child: CircleAvatar(
                   radius: 25, // Smaller size for the button
                   backgroundColor: Colors.blueAccent,
+
                   child: Image.asset(
                     'assets/help.png',  // Ensure this path is correct
                     fit: BoxFit.cover,  // Ensures the image fits within the circle
+
+
+
                   ),
                 ),
               ),
@@ -379,6 +316,28 @@ class _TasksPageState extends State<TasksPage> {
           ],
         ),
       ),
+
+      // floatingActionButton: Align(
+      //   alignment: Alignment.bottomRight,
+      //   child: Padding(
+      //     padding: const EdgeInsets.all(16.0),
+      //     child: FloatingActionButton(
+      //       onPressed: () {
+      //         Navigator.push(
+      //           context,
+      //           MaterialPageRoute(
+      //             builder: (context) => ChatWindow(
+      //               userUUID: FirebaseAuth.instance.currentUser?.uid,
+      //               grade: widget.grade,
+      //             ),
+      //           ),
+      //         );
+      //       },
+      //       child: Icon(Icons.chat_rounded),
+      //       backgroundColor: Color(0xFF0560FB),
+      //     ),
+      //   ),
+      // ),
     );
   }
 }
