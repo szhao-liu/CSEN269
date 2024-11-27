@@ -2,8 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
 
-import '../../features/user_auth/presentation/pages/About_Us.dart';
-
 class GetHelpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -12,134 +10,65 @@ class GetHelpPage extends StatelessWidget {
         dynamicText: "Get Help",
         grade: null,
         showBackArrow: true,
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.group, // Group of people icon
-              size: 30, // Increased the size of the icon
-              color: Colors.black,
-            ),
-            tooltip: 'About Us',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AboutUsPage()),
-              );
-            },
-          ),
-        ],
+        actions: [],  // Remove the About Us button by keeping actions as empty list
       ),
       body: Stack(
         children: [
           Positioned.fill(
-            child: Container(color: const Color(0xFFF9F9F9)),
+            child: Container(color: const Color(0xFFF9F9F9)),  // Background color
           ),
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 30),
-                  const Text(
-                    'Welcome to Get Help!',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.indigo,
+          Align(
+            alignment: Alignment.topCenter,  // Align the content in the top center
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 110), // Increased gap below the header
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.85,  // Set container width (85% of screen width)
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 5,
+                            spreadRadius: 2,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(40),
+                      child: Column(
+                        children: [
+                          _buildFeatureCard(
+                            context,
+                            "Click on each tab to see a detailed explanation of the term.",
+                            Colors.orange[200]!,
+                            Colors.purple[100]!,
+                          ),
+                          const SizedBox(height: 40),
+                          _buildFeatureCard(
+                            context,
+                            "Then, swipe to complete a simple task related to it.",
+                            Colors.orange[200]!,
+                            Colors.purple[100]!,
+                          ),
+                          const SizedBox(height: 40),
+                          _buildFeatureCard(
+                            context,
+                            "Once you finish, check the box to track your progress.",
+                            Colors.orange[200]!,
+                            Colors.purple[100]!,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  FeatureCardsWidget(),
-                  const SizedBox(height: 20),
-                  LogoutButton(),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class LogoutButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () async {
-        try {
-          await FirebaseAuth.instance.signOut();
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            '/login',
-                (Route<dynamic> route) => false, // Clear the navigation stack
-          );
-        } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Error logging out: ${e.toString()}")),
-          );
-        }
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.redAccent,
-        padding: const EdgeInsets.symmetric(vertical: 15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
-      child: const Text(
-        "Logout",
-        style: TextStyle(
-          fontFamily: 'Cereal',
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
-}
-
-class FeatureCardsWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 5,
-            spreadRadius: 2,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          _buildFeatureCard(
-            context,
-            "Click on each tab to see a detailed explanation of the term.",
-            Colors.orange[200]!,
-            Colors.purple[100]!,
-          ),
-          const SizedBox(height: 20),
-          _buildFeatureCard(
-            context,
-            "Then, swipe to complete a simple task related to it.",
-            Colors.orange[200]!,
-            Colors.purple[100]!,
-          ),
-          const SizedBox(height: 20),
-          _buildFeatureCard(
-            context,
-            "Once you finish, check the box to track your progress.",
-            Colors.orange[200]!,
-            Colors.purple[100]!,
           ),
         ],
       ),
