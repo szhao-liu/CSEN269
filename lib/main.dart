@@ -14,8 +14,7 @@ import 'global/common/grade.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-      name: "College", options:
+  await Firebase.initializeApp(options:
   DefaultFirebaseOptions.currentPlatform);
   runApp(CollegeFinder());
 }
