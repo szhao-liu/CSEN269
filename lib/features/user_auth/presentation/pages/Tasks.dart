@@ -1,18 +1,19 @@
 import 'dart:async';
 import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:college_finder/features/user_auth/presentation/pages/DocumentUpload.dart';
 import 'package:college_finder/features/user_auth/presentation/pages/List.dart';
 import 'package:college_finder/features/user_auth/presentation/pages/MeetingRecord.dart';
 import 'package:college_finder/features/user_auth/presentation/pages/Video.dart';
+import 'package:college_finder/global/common/Get_Help.dart';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
 import 'package:college_finder/global/common/page_type.dart';
-import '../../../../global/common/chat_window.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
 import '../../../../global/common/grade.dart';
 import 'Memo.dart';
-import 'package:college_finder/global/common/Get_Help.dart';
 
 class FrostedGlassBox extends StatelessWidget {
   const FrostedGlassBox({
@@ -206,6 +207,7 @@ class _TasksPageState extends State<TasksPage> {
         dynamicText: "Checklist",
         grade: widget.grade,
         onGradeChanged: _onGradeChanged,
+        showBackArrow: false,
       ),
       body: SingleChildScrollView(
         child: Stack(

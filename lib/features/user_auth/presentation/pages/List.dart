@@ -91,8 +91,21 @@ class _ListPage extends State<ListPage> {
           ),
           Column(
             children: [
-              CommonHeader.Header(dynamicText: "List Entries", grade: widget.task.grade),
+              CommonHeader.Header(
+                  dynamicText: "List Entries", grade: widget.task.grade),
               SizedBox(height: 45),
+              Center(
+                child: Text(
+                  'Task: ${widget.task.title}',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.indigo,
+                    fontFamily: 'Cereal',
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -119,21 +132,21 @@ class _ListPage extends State<ListPage> {
                           Expanded(
                             child: meetingRecords.isEmpty
                                 ? Center(
-                              child: Text(
-                                'No meeting records available',
-                                style: TextStyle(
-                                  color: Colors.indigo,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Cereal',
-                                ),
-                              ),
-                            )
+                                    child: Text(
+                                      'No meeting records available',
+                                      style: TextStyle(
+                                        color: Colors.indigo,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Cereal',
+                                      ),
+                                    ),
+                                  )
                                 : ListView.builder(
-                              itemCount: meetingRecords.length,
-                              itemBuilder: (context, index) =>
-                                  _buildMeetingRecordRow(
-                                      meetingRecords[index]),
-                            ),
+                                    itemCount: meetingRecords.length,
+                                    itemBuilder: (context, index) =>
+                                        _buildMeetingRecordRow(
+                                            meetingRecords[index]),
+                                  ),
                           ),
                           SizedBox(height: 16),
                           ElevatedButton.icon(
@@ -168,14 +181,15 @@ class _ListPage extends State<ListPage> {
                         ),
                       );
                     },
-                    child: Text('References'),
+                    child: Text('References',
+                        style: TextStyle(fontFamily: 'Cereal')),
                   ),
                 ),
             ],
           ),
           Positioned(
             bottom: 20,
-            right: 20,  // Positioned to the bottom right
+            right: 20, // Positioned to the bottom right
             child: GestureDetector(
               onTap: () {
                 // Navigate to GetHelpPage when the button is pressed
@@ -188,8 +202,8 @@ class _ListPage extends State<ListPage> {
                 radius: 25, // Smaller size for the button
                 backgroundColor: Colors.blueAccent,
                 child: Image.asset(
-                  'assets/help.png',  // Ensure this path is correct
-                  fit: BoxFit.cover,  // Ensures the image fits within the circle
+                  'assets/help.png', // Ensure this path is correct
+                  fit: BoxFit.cover, // Ensures the image fits within the circle
                 ),
               ),
             ),
@@ -258,13 +272,13 @@ class _ListPage extends State<ListPage> {
                   ),
                   SizedBox(height: 8),
                   TextFormField(
-                    controller:
-                    _entryControllers[record.docId] ??= TextEditingController(),
+                    controller: _entryControllers[record.docId] ??=
+                        TextEditingController(),
                     key: ValueKey('${record.docId}-entry'),
                     decoration: InputDecoration(
                       hintText: 'Enter the completed task...',
-                      hintStyle: TextStyle(
-                          color: Colors.grey, fontFamily: 'Cereal'),
+                      hintStyle:
+                          TextStyle(color: Colors.grey, fontFamily: 'Cereal'),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.indigo),
                       ),
@@ -278,8 +292,8 @@ class _ListPage extends State<ListPage> {
                       fontFamily: 'Cereal',
                     ),
                     onEditingComplete: () {
-                      String entryText = _entryControllers[record.docId]
-                          ?.text ?? '';
+                      String entryText =
+                          _entryControllers[record.docId]?.text ?? '';
                       if (entryText.isNotEmpty) {
                         addNewEntry(record, entryText);
                       }
@@ -305,7 +319,7 @@ class _ListPage extends State<ListPage> {
     );
   }
 
-    void loadMeetingNotes() {
+  void loadMeetingNotes() {
     if (userUUID != null) {
       _subscription = FirebaseFirestore.instance
           .collection('users')
@@ -318,8 +332,9 @@ class _ListPage extends State<ListPage> {
         setState(() {
           meetingRecords = snapshot.docs.map((doc) {
             List<MeetingEntry> entries = (doc['entries'] as List?)
-                ?.map((e) => MeetingEntry.fromMap(e))
-                .toList() ?? [];
+                    ?.map((e) => MeetingEntry.fromMap(e))
+                    .toList() ??
+                [];
 
             return MeetingRecord(
               docId: doc.id,
@@ -331,13 +346,15 @@ class _ListPage extends State<ListPage> {
           // Update TextEditingController for each meeting record
           for (var record in meetingRecords) {
             if (_notesControllers[record.docId] == null) {
-              _notesControllers[record.docId] = TextEditingController(text: record.discussionNotes);
+              _notesControllers[record.docId] =
+                  TextEditingController(text: record.discussionNotes);
             } else {
               _notesControllers[record.docId]?.text = record.discussionNotes;
             }
           }
 
-          print("Meeting records retrieved: ${meetingRecords.length} records found");
+          print(
+              "Meeting records retrieved: ${meetingRecords.length} records found");
         });
       }, onError: (error) {
         print("Error retrieving meeting records: $error");
@@ -406,7 +423,6 @@ class _ListPage extends State<ListPage> {
     });
   }
 
-
   void removeMeetingRecord(MeetingRecord record) {
     FirebaseFirestore.instance
         .collection('users')
@@ -418,8 +434,7 @@ class _ListPage extends State<ListPage> {
         .delete()
         .then((_) {
       print("Meeting record removed with ID: ${record.docId}");
-    })
-        .catchError((error) {
+    }).catchError((error) {
       print("Failed to remove meeting record: $error");
     });
 

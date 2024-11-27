@@ -80,12 +80,16 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    Text(
-                      'Meeting Notes',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.indigo,
+                    Center(
+                      child: Text(
+                        'Task: ${widget.task.title}',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.indigo,
+                          fontFamily: 'Cereal',
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                     SizedBox(height: 8.0),

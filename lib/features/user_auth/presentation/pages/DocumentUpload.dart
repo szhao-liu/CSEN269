@@ -31,7 +31,8 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
 
   Future<void> fetchUploadedResumes() async {
     try {
-      final resumesRef = firebase_storage.FirebaseStorage.instance.ref('resumes/${widget.userUUID}');
+      final resumesRef = firebase_storage.FirebaseStorage.instance
+          .ref('resumes/${widget.userUUID}');
       final listResult = await resumesRef.listAll();
 
       List<String> urls = [];
@@ -94,7 +95,8 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
           ),
           Column(
             children: [
-              CommonHeader.Header(dynamicText: "Document Upload", grade: widget.task.grade),
+              CommonHeader.Header(
+                  dynamicText: "Document Upload", grade: widget.task.grade),
               Expanded(
                 child: SingleChildScrollView(
                   child: Padding(
@@ -106,17 +108,32 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
                         Center(
                           child: Column(
                             children: [
+                              Center(
+                                child: Text(
+                                  'Task: ${widget.task.title}',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.indigo,
+                                    fontFamily: 'Cereal',
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 20),
                               // Drop Zone
                               Container(
                                 padding: EdgeInsets.all(16.0),
                                 decoration: BoxDecoration(
                                   color: Colors.grey[200],
                                   borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: Colors.grey.shade400, width: 2),
+                                  border: Border.all(
+                                      color: Colors.grey.shade400, width: 2),
                                 ),
                                 child: Column(
                                   children: [
-                                    Icon(Icons.upload_file, size: 40, color: Colors.indigo),
+                                    Icon(Icons.upload_file,
+                                        size: 40, color: Colors.indigo),
                                     SizedBox(height: 8),
                                     Text(
                                       'Drag & Drop your resume here or click to upload',
@@ -132,10 +149,12 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
                                       onPressed: uploadResume,
                                       child: Text('Upload Document'),
                                       style: ElevatedButton.styleFrom(
-                                        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 40, vertical: 12),
                                         backgroundColor: Colors.white,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                         ),
                                       ),
                                     ),
@@ -164,28 +183,42 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
                                       physics: NeverScrollableScrollPhysics(),
                                       itemCount: uploadedResumeUrls.length,
                                       itemBuilder: (context, index) {
-                                        String resumeUrl = uploadedResumeUrls[index];
+                                        String resumeUrl =
+                                            uploadedResumeUrls[index];
                                         String resumeName = Uri.decodeFull(
-                                            resumeUrl.split('%2F').last.split('?').first.replaceAll('%20', ' '));
+                                            resumeUrl
+                                                .split('%2F')
+                                                .last
+                                                .split('?')
+                                                .first
+                                                .replaceAll('%20', ' '));
                                         return Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 4.0),
                                           child: Card(
                                             elevation: 2,
                                             shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(8),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
                                             ),
                                             child: ListTile(
-                                              contentPadding: EdgeInsets.all(8.0),
+                                              contentPadding:
+                                                  EdgeInsets.all(8.0),
                                               title: Text(
                                                 resumeName,
                                                 style: TextStyle(
-                                                    color: Colors.indigo, fontWeight: FontWeight.w500),
+                                                    color: Colors.indigo,
+                                                    fontWeight:
+                                                        FontWeight.w500),
                                               ),
-                                              trailing: Icon(Icons.open_in_new, color: Colors.indigo),
+                                              trailing: Icon(Icons.open_in_new,
+                                                  color: Colors.indigo),
                                               onTap: () => Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) => PdfViewerPage(pdfUrl: resumeUrl),
+                                                  builder: (context) =>
+                                                      PdfViewerPage(
+                                                          pdfUrl: resumeUrl),
                                                 ),
                                               ),
                                             ),
@@ -219,14 +252,8 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
                           ),
                         );
                       },
-                      child: Text('References'),
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                        backgroundColor: Colors.green,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
+                      child: Text('References',
+                          style: TextStyle(fontFamily: 'Cereal')),
                     ),
                   ),
                 ),
@@ -234,7 +261,7 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
           ),
           Positioned(
             bottom: 20,
-            right: 20,  // Positioned to the bottom right
+            right: 20, // Positioned to the bottom right
             child: GestureDetector(
               onTap: () {
                 // Navigate to GetHelpPage when the button is pressed
@@ -247,8 +274,8 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
                 radius: 25, // Smaller size for the button
                 backgroundColor: Colors.blueAccent,
                 child: Image.asset(
-                  'assets/help.png',  // Ensure this path is correct
-                  fit: BoxFit.cover,  // Ensures the image fits within the circle
+                  'assets/help.png', // Ensure this path is correct
+                  fit: BoxFit.cover, // Ensures the image fits within the circle
                 ),
               ),
             ),
@@ -271,7 +298,8 @@ class PdfViewerPage extends StatelessWidget {
         title: Text("Document Viewer"),
         backgroundColor: Colors.indigo,
       ),
-      body: SfPdfViewer.network(pdfUrl), // Display PDF using Syncfusion PDF Viewer
+      body: SfPdfViewer.network(
+          pdfUrl), // Display PDF using Syncfusion PDF Viewer
     );
   }
 }

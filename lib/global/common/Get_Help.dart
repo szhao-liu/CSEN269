@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
+
+import '../../features/user_auth/presentation/pages/About_Us.dart';
 
 class GetHelpPage extends StatelessWidget {
   @override
@@ -8,7 +11,23 @@ class GetHelpPage extends StatelessWidget {
       appBar: CommonHeader.Header(
         dynamicText: "Get Help",
         grade: null,
-        showBackArrow: true,  // Added back arrow for navigation
+        showBackArrow: true,
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.group,  // Group of people icon
+              size: 30,  // Increase the size of the icon
+              color: Colors.black,
+            ), // Replaced the "i" icon with a team icon
+            tooltip: 'About Us',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AboutUsPage()),
+              );
+            },
+          ),
+        ],// Added back arrow for navigation
       ),
       body: Stack(
         fit: StackFit.expand,
@@ -24,17 +43,63 @@ class GetHelpPage extends StatelessWidget {
                 // Large Welcome text with customized colors
                 SizedBox(height: 20),
                 // Main content of the page here...
+                // Feature Cards Widget
+                Positioned(
+                  top: 120, // Increase this value to add more gap between header and widget
+                  left: 20,
+                  right: 20,
+                  child: FeatureCardsWidget(),
+                ),
               ],
             ),
           ),
-          // Feature Cards Widget with increased gap
+          // Logout button at the bottom of the screen
           Positioned(
-            top: 120, // Increase this value to add more gap between header and widget
+            bottom: 20, // Place it near the bottom
             left: 20,
             right: 20,
-            child: FeatureCardsWidget(),
+            child: LogoutButton(), // Logout Button widget
           ),
         ],
+      ),
+    );
+  }
+}
+
+class LogoutButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () async {
+        try {
+          await FirebaseAuth.instance.signOut(); // Sign out the user
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/login', // Redirect to the login page
+                (Route<dynamic> route) => false, // Clear the navigation stack
+          );
+        } catch (e) {
+          // Handle any errors during logout
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Error logging out: ${e.toString()}")),
+          );
+        }
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.redAccent, // Set button color
+        padding: EdgeInsets.symmetric(vertical: 15.0), // Adjust padding
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10), // Rounded corners
+        ),
+      ),
+      child: Text(
+        "Logout",
+        style: TextStyle(
+          fontFamily: 'Cereal',
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
       ),
     );
   }

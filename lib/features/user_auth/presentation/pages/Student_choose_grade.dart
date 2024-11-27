@@ -161,13 +161,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void navigateToTasks(BuildContext context, Grade grade) {
-    Navigator.push(
+    Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
         builder: (context) =>
             TasksPage(grade: grade),
-
       ),
+      (Route<dynamic> route) => false,
     );
   }
 }

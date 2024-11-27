@@ -260,7 +260,11 @@ class _LoginPageState extends State<LoginPage> {
         navigateToTasks(context, userGrade, Colors.cyan);
       } else {
         // If the user's grade is not present, navigate to the home page
-        Navigator.pushNamed(context, "/welcomePage");
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/welcomePage', // Target route name
+              (Route<dynamic> route) => false, // Removes all previous routes
+        );
       }
     } else {
       showToast(message: "Some error occurred");
@@ -268,11 +272,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void navigateToTasks(BuildContext context, Grade grade, Color color) {
-    Navigator.push(
+    Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
         builder: (context) => TasksPage(grade: grade),
       ),
+      (Route<dynamic> route) => false,
     );
   }
 

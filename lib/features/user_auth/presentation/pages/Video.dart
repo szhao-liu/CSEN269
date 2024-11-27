@@ -48,6 +48,19 @@ class _VideoPageState extends State<VideoPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20.0),
+              Center(
+                child: Text(
+                  'Task: ${widget.task.title}',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.indigo,
+                    fontFamily: 'Cereal',
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20.0),
               Expanded(
                 child: ListView.builder(
                   itemCount: videoData.length,
