@@ -316,28 +316,6 @@ class _TasksPageState extends State<TasksPage> {
           ],
         ),
       ),
-
-      // floatingActionButton: Align(
-      //   alignment: Alignment.bottomRight,
-      //   child: Padding(
-      //     padding: const EdgeInsets.all(16.0),
-      //     child: FloatingActionButton(
-      //       onPressed: () {
-      //         Navigator.push(
-      //           context,
-      //           MaterialPageRoute(
-      //             builder: (context) => ChatWindow(
-      //               userUUID: FirebaseAuth.instance.currentUser?.uid,
-      //               grade: widget.grade,
-      //             ),
-      //           ),
-      //         );
-      //       },
-      //       child: Icon(Icons.chat_rounded),
-      //       backgroundColor: Color(0xFF0560FB),
-      //     ),
-      //   ),
-      // ),
     );
   }
 }
