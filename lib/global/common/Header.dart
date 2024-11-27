@@ -113,10 +113,11 @@ class _HeaderState extends State<Header> {
             onChanged: (dynamic newGrade) {
               if (newGrade == null) {
                 // Navigate to the StudentChooseGrade page
-                Navigator.push(
+                Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => StudentChooseGrade()),
-                );
+                  (Route<dynamic> route) => false,
+              );
               } else if (newGrade is Grade) {
                 setState(() {
                   selectedGrade = newGrade;

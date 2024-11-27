@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../../../global/common/chat_window.dart';
 import '../../../../global/common/document_list.dart';
 import 'Tasks.dart';
 import 'dart:async';
@@ -74,18 +73,25 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
           ),
           Column(
             children: [
-              CommonHeader.Header(dynamicText: "Meeting Record", grade: widget.task.grade),
+              CommonHeader.Header(
+                dynamicText: "Meeting Record",
+                grade: widget.task.grade,
+              ),
               SizedBox(height: 45),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    Text(
-                      'Meeting Notes',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.indigo,
+                    Center(
+                      child: Text(
+                        'Task: ${widget.task.title}',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.indigo,
+                          fontFamily: 'Cereal',
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                     SizedBox(height: 8.0),
@@ -133,39 +139,19 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
             backgroundColor: Colors.indigo,
           ),
           SizedBox(height: 16),
-          // FloatingActionButton(
-          //   onPressed: () {
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(
-          //         builder: (context) => ChatWindow(
-          //           userUUID: FirebaseAuth.instance.currentUser?.uid,
-          //           grade: widget.task.grade,
-          //         ),
-          //       ),
-          //     );
-          //   },
-          //   child: Icon(Icons.chat_rounded),
-          //   backgroundColor: Color(0xFF0560FB),
-          // ),
-          Positioned(
-            bottom: 20,
-            right: 20,  // Positioned to the bottom right
-            child: GestureDetector(
-              onTap: () {
-                // Navigate to GetHelpPage when the button is pressed
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => GetHelpPage()),
-                );
-              },
-              child: CircleAvatar(
-                radius: 25, // Smaller size for the button
-                backgroundColor: Colors.blueAccent,
-                child: Image.asset(
-                  'assets/help.png',  // Ensure this path is correct
-                  fit: BoxFit.cover,  // Ensures the image fits within the circle
-                ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => GetHelpPage()),
+              );
+            },
+            child: CircleAvatar(
+              radius: 25,
+              backgroundColor: Colors.blueAccent,
+              child: Image.asset(
+                'assets/help.png',
+                fit: BoxFit.cover,
               ),
             ),
           ),
@@ -175,172 +161,121 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
   }
 
   Widget _buildMeetingRecordRow(MeetingRecord record) {
-    _dateControllers[record.docId] = TextEditingController(text: record.date);
-    _timeControllers[record.docId] = TextEditingController(text: record.time);
-    _notesControllers[record.docId] = TextEditingController(text: record.discussionNotes);
+    _dateControllers[record.docId] =
+        TextEditingController(text: record.date);
+    _timeControllers[record.docId] =
+        TextEditingController(text: record.time);
+    _notesControllers[record.docId] =
+        TextEditingController(text: record.discussionNotes);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Card(
-          key: ValueKey(record.docId),
-          color: Colors.white,
-          margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
-          elevation: 4.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 8.0),
-                TextFormField(
-                  controller: _dateControllers[record.docId],
-                  key: ValueKey('${record.docId}-date'),
-                  decoration: InputDecoration(
-                    labelText: 'Date',
-                    labelStyle: TextStyle(color: Colors.indigo),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.indigo),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.indigo),
-                    ),
-                  ),
-                  style: TextStyle(
-                    color: Colors.indigo,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                  onTap: () => _selectDate(context, record),
-                  onChanged: (value) {
-                    updateMeetingRecord(record, date: value);
-                  },
+    return Card(
+      key: ValueKey(record.docId),
+      color: Colors.white,
+      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+      elevation: 4.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextFormField(
+              controller: _dateControllers[record.docId],
+              decoration: InputDecoration(
+                labelText: 'Date',
+                labelStyle: TextStyle(color: Colors.indigo),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.indigo),
                 ),
-                SizedBox(height: 8.0),
-                TextFormField(
-                  controller: _timeControllers[record.docId],
-                  key: ValueKey('${record.docId}-time'),
-                  decoration: InputDecoration(
-                    labelText: 'Time',
-                    labelStyle: TextStyle(color: Colors.indigo),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.indigo),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.indigo),
-                    ),
-                  ),
-                  style: TextStyle(
-                    color: Colors.indigo,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  onTap: () => _selectTime(context, record),
-                  onChanged: (value) {
-                    updateMeetingRecord(record, time: value);
-                  },
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.indigo),
                 ),
-                SizedBox(height: 8.0),
-                TextFormField(
-                  controller: _notesControllers[record.docId],
-                  key: ValueKey('${record.docId}-notes'),
-                  decoration: InputDecoration(
-                    labelText: 'Add meeting notes...',
-                    labelStyle: TextStyle(color: Colors.indigo),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.indigo),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.indigo),
-                    ),
-                  ),
-                  style: TextStyle(
-                    color: Colors.indigo,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: null,
-                  onChanged: (value) {
-                    updateMeetingRecord(record, discussionNotes: value);
-                  },
-                ),
-                SizedBox(height: 16.0),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () {
-                      removeMeetingRecord(record);
-                    },
-                    color: Colors.red,
-                  ),
-                ),
-              ],
+              ),
+              onTap: () => _selectDate(context, record),
             ),
-          ),
+            SizedBox(height: 8.0),
+            TextFormField(
+              controller: _timeControllers[record.docId],
+              decoration: InputDecoration(
+                labelText: 'Time',
+                labelStyle: TextStyle(color: Colors.indigo),
+              ),
+              onTap: () => _selectTime(context, record),
+            ),
+            SizedBox(height: 8.0),
+            TextFormField(
+              controller: _notesControllers[record.docId],
+              decoration: InputDecoration(
+                labelText: 'Add meeting notes...',
+              ),
+              maxLines: null,
+            ),
+            SizedBox(height: 16.0),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () => removeMeetingRecord(record),
+                color: Colors.red,
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
   Future<void> _selectDate(BuildContext context, MeetingRecord record) async {
-    final DateTime? pickedDate = await showDatePicker(
+    final pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2015, 8),
+      firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
     if (pickedDate != null) {
-      String formattedDate = "${pickedDate.toLocal()}".split(' ')[0];
-      setState(() {
-        _dateControllers[record.docId]?.text = formattedDate;
-      });
+      final formattedDate = pickedDate.toLocal().toString().split(' ')[0];
       updateMeetingRecord(record, date: formattedDate);
     }
   }
 
   Future<void> _selectTime(BuildContext context, MeetingRecord record) async {
-    final TimeOfDay? pickedTime = await showTimePicker(
+    final pickedTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
     );
     if (pickedTime != null) {
-      String formattedTime = '${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}';
-      setState(() {
-        _timeControllers[record.docId]?.text = formattedTime;
-      });
+      final formattedTime =
+          '${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}';
       updateMeetingRecord(record, time: formattedTime);
     }
   }
 
   void loadMeetingNotes() {
-    if (userUUID != null) {
-      _subscription = FirebaseFirestore.instance
-          .collection('users')
-          .doc(userUUID)
-          .collection('tasks')
-          .doc(widget.task.id)
-          .collection('meetingRecords')
-          .snapshots()
-          .listen((snapshot) {
-        setState(() {
-          meetingRecords = snapshot.docs
-              .map((doc) => MeetingRecord(
+    _subscription = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userUUID)
+        .collection('tasks')
+        .doc(widget.task.id)
+        .collection('meetingRecords')
+        .snapshots()
+        .listen((snapshot) {
+      setState(() {
+        meetingRecords = snapshot.docs.map((doc) {
+          return MeetingRecord(
             docId: doc.id,
             date: doc['date'] ?? '',
             time: doc['time'] ?? '',
             discussionNotes: doc['discussionNotes'] ?? '',
-          ))
-              .toList();
-          meetingRecords.sort((a, b) => a.docId.compareTo(b.docId));
-        });
+          );
+        }).toList();
       });
-    }
+    });
   }
 
   void addNewMeetingRecord() {
-    var newRecordRef = FirebaseFirestore.instance
+    final newRecordRef = FirebaseFirestore.instance
         .collection('users')
         .doc(userUUID)
         .collection('tasks')
@@ -348,21 +283,19 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
         .collection('meetingRecords')
         .doc();
 
-    var newMeetingRecord = MeetingRecord(
+    final newMeetingRecord = MeetingRecord(
       docId: newRecordRef.id,
       date: '',
       time: '',
       discussionNotes: '',
     );
 
-    newRecordRef.set(newMeetingRecord.toMap()).catchError((error) {
-      print("Failed to add meeting record: $error");
-    });
+    newRecordRef.set(newMeetingRecord.toMap());
   }
 
   void updateMeetingRecord(MeetingRecord record,
       {String? date, String? time, String? discussionNotes}) {
-    var meetingRecordRef = FirebaseFirestore.instance
+    final meetingRecordRef = FirebaseFirestore.instance
         .collection('users')
         .doc(userUUID)
         .collection('tasks')
@@ -370,14 +303,12 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
         .collection('meetingRecords')
         .doc(record.docId);
 
-    var updateData = <String, dynamic>{};
+    final updateData = <String, dynamic>{};
     if (date != null) updateData['date'] = date;
     if (time != null) updateData['time'] = time;
     if (discussionNotes != null) updateData['discussionNotes'] = discussionNotes;
 
-    meetingRecordRef.update(updateData).catchError((error) {
-      print("Failed to update meeting record: $error");
-    });
+    meetingRecordRef.update(updateData);
   }
 
   void removeMeetingRecord(MeetingRecord record) {
@@ -388,9 +319,6 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
         .doc(widget.task.id)
         .collection('meetingRecords')
         .doc(record.docId)
-        .delete()
-        .catchError((error) {
-      print("Failed to delete meeting record: $error");
-    });
+        .delete();
   }
 }

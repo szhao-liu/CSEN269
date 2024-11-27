@@ -1,11 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:convert';
+
+import 'package:college_finder/global/common/Get_Help.dart';
+import 'package:college_finder/global/common/Header.dart' as CommonHeader;
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../../global/common/chat_window.dart';
+import 'package:http/http.dart' as http;
 import '../../../../global/common/document_list.dart';
 import 'Tasks.dart';
-import 'package:college_finder/global/common/Header.dart' as CommonHeader;
-import 'package:college_finder/global/common/Get_Help.dart';
 
 class VideoPage extends StatefulWidget {
   final Task task;
@@ -17,22 +18,64 @@ class VideoPage extends StatefulWidget {
 }
 
 class _VideoPageState extends State<VideoPage> {
-  // Function to parse video details from task links
-  List<Map<String, String>> parseVideos(List<String> links) {
-    return links.map((link) {
-      final videoId = Uri.parse(link).queryParameters['v'] ?? '';
-      return {
-        'title': 'Video', // Default title (can enhance this by fetching actual titles via API)
-        'thumbnailUrl': 'https://img.youtube.com/vi/$videoId/maxresdefault.jpg',
-        'videoUrl': link,
-      };
-    }).toList();
+
+  Future<List<Map<String, String>>> parseVideos(List<String> links) async {
+    // Initialize an empty list to store the video data
+    List<Map<String, String>> videoData = [];
+
+    // Loop through each link to fetch video details
+    for (String link in links) {
+      var jsonData = await getDetail(link); // Fetch the video details
+
+      if (jsonData != null) {
+        videoData.add({
+          'title': jsonData['title'],
+          // Fallback if title is null
+          'thumbnailUrl': jsonData['thumbnail_url'],
+          // Use the fetched thumbnail URL or default
+          'videoUrl': link,
+        });
+      }
+    }
+
+    return videoData; // Return the list of video data
+  }
+
+  Future<dynamic> getDetail(String userUrl) async {
+    String embedUrl = "https://www.youtube.com/oembed?url=$userUrl&format=json";
+
+    try {
+      var res = await http.get(Uri.parse(embedUrl)); // HTTP GET request
+
+      print("get youtube detail status code: ${res.statusCode}");
+
+      if (res.statusCode == 200) {
+        return json.decode(
+            res.body); // Decode JSON if the request is successful
+      } else {
+        return null; // Return null if the status code is not 200
+      }
+    } on FormatException catch (e) {
+      print('Invalid JSON: ${e.toString()}');
+      return null; // Return null in case of a JSON format error
+    }
+  }
+
+
+  /// Launches a URL and handles potential errors
+  Future<void> _launchVideo(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      // Displays an error message if the URL cannot be launched
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Could not launch video: $url')),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, String>> videoData = parseVideos(widget.task.links);
-
     return Scaffold(
       appBar: CommonHeader.Header(
         dynamicText: "Videos",
@@ -44,103 +87,148 @@ class _VideoPageState extends State<VideoPage> {
           Positioned.fill(
             child: Container(color: const Color(0xFFF9F9F9)),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 20.0),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: videoData.length,
-                  itemBuilder: (context, index) {
-                    final video = videoData[index];
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Card(
-                        color: Colors.white.withOpacity(0.8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Image.network(
-                              video['thumbnailUrl'] ?? '',
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                video['title'] ?? 'Video Title',
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            InkWell(
-                              onTap: () async {
-                                final url = video['videoUrl']!;
-                                if (await canLaunch(url)) {
-                                  await launch(url);
-                                } else {
-                                  throw 'Could not launch $url';
-                                }
-                              },
-                              child: const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Watch Video',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.blue,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+          FutureBuilder<List<Map<String, String>>>(
+            future: parseVideos(widget.task.links),
+            // Call parseVideos to fetch video data
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(
+                    child: Text('Error loading videos: ${snapshot.error}'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(child: Text('No videos available'));
+              }
+
+              final videoData = snapshot.data!; // Get the fetched data
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20.0),
+                  Center(
+                    child: Text(
+                      'Task: ${widget.task.title}',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Colors.indigo,
+                        fontFamily: 'Cereal',
+                        fontWeight: FontWeight.w700,
                       ),
-                    );
-                  },
-                ),
-              ),
-              if (widget.task.documents.isNotEmpty)
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DocumentListPage(
-                            documents: widget.task.documents,
-                          ),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      'References',
-                      style: TextStyle(fontFamily: 'Cereal'),
                     ),
                   ),
-                ),
-              const SizedBox(height: 30),
-            ],
+                  const SizedBox(height: 20.0),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: videoData.length,
+                      itemBuilder: (context, index) {
+                        final video = videoData[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 8.0),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            elevation: 4.0,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (video['thumbnailUrl'] != '')
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(12.0)),
+                                    child: Image.network(
+                                      video['thumbnailUrl']!,
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: 200,
+                                      loadingBuilder: (context, child,
+                                          loadingProgress) {
+                                        if (loadingProgress == null) {
+                                          return child;
+                                        }
+                                        return const Center(
+                                            child: CircularProgressIndicator());
+                                      },
+                                      errorBuilder: (context, error,
+                                          stackTrace) {
+                                        return const SizedBox(
+                                          height: 200,
+                                          child: Center(
+                                              child: Text('Thumbnail Error')),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    video['title']!,
+                                    style: const TextStyle(fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () => _launchVideo(video['videoUrl']!),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Watch Video',
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.blue),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  if (widget.task.documents.isNotEmpty)
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  DocumentListPage(
+                                    documents: widget.task.documents,
+                                  ),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'References',
+                          style: TextStyle(fontFamily: 'Cereal'),
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: 30),
+                ],
+              );
+            },
           ),
           Positioned(
             bottom: 20,
-            right: 20,  // Positioned to the bottom right
+            right: 20,
             child: GestureDetector(
               onTap: () {
-                // Navigate to GetHelpPage when the button is pressed
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => GetHelpPage()),
                 );
               },
               child: CircleAvatar(
-                radius: 25, // Smaller size for the button
+                radius: 25,
                 backgroundColor: Colors.blueAccent,
                 child: Image.asset(
-                  'assets/help.png',  // Ensure this path is correct
-                  fit: BoxFit.cover,  // Ensures the image fits within the circle
+                  'assets/help.png',
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
