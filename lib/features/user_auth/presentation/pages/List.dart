@@ -30,10 +30,20 @@ class MeetingRecord {
 
   Map<String, dynamic> toMap() {
     return {
-      'docId': docId,
       'discussionNotes': discussionNotes,
       'entries': entries.map((e) => e.toMap()).toList(),
     };
+  }
+
+  static MeetingRecord fromMap(DocumentSnapshot doc) {
+    return MeetingRecord(
+      docId: doc.id,
+      discussionNotes: doc['discussionNotes'] ?? '',
+      entries: (doc['entries'] as List?)
+          ?.map((e) => MeetingEntry.fromMap(e))
+          .toList() ??
+          [],
+    );
   }
 }
 
@@ -62,8 +72,7 @@ class _ListPage extends State<ListPage> {
   String? userUUID;
   List<MeetingRecord> meetingRecords = [];
   StreamSubscription<QuerySnapshot>? _subscription;
-  final Map<String, TextEditingController> _notesControllers = {};
-  final Map<String, TextEditingController> _entryControllers = {};
+  final TextEditingController _entryController = TextEditingController();
 
   @override
   void initState() {
@@ -75,8 +84,7 @@ class _ListPage extends State<ListPage> {
   @override
   void dispose() {
     _subscription?.cancel();
-    _notesControllers.values.forEach((controller) => controller.dispose());
-    _entryControllers.values.forEach((controller) => controller.dispose());
+    _entryController.dispose();
     super.dispose();
   }
 
@@ -87,18 +95,20 @@ class _ListPage extends State<ListPage> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Container(color: Color(0xFFF9F9F9)),
+            child: Container(color: const Color(0xFFF9F9F9)),
           ),
           Column(
             children: [
               CommonHeader.Header(
-                  dynamicText: "List Entries", grade: widget.task.grade),
-              SizedBox(height: 45),
+                dynamicText: "List Entries",
+                grade: widget.task.grade,
+              ),
+              const SizedBox(height: 45),
               Center(
                 child: Text(
                   'Task: ${widget.task.title}',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     color: Colors.indigo,
                     fontFamily: 'Cereal',
@@ -119,8 +129,7 @@ class _ListPage extends State<ListPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: 8),
-                          Text(
+                          const Text(
                             'Enter the accomplished tasks',
                             style: TextStyle(
                               fontSize: 20,
@@ -128,34 +137,34 @@ class _ListPage extends State<ListPage> {
                               color: Colors.indigo,
                             ),
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           Expanded(
                             child: meetingRecords.isEmpty
-                                ? Center(
-                                    child: Text(
-                                      'No meeting records available',
-                                      style: TextStyle(
-                                        color: Colors.indigo,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Cereal',
-                                      ),
-                                    ),
-                                  )
+                                ? const Center(
+                              child: Text(
+                                'No meeting records available',
+                                style: TextStyle(
+                                  color: Colors.indigo,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Cereal',
+                                ),
+                              ),
+                            )
                                 : ListView.builder(
-                                    itemCount: meetingRecords.length,
-                                    itemBuilder: (context, index) =>
-                                        _buildMeetingRecordRow(
-                                            meetingRecords[index]),
-                                  ),
+                              itemCount: meetingRecords.length,
+                              itemBuilder: (context, index) =>
+                                  _buildMeetingRecordRow(
+                                      meetingRecords[index]),
+                            ),
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           ElevatedButton.icon(
                             onPressed: addNewMeetingRecord,
-                            icon: Icon(Icons.add),
-                            label: Text('Add New Task'),
+                            icon: const Icon(Icons.add),
+                            label: const Text('Add New Task'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green,
-                              minimumSize: Size.fromHeight(50),
+                              minimumSize: const Size.fromHeight(50),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -167,7 +176,7 @@ class _ListPage extends State<ListPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               if (widget.task.documents.isNotEmpty)
                 Center(
                   child: ElevatedButton(
@@ -181,8 +190,10 @@ class _ListPage extends State<ListPage> {
                         ),
                       );
                     },
-                    child: Text('References',
-                        style: TextStyle(fontFamily: 'Cereal')),
+                    child: const Text(
+                      'References',
+                      style: TextStyle(fontFamily: 'Cereal'),
+                    ),
                   ),
                 ),
             ],
@@ -192,51 +203,27 @@ class _ListPage extends State<ListPage> {
             right: 20, // Positioned to the bottom right
             child: GestureDetector(
               onTap: () {
-                // Navigate to GetHelpPage when the button is pressed
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => GetHelpPage()),
                 );
               },
               child: CircleAvatar(
-                radius: 25, // Smaller size for the button
+                radius: 25,
                 backgroundColor: Colors.blueAccent,
                 child: Image.asset(
                   'assets/help.png', // Ensure this path is correct
-                  fit: BoxFit.cover, // Ensures the image fits within the circle
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
           ),
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     Navigator.push(
-      //       context,
-      //       MaterialPageRoute(
-      //         builder: (context) => ChatWindow(
-      //           userUUID: userUUID,
-      //           grade: widget.task.grade,
-      //         ),
-      //       ),
-      //     );
-      //   },
-      //   child: Icon(Icons.chat_rounded),
-      //   backgroundColor: Color(0xFF0560FB),
-      // ),
     );
   }
 
   Widget _buildMeetingRecordRow(MeetingRecord record) {
-    // Ensure the controller for "discussionNotes" is initialized and updated
-    if (_notesControllers[record.docId] == null) {
-      _notesControllers[record.docId] =
-          TextEditingController(text: record.discussionNotes);
-    } else {
-      _notesControllers[record.docId]?.text = record.discussionNotes;
-    }
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Stack(
@@ -251,51 +238,34 @@ class _ListPage extends State<ListPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    children: record.entries.map((entry) {
-                      return CheckboxListTile(
-                        title: Text(
-                          entry.text,
-                          style: TextStyle(fontFamily: 'Cereal'),
-                        ),
-                        value: entry.isChecked,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            entry.isChecked = value!;
-                          });
-                          updateMeetingRecord(record);
-                        },
-                        activeColor: Colors.indigo,
-                        checkColor: Colors.white,
-                      );
-                    }).toList(),
-                  ),
-                  SizedBox(height: 8),
-                  TextFormField(
-                    controller: _entryControllers[record.docId] ??=
-                        TextEditingController(),
-                    key: ValueKey('${record.docId}-entry'),
-                    decoration: InputDecoration(
+                  ...record.entries.map((entry) {
+                    return CheckboxListTile(
+                      title: Text(
+                        entry.text,
+                        style: const TextStyle(fontFamily: 'Cereal'),
+                      ),
+                      value: entry.isChecked,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          entry.isChecked = value ?? false;
+                        });
+                        updateMeetingRecord(record);
+                      },
+                      activeColor: Colors.indigo,
+                      checkColor: Colors.white,
+                    );
+                  }).toList(),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _entryController,
+                    decoration: const InputDecoration(
                       hintText: 'Enter the completed task...',
                       hintStyle:
-                          TextStyle(color: Colors.grey, fontFamily: 'Cereal'),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.indigo),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.indigo),
-                      ),
+                      TextStyle(color: Colors.grey, fontFamily: 'Cereal'),
                     ),
-                    style: TextStyle(
-                      color: Colors.indigo,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Cereal',
-                    ),
-                    onEditingComplete: () {
-                      String entryText =
-                          _entryControllers[record.docId]?.text ?? '';
-                      if (entryText.isNotEmpty) {
-                        addNewEntry(record, entryText);
+                    onSubmitted: (value) {
+                      if (value.trim().isNotEmpty) {
+                        addNewEntry(record, value.trim());
                       }
                     },
                   ),
@@ -307,7 +277,7 @@ class _ListPage extends State<ListPage> {
             top: 8,
             right: 8,
             child: IconButton(
-              icon: Icon(Icons.close),
+              icon: const Icon(Icons.close),
               onPressed: () {
                 removeMeetingRecord(record);
               },
@@ -330,31 +300,9 @@ class _ListPage extends State<ListPage> {
           .snapshots()
           .listen((snapshot) {
         setState(() {
-          meetingRecords = snapshot.docs.map((doc) {
-            List<MeetingEntry> entries = (doc['entries'] as List?)
-                    ?.map((e) => MeetingEntry.fromMap(e))
-                    .toList() ??
-                [];
-
-            return MeetingRecord(
-              docId: doc.id,
-              discussionNotes: doc['discussionNotes'] ?? '',
-              entries: entries,
-            );
-          }).toList();
-
-          // Update TextEditingController for each meeting record
-          for (var record in meetingRecords) {
-            if (_notesControllers[record.docId] == null) {
-              _notesControllers[record.docId] =
-                  TextEditingController(text: record.discussionNotes);
-            } else {
-              _notesControllers[record.docId]?.text = record.discussionNotes;
-            }
-          }
-
-          print(
-              "Meeting records retrieved: ${meetingRecords.length} records found");
+          meetingRecords = snapshot.docs
+              .map((doc) => MeetingRecord.fromMap(doc))
+              .toList();
         });
       }, onError: (error) {
         print("Error retrieving meeting records: $error");
@@ -363,7 +311,7 @@ class _ListPage extends State<ListPage> {
   }
 
   void addNewMeetingRecord() {
-    var newRecordRef = FirebaseFirestore.instance
+    final newRecordRef = FirebaseFirestore.instance
         .collection('users')
         .doc(userUUID)
         .collection('tasks')
@@ -371,21 +319,19 @@ class _ListPage extends State<ListPage> {
         .collection('meetingRecords')
         .doc();
 
-    var newMeetingRecord = MeetingRecord(
+    final newMeetingRecord = MeetingRecord(
       docId: newRecordRef.id,
       discussionNotes: '',
       entries: [],
     );
 
-    newRecordRef.set(newMeetingRecord.toMap()).then((_) {
-      print("New meeting record added with ID: ${newRecordRef.id}");
-    }).catchError((error) {
+    newRecordRef.set(newMeetingRecord.toMap()).catchError((error) {
       print("Failed to add new meeting record: $error");
     });
   }
 
   void addNewEntry(MeetingRecord record, String entryText) {
-    var meetingRecordRef = FirebaseFirestore.instance
+    final meetingRecordRef = FirebaseFirestore.instance
         .collection('users')
         .doc(userUUID)
         .collection('tasks')
@@ -395,20 +341,17 @@ class _ListPage extends State<ListPage> {
 
     setState(() {
       record.entries.add(MeetingEntry(text: entryText));
-      _entryControllers[record.docId]?.clear();
     });
 
-    meetingRecordRef.update({
-      'entries': record.entries.map((e) => e.toMap()).toList(),
-    }).then((_) {
-      print("New entry added to meeting record with ID: ${record.docId}");
-    }).catchError((error) {
+    meetingRecordRef.update(record.toMap()).catchError((error) {
       print("Failed to add new entry: $error");
     });
+
+    _entryController.clear();
   }
 
   void updateMeetingRecord(MeetingRecord record) {
-    var meetingRecordRef = FirebaseFirestore.instance
+    final meetingRecordRef = FirebaseFirestore.instance
         .collection('users')
         .doc(userUUID)
         .collection('tasks')
@@ -416,26 +359,22 @@ class _ListPage extends State<ListPage> {
         .collection('meetingRecords')
         .doc(record.docId);
 
-    meetingRecordRef.update(record.toMap()).then((_) {
-      print("Meeting record updated for ID: ${record.docId}");
-    }).catchError((error) {
+    meetingRecordRef.update(record.toMap()).catchError((error) {
       print("Failed to update meeting record: $error");
     });
   }
 
   void removeMeetingRecord(MeetingRecord record) {
-    FirebaseFirestore.instance
+    final meetingRecordRef = FirebaseFirestore.instance
         .collection('users')
         .doc(userUUID)
         .collection('tasks')
         .doc(widget.task.id)
         .collection('meetingRecords')
-        .doc(record.docId)
-        .delete()
-        .then((_) {
-      print("Meeting record removed with ID: ${record.docId}");
-    }).catchError((error) {
-      print("Failed to remove meeting record: $error");
+        .doc(record.docId);
+
+    meetingRecordRef.delete().catchError((error) {
+      print("Failed to delete meeting record: $error");
     });
 
     setState(() {
