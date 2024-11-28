@@ -79,7 +79,7 @@ class WelcomePage extends StatelessWidget {
                 ),
                 SizedBox(height: 40),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 100.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 60.0),
                   child: GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, "/home");

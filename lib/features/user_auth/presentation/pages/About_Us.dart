@@ -80,7 +80,7 @@ class AboutUsPage extends StatelessWidget {
           // Positioned "?" button at the bottom right corner
           Positioned(
             bottom: 20,
-            right: 20,  // Positioned to the bottom right
+            right: 20,
             child: GestureDetector(
               onTap: () {
                 // Navigate to GetHelpPage when the button is pressed
@@ -90,11 +90,15 @@ class AboutUsPage extends StatelessWidget {
                 );
               },
               child: CircleAvatar(
-                radius: 25, // Smaller size for the button
+                radius: 25, // Make the button a bit smaller
                 backgroundColor: Colors.blueAccent,
-                child: Image.asset(
-                  'assets/help.png',  // Replace with the correct path to your image
-                  fit: BoxFit.cover,  // Ensures the image fits within the circle
+                child: Text(
+                  "?",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25, // Slightly smaller font size
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
