@@ -47,7 +47,7 @@ class AboutUsPage extends StatelessWidget {
                     ),
                     SizedBox(height: 16),
                     Text(
-                      "Thriving Neighbors is a community-engaged learning program connecting SCU with the predominantly Latino Greater Washington community in San Jose. It fosters collaboration among SCU members, local agencies, and Latino communities to advance equity and inclusion.The program focuses on enhancing K-12 education in STEM and leadership, co-creating programs for capacity building, and providing SCU students with hands-on learning opportunities.",
+                      "Thriving Neighbors is a community Engaged Learning Program connecting Santa Clara University with the predominantly Latino Greater Washington community in San Jose. It fosters collaboration among SCU members, local agencies, and Latino communities to advance equity and inclusion.The program focuses on enhancing K-12 education in STEM and leadership, co-creating programs for capacity building, and providing SCU students with hands-on learning opportunities.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 16,
