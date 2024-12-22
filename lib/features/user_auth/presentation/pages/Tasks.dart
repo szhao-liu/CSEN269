@@ -8,6 +8,7 @@ import 'package:college_finder/features/user_auth/presentation/pages/MeetingReco
 import 'package:college_finder/features/user_auth/presentation/pages/Video.dart';
 import 'package:college_finder/global/common/Get_Help.dart';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
+import 'package:college_finder/global/common/document_list.dart';
 import 'package:college_finder/global/common/page_type.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -382,6 +383,8 @@ Widget getPageWidget(Task task) {
       return MeetingRecordPage(task: task);
     case PageType.list:
       return ListPage(task: task);
+    case PageType.docList:
+      return DocumentListPage(documents: task.documents);
   // Add cases for other page types if needed
     default:
       return DocumentUploadPage(task: task);

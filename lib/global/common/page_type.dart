@@ -3,7 +3,8 @@ enum PageType {
   dateTime,
   list,
   memo,
-  docUpload
+  docUpload,
+  docList
 }
 
 class PageTypeHelper {
@@ -12,7 +13,8 @@ class PageTypeHelper {
     PageType.dateTime: 'dateTime',
     PageType.list: 'list',
     PageType.memo: 'memo',
-    PageType.docUpload : 'docUpload'
+    PageType.docUpload : 'docUpload',
+    PageType.docList : 'docList',
   };
 
   static String getStringValue(PageType pageType) {
