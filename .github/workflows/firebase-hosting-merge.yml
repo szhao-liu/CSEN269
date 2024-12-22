@@ -10,6 +10,13 @@ jobs:
       # Checkout the repository
       - uses: actions/checkout@v4
 
+      # Set up Java version (Java 11, for example)
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+
       # Install Flutter
       - name: Install Flutter
         uses: subosito/flutter-action@v2
