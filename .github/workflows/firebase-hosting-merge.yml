@@ -31,20 +31,28 @@ jobs:
           
           # Check if version.txt exists and initialize if it doesn't
           if [ ! -f "$VERSION_FILE" ]; then
-            echo "1.0.0" > "$VERSION_FILE"
+            echo "versionName=1.0.0" > "$VERSION_FILE"
+            echo "versionCode=1" >> "$VERSION_FILE"
           fi
           
-          VERSION=$(cat "$VERSION_FILE")
-          MAJOR=$(echo $VERSION | cut -d. -f1)
-          MINOR=$(echo $VERSION | cut -d. -f2)
-          PATCH=$(echo $VERSION | cut -d. -f3)
+          # Read versionName and versionCode from the file
+          VERSION_NAME=$(grep -oP '^versionName=\K.*' "$VERSION_FILE")
+          VERSION_CODE=$(grep -oP '^versionCode=\K.*' "$VERSION_FILE")
+
+          # Split the versionName into major, minor, and patch
+          MAJOR=$(echo $VERSION_NAME | cut -d. -f1)
+          MINOR=$(echo $VERSION_NAME | cut -d. -f2)
+          PATCH=$(echo $VERSION_NAME | cut -d. -f3)
           
           # Auto-increment PATCH version (X.Y.Z → X.Y.(Z+1))
           PATCH=$((PATCH + 1))
           NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          
+          # Update versionName and versionCode in the version.txt file
+          sed -i "s/^versionName=.*/versionName=$NEW_VERSION/" "$VERSION_FILE"
+          sed -i "s/^versionCode=.*/versionCode=$PATCH/" "$VERSION_FILE"
 
-          # Write the updated version back to version.txt
-          echo "$NEW_VERSION" > "$VERSION_FILE"
+          # Set environment variables
           echo "VERSION_CODE=$PATCH" >> $GITHUB_ENV
           echo "VERSION_NAME=$NEW_VERSION" >> $GITHUB_ENV
 
