@@ -1,8 +1,10 @@
 name: Deploy to Firebase Hosting and APK on merge
+
 on:
   push:
     branches:
       - main
+
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
@@ -21,11 +23,26 @@ jobs:
       - name: Install Flutter
         uses: subosito/flutter-action@v2
 
+      # Decode Keystore from GitHub Secrets and store it in the correct path
+      - name: Decode Keystore
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+        run: |
+          echo "$ANDROID_KEYSTORE" | base64 --decode > android/app/college-finder.jks
+
+      # Create key.properties file
+      - name: Create key.properties
+        run: |
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=college-finder.jks" >> android/key.properties
+
       # Build Flutter web
       - name: Build Flutter web
         run: flutter build web
 
-      # Build Flutter APK
+      # Build Flutter APK (now it will be signed)
       - name: Build Flutter APK
         run: flutter build apk --release
 
