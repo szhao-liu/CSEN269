@@ -1,4 +1,4 @@
-name: Deploy to Firebase Hosting and APK on merge
+name: Deploy to Firebase Hosting and APK/AAB on merge
 
 on:
   push:
@@ -38,6 +38,22 @@ jobs:
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "storeFile=college-finder.jks" >> android/key.properties
 
+      # Get the latest version code from a file or Git commit and increment it
+      - name: Auto-increment version code
+        id: versioning
+        run: |
+          VERSION_CODE=$(grep versionCode android/app/build.gradle | awk '{print $2}' | sed 's/[^0-9]*//g')
+          VERSION_CODE=$((VERSION_CODE + 1))
+          echo "VERSION_CODE=${VERSION_CODE}" >> $GITHUB_ENV
+          VERSION_NAME="1.0.${VERSION_CODE}"
+          echo "VERSION_NAME=${VERSION_NAME}" >> $GITHUB_ENV
+
+      # Update versionCode and versionName in build.gradle
+      - name: Update versionCode and versionName in build.gradle
+        run: |
+          sed -i "s/versionCode [0-9]\+/versionCode ${{ env.VERSION_CODE }}/g" android/app/build.gradle
+          sed -i "s/versionName \"[^\"]*\"/versionName \"${{ env.VERSION_NAME }}\"/g" android/app/build.gradle
+
       # Build Flutter web
       - name: Build Flutter web
         run: flutter build web
@@ -45,6 +61,10 @@ jobs:
       # Build Flutter APK (now it will be signed)
       - name: Build Flutter APK
         run: flutter build apk --release
+
+      # Build Flutter AAB (signed)
+      - name: Build Flutter AAB
+        run: flutter build appbundle --release
 
       # Deploy Flutter web to Firebase Hosting
       - name: Deploying Web to Firebase Hosting
@@ -55,7 +75,7 @@ jobs:
           channelId: live
           projectId: college-finder-54f2c
 
-      # Install Firebase CLI to deploy APK
+      # Install Firebase CLI to deploy APK and AAB
       - name: Install Firebase CLI
         run: |
           curl -sL https://firebase.tools | bash
@@ -64,5 +84,12 @@ jobs:
       - name: Deploying APK to Firebase App Distribution
         run: |
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
+          --app "1:36597009887:android:0fec54d9bc8e280453486a" \
+          --token ${{ secrets.FIREBASE_TOKEN }}
+
+      # Deploy AAB to Firebase App Distribution
+      - name: Deploying AAB to Firebase App Distribution
+        run: |
+          firebase appdistribution:distribute build/app/outputs/bundle/release/app-release.aab \
           --app "1:36597009887:android:0fec54d9bc8e280453486a" \
           --token ${{ secrets.FIREBASE_TOKEN }}
