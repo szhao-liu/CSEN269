@@ -23,11 +23,13 @@ jobs:
       - name: Install Flutter
         uses: subosito/flutter-action@v2
 
-      # Read and increment version from version.txt
+      # Read and update version from version.txt
       - name: Read and update version
         id: versioning
         run: |
           VERSION_FILE=".github/workflows/version.txt"
+          
+          # Check if version.txt exists and initialize if it doesn't
           if [ ! -f "$VERSION_FILE" ]; then
             echo "1.0.0" > "$VERSION_FILE"
           fi
@@ -41,24 +43,10 @@ jobs:
           PATCH=$((PATCH + 1))
           NEW_VERSION="$MAJOR.$MINOR.$PATCH"
 
+          # Write the updated version back to version.txt
           echo "$NEW_VERSION" > "$VERSION_FILE"
           echo "VERSION_CODE=$PATCH" >> $GITHUB_ENV
           echo "VERSION_NAME=$NEW_VERSION" >> $GITHUB_ENV
-
-      # Update version in local.properties
-      - name: Update version in local.properties
-        run: |
-          echo "flutter.versionCode=${{ env.VERSION_CODE }}" >> android/local.properties
-          echo "flutter.versionName=${{ env.VERSION_NAME }}" >> android/local.properties
-
-      # Commit updated version.txt and local.properties
-      - name: Commit version changes
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "github-actions@github.com"
-          git add .github/workflows/version.txt android/local.properties
-          git commit -m "Auto-incremented version to ${{ env.VERSION_NAME }}"
-          git push origin main || echo "No changes to commit"
 
       # Decode Keystore
       - name: Decode Keystore
@@ -81,11 +69,11 @@ jobs:
 
       # Build Flutter APK
       - name: Build Flutter APK
-        run: flutter build apk --release
+        run: flutter build apk --release --build-name=${{ env.VERSION_NAME }} --build-number=${{ env.VERSION_CODE }}
 
       # Build Flutter AAB
       - name: Build Flutter AAB
-        run: flutter build appbundle --release
+        run: flutter build appbundle --release --build-name=${{ env.VERSION_NAME }} --build-number=${{ env.VERSION_CODE }}
 
       # Deploy Web to Firebase Hosting
       - name: Deploy Web to Firebase Hosting

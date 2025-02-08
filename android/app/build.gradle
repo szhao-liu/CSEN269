@@ -20,14 +20,22 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-if (flutterVersionCode == null) {
-    flutterVersionCode = '1'
+def versionProperties = new Properties()
+def versionFile = rootProject.file('workflows/version.txt')
+if (versionFile.exists()) {
+    versionFile.withReader('UTF-8') { reader ->
+        versionProperties.load(reader)
+    }
 }
 
-def flutterVersionName = localProperties.getProperty('flutter.versionName')
+def flutterVersionCode = versionProperties.getProperty('versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'  // Default versionCode
+}
+
+def flutterVersionName = versionProperties.getProperty('versionName')
 if (flutterVersionName == null) {
-    flutterVersionName = '1.0'
+    flutterVersionName = '1.0'  // Default versionName
 }
 
 android {
