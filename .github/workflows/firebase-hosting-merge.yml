@@ -35,13 +35,12 @@ jobs:
         uses: timheuer/base64-to-file@v1
         id: service_account_json_file
         with:
-          fileName: "android/app/key.json"
+          fileName: "key.json"
           encodedString: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
 
       - name: Verify Google Service Account Key file contents
-        working-directory: android
         run: |
-          cat app/key.json
+          cat key.json
 
       - name: Increment Build Number
         working-directory: android
