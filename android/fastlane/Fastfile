@@ -1,14 +1,16 @@
 default_platform(:android)
 
 lane :increment_build_num do
-  previous_build_number = google_play_track_version_codes(
-    package_name: 'com.frugal.CollegeFinder',
-    track: "internal",
-    json_key: ./app/key.json
-  )[0]
+    previous_build_number = google_play_track_version_codes(
+      package_name: 'com.frugal.CollegeFinder',
+      track: "internal",
+      json_key: "./app/key.json",
+    )[0]
 
-  current_build_number = previous_build_number + 1
+    current_build_number = previous_build_number + 1
 
-  # Update versionCode in build.gradle
-  sh "sed -i 's/versionCode [0-9]\\+/versionCode #{current_build_number}/' ./app/build.gradle"
-end
+    increment_version_code(
+      gradle_file_path: "./app/build.gradle",
+      version_code: current_build_number
+    )
+ end

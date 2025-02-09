@@ -7,7 +7,7 @@ on:
 
 jobs:
   build_and_deploy:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       # Checkout the repository
       - uses: actions/checkout@v4
@@ -22,6 +22,26 @@ jobs:
       # Install Flutter
       - name: Install Flutter
         uses: subosito/flutter-action@v2
+
+      # ✅ Install Fastlane Dependencies
+      - name: Install Fastlane
+        working-directory: android
+        run: |
+          gem install bundler
+          bundle install
+          fastlane install_plugins
+
+      - name: Create Google Service Account Key file
+        working-directory: android
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}" > ./app/key.json
+
+      - name: Increment Build Number
+        working-directory: android
+        run: |
+          fastlane increment_build_num
+        env:
+          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
 
       # Decode Keystore
       - name: Decode Keystore
