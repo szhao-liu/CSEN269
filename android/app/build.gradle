@@ -20,22 +20,14 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
-def versionProperties = new Properties()
-def versionFile = rootProject.file('workflows/version.txt')
-if (versionFile.exists()) {
-    versionFile.withReader('UTF-8') { reader ->
-        versionProperties.load(reader)
-    }
-}
-
-def flutterVersionCode = versionProperties.getProperty('versionCode')
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
-    flutterVersionCode = '1'  // Default versionCode
+    flutterVersionCode = '1'
 }
 
-def flutterVersionName = versionProperties.getProperty('versionName')
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
-    flutterVersionName = '1.0'  // Default versionName
+    flutterVersionName = '1.0'
 }
 
 android {
@@ -63,7 +55,7 @@ android {
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 24
         targetSdkVersion flutter.targetSdkVersion
-        versionCode flutterVersionCode.toInteger()
+        versionCode 2
         versionName flutterVersionName
     }
 

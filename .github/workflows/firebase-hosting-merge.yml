@@ -9,61 +9,48 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      # Checkout the repository
-      - uses: actions/checkout@v4
+      # ✅ Checkout Repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      # Set up Java
+      # ✅ Set up Java
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
           distribution: 'corretto'
           java-version: '17'
 
-      # Install Flutter
+      # ✅ Install Flutter
       - name: Install Flutter
         uses: subosito/flutter-action@v2
 
-      # Read and update version from version.txt
-      - name: Read and update version
-        id: versioning
+      # ✅ Install Fastlane Dependencies
+      - name: Install Fastlane
         run: |
-          VERSION_FILE=".github/workflows/version.txt"
-          
-          # Check if version.txt exists and initialize if it doesn't
-          if [ ! -f "$VERSION_FILE" ]; then
-            echo "versionName=1.0.0" > "$VERSION_FILE"
-            echo "versionCode=1" >> "$VERSION_FILE"
-          fi
-          
-          # Read versionName and versionCode from the file
-          VERSION_NAME=$(grep -oP '^versionName=\K.*' "$VERSION_FILE")
-          VERSION_CODE=$(grep -oP '^versionCode=\K.*' "$VERSION_FILE")
+          gem install bundler
+          bundle install
+          fastlane install_plugins
 
-          # Split the versionName into major, minor, and patch
-          MAJOR=$(echo $VERSION_NAME | cut -d. -f1)
-          MINOR=$(echo $VERSION_NAME | cut -d. -f2)
-          PATCH=$(echo $VERSION_NAME | cut -d. -f3)
-          
-          # Auto-increment PATCH version (X.Y.Z → X.Y.(Z+1))
-          PATCH=$((PATCH + 1))
-          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
-          
-          # Update versionName and versionCode in the version.txt file
-          sed -i "s/^versionName=.*/versionName=$NEW_VERSION/" "$VERSION_FILE"
-          sed -i "s/^versionCode=.*/versionCode=$PATCH/" "$VERSION_FILE"
+      # ✅ Run Fastlane to Increment Version
+      - name: Increment Build Number
+        run: cd android && fastlane increment_build_num
+        env:
+          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
 
-          # Set environment variables
-          echo "VERSION_CODE=$PATCH" >> $GITHUB_ENV
-          echo "VERSION_NAME=$NEW_VERSION" >> $GITHUB_ENV
+      # ✅ Export Versioning Variables from Fastlane
+      - name: Export Versioning Variables
+        run: |
+          echo "VERSION_NAME=$(cat android/version_name.txt)" >> $GITHUB_ENV
+          echo "VERSION_CODE=$(cat android/version_code.txt)" >> $GITHUB_ENV
 
-      # Decode Keystore
+      # ✅ Decode Keystore
       - name: Decode Keystore
         env:
           ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
         run: |
           echo "$ANDROID_KEYSTORE" | base64 --decode > android/app/college-finder.jks
 
-      # Create key.properties file
+      # ✅ Create key.properties file
       - name: Create key.properties
         run: |
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
@@ -71,19 +58,19 @@ jobs:
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "storeFile=college-finder.jks" >> android/key.properties
 
-      # Build Flutter web
-      - name: Build Flutter web
+      # ✅ Build Flutter Web
+      - name: Build Flutter Web
         run: flutter build web
 
-      # Build Flutter APK
+      # ✅ Build Flutter APK with updated version
       - name: Build Flutter APK
         run: flutter build apk --release --build-name=${{ env.VERSION_NAME }} --build-number=${{ env.VERSION_CODE }}
 
-      # Build Flutter AAB
+      # ✅ Build Flutter AAB with updated version
       - name: Build Flutter AAB
         run: flutter build appbundle --release --build-name=${{ env.VERSION_NAME }} --build-number=${{ env.VERSION_CODE }}
 
-      # Deploy Web to Firebase Hosting
+      # ✅ Deploy Web to Firebase Hosting
       - name: Deploy Web to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
@@ -92,19 +79,19 @@ jobs:
           channelId: live
           projectId: college-finder-54f2c
 
-      # Install Firebase CLI
+      # ✅ Install Firebase CLI
       - name: Install Firebase CLI
         run: |
           curl -sL https://firebase.tools | bash
 
-      # Deploy APK to Firebase App Distribution
+      # ✅ Deploy APK to Firebase App Distribution
       - name: Deploy APK to Firebase App Distribution
         run: |
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
           --app "1:36597009887:android:0fec54d9bc8e280453486a" \
           --token ${{ secrets.FIREBASE_TOKEN }}
 
-      # Deploy AAB to Firebase App Distribution
+      # ✅ Deploy AAB to Firebase App Distribution
       - name: Deploy AAB to Firebase App Distribution
         run: |
           firebase appdistribution:distribute build/app/outputs/bundle/release/app-release.aab \
