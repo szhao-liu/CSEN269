@@ -1,13 +1,10 @@
 default_platform(:android)
 
 lane :increment_build_num do
-  # Read Google API JSON key from the environment variable
-  google_service_account_key = ENV["GOOGLE_SERVICE_ACCOUNT_KEY"]
-  # Get previous build number from Google Play Console
   previous_build_number = google_play_track_version_codes(
     package_name: 'com.frugal.CollegeFinder',
     track: "internal",
-    json_key: google_service_account_key
+    json_key: ./app/key.json
   )[0]
 
   current_build_number = previous_build_number + 1

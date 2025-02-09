@@ -32,7 +32,13 @@ jobs:
           bundle install
           fastlane install_plugins
 
-      # ✅ Run Fastlane to Increment Version
+      # ✅ Create Google Service Account Key file
+      - name: Create Google Service Account Key file
+        working-directory: android
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}" > ./app/key.json
+
+        # ✅ Run Fastlane to Increment Version
       - name: Increment Build Number
         working-directory: android
         run: cd android && fastlane increment_build_num
