@@ -12,6 +12,12 @@ jobs:
       # Checkout the repository
       - uses: actions/checkout@v4
 
+      - name: Set up ruby env
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.2
+          bundler-cache: true
+
       # Set up Java
       - name: Set up Java
         uses: actions/setup-java@v3
