@@ -7,7 +7,7 @@ on:
 
 jobs:
   build_and_deploy:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       # ✅ Checkout Repository
       - name: Checkout Repository
@@ -27,8 +27,7 @@ jobs:
       # ✅ Install Fastlane Dependencies
       - name: Install Fastlane
         run: |
-          gem install bundler --user-install
-          export PATH="$HOME/.gem/ruby/3.2.0/bin:$PATH"
+          gem install bundler
           bundle install
           fastlane install_plugins
 
