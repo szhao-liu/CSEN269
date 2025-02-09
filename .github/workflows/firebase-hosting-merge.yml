@@ -41,7 +41,7 @@ jobs:
       - name: Verify Google Service Account Key file contents
         working-directory: android
         run: |
-          cat ./app/key.json
+          cat app/key.json
 
       - name: Increment Build Number
         working-directory: android
