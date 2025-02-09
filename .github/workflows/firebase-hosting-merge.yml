@@ -34,7 +34,7 @@ jobs:
       - name: Create Google Service Account Key file
         working-directory: android
         run: |
-          echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}" > android/app/key.json
+          echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}" > app/key.json
 
       - name: Increment Build Number
         working-directory: android
