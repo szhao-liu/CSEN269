@@ -13,13 +13,13 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 # Available Actions
 
-### increment_build_num
+### fetch_and_increment_build_number
 
 ```sh
-[bundle exec] fastlane increment_build_num
+[bundle exec] fastlane fetch_and_increment_build_number
 ```
 
-
+Fetches the latest version code from the Play Console and increments it by 1
 
 ----
 

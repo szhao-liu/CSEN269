@@ -31,14 +31,13 @@ jobs:
           bundle install
           fastlane install_plugins
 
-      - name: Create Google Service Account Key file
-        working-directory: android
-        run: |
-          echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}" | base64 --decode > ./app/key.json
+      - name: Decode Service Account Key JSON File
+        uses: timheuer/base64-to-file@v1
+        id: service_account_json_file
+        with:
+          fileName: "android/app/key.json"
+          encodedString: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
 
-      - name: Verify Google Service Account Key file contents
-        run: |
-          cat android/app/key.json
 
       - name: Increment Build Number
         working-directory: android
