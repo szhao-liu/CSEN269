@@ -7,58 +7,30 @@ on:
 
 jobs:
   build_and_deploy:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
-      # ✅ Checkout Repository
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      # Checkout the repository
+      - uses: actions/checkout@v4
 
-      # ✅ Set up Java
+      # Set up Java
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
           distribution: 'corretto'
           java-version: '17'
 
-      # ✅ Install Flutter
+      # Install Flutter
       - name: Install Flutter
         uses: subosito/flutter-action@v2
 
-      # ✅ Install Fastlane Dependencies
-      - name: Install Fastlane
-        working-directory: android
-        run: |
-          gem install bundler
-          bundle install
-          fastlane install_plugins
-
-      # ✅ Create Google Service Account Key file
-      - name: Create Google Service Account Key file
-        working-directory: android
-        run: |
-          echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}" > ./app/key.json
-
-        # ✅ Run Fastlane to Increment Version
-      - name: Increment Build Number
-        working-directory: android
-        run: cd android && fastlane increment_build_num
-        env:
-          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
-
-      # ✅ Export Versioning Variables from Fastlane
-      - name: Export Versioning Variables
-        run: |
-          echo "VERSION_NAME=$(cat android/version_name.txt)" >> $GITHUB_ENV
-          echo "VERSION_CODE=$(cat android/version_code.txt)" >> $GITHUB_ENV
-
-      # ✅ Decode Keystore
+      # Decode Keystore
       - name: Decode Keystore
         env:
           ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
         run: |
           echo "$ANDROID_KEYSTORE" | base64 --decode > android/app/college-finder.jks
 
-      # ✅ Create key.properties file
+      # Create key.properties file
       - name: Create key.properties
         run: |
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
@@ -66,19 +38,19 @@ jobs:
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "storeFile=college-finder.jks" >> android/key.properties
 
-      # ✅ Build Flutter Web
-      - name: Build Flutter Web
+      # Build Flutter web
+      - name: Build Flutter web
         run: flutter build web
 
-      # ✅ Build Flutter APK with updated version
+      # Build Flutter APK
       - name: Build Flutter APK
-        run: flutter build apk --release --build-name=${{ env.VERSION_NAME }} --build-number=${{ env.VERSION_CODE }}
+        run: flutter build apk --release
 
-      # ✅ Build Flutter AAB with updated version
+      # Build Flutter AAB
       - name: Build Flutter AAB
-        run: flutter build appbundle --release --build-name=${{ env.VERSION_NAME }} --build-number=${{ env.VERSION_CODE }}
+        run: flutter build appbundle --release
 
-      # ✅ Deploy Web to Firebase Hosting
+      # Deploy Web to Firebase Hosting
       - name: Deploy Web to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
@@ -87,19 +59,19 @@ jobs:
           channelId: live
           projectId: college-finder-54f2c
 
-      # ✅ Install Firebase CLI
+      # Install Firebase CLI
       - name: Install Firebase CLI
         run: |
           curl -sL https://firebase.tools | bash
 
-      # ✅ Deploy APK to Firebase App Distribution
+      # Deploy APK to Firebase App Distribution
       - name: Deploy APK to Firebase App Distribution
         run: |
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
           --app "1:36597009887:android:0fec54d9bc8e280453486a" \
           --token ${{ secrets.FIREBASE_TOKEN }}
 
-      # ✅ Deploy AAB to Firebase App Distribution
+      # Deploy AAB to Firebase App Distribution
       - name: Deploy AAB to Firebase App Distribution
         run: |
           firebase appdistribution:distribute build/app/outputs/bundle/release/app-release.aab \
