@@ -37,7 +37,7 @@ jobs:
           encodedString: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
 
       - name: version increment
-        run: bundle exec fastlane android increment_build_num
+        run: bundle exec fastlane increment_build_num
         env:
            ANDROID_JSON_KEY_FILE: ${{ steps.service_account_json_file.outputs.filePath }}
 
