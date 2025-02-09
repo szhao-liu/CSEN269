@@ -42,7 +42,7 @@ jobs:
       - name: Increment Build Number
         working-directory: android
         run: |
-          fastlane increment_build_num
+          fastlane fetch_and_increment_build_number
         env:
           GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
 
