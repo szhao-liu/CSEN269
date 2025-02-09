@@ -7,7 +7,7 @@ on:
 
 jobs:
   build_and_deploy:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       # Checkout the repository
       - uses: actions/checkout@v4
@@ -23,31 +23,18 @@ jobs:
       - name: Install Flutter
         uses: subosito/flutter-action@v2
 
-      # ✅ Install Fastlane Dependencies
-      - name: Install Fastlane
-        working-directory: android
-        run: |
-          gem install bundler
-          bundle install
-          fastlane install_plugins
-
       - name: Decode Service Account Key JSON File
         uses: timheuer/base64-to-file@v1
         id: service_account_json_file
         with:
-          fileName: "key.json"
+          fileName: "serviceAccount.json"
           encodedString: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
 
-      - name: Verify Google Service Account Key file contents
-        run: |
-          cat key.json
-
-      - name: Increment Build Number
+      - name: version increment
         working-directory: android
-        run: |
-          fastlane increment_build_num
+        run: bundle exec fastlane android increment_build_num
         env:
-          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+           ANDROID_JSON_KEY_FILE: ${{ steps.service_account_json_file.outputs.filePath }}
 
       # Decode Keystore
       - name: Decode Keystore
