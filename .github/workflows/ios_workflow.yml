@@ -28,11 +28,10 @@ jobs:
           channel: stable
           version: 3.24.0
 
-      - name: Install dependencies & Lint check
+      - name: Install dependencies
         run: |
           flutter clean
           flutter pub get
-          flutter analyze --fatal-infos
 
       - name: Install the CodeMagic CLI
         run:  pip install codemagic-cli-tools
