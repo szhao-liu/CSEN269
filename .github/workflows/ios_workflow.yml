@@ -1,4 +1,3 @@
-
 name: Push iOS build on Firebase
 
 on:
@@ -22,6 +21,9 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
+      - name: Set Xcode Command Line Tools
+        run: sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+
       - name: Set up Flutter SDK
         uses: flutter-actions/setup-flutter@v3
         with:
@@ -33,8 +35,21 @@ jobs:
           flutter clean
           flutter pub get
 
+      - name: Cache Pods
+        uses: actions/cache@v3
+        with:
+          path: ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      - name: Install CocoaPods dependencies
+        run: |
+          cd ios
+          pod install --repo-update --verbose
+
       - name: Install the CodeMagic CLI
-        run:  pip install codemagic-cli-tools
+        run: pip install codemagic-cli-tools
 
       - name: Initialize keychain
         run: keychain initialize
@@ -59,10 +74,11 @@ jobs:
         run: |
           flutter build ipa --release --export-options-plist=$HOME/export_options.plist
 
-      # Deploy IPA to Firebase App Distribution
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
       - name: Deploy IPA to Firebase App Distribution
         run: |
           firebase appdistribution:distribute build/ios/ipa/*.ipa \
           --app "1:36597009887:ios:1f2605c8364b9e9153486a" \
-          --token ${{ secrets.FIREBASE_TOKEN }} 
-
+          --token ${{ secrets.FIREBASE_TOKEN }}
