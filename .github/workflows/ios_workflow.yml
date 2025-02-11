@@ -1,0 +1,77 @@
+
+name: Push iOS build on Firebase
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ios_deployment:
+    runs-on: macos-latest
+    env:
+      APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+      APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+      APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+      APP_STORE_APP_ID: ${{ secrets.APP_STORE_APP_ID }}
+      DISTRIBUTION_CERTIFICATE: ${{ secrets.IOS_DISTRIBUTION_CERT }}
+      DISTRIBUTION_CERTIFICATE_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERT_PASSWORD }}
+      PROVISIONING_PROFILE: ${{ secrets.IOS_PROVISIONING_PROFILE }}
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter SDK
+        uses: flutter-actions/setup-flutter@v3
+        with:
+          channel: stable
+          version: 3.24.0
+
+      - name: Install dependencies & Lint check
+        run: |
+          flutter clean
+          flutter pub get
+          flutter analyze --fatal-infos
+
+      - name: Install the CodeMagic CLI
+        run:  pip install codemagic-cli-tools
+
+      - name: Initialize keychain
+        run: keychain initialize
+
+      - name: Set up Provisioning Profile
+        run: |
+          PROFILES_HOME="$HOME/Library/MobileDevice/Provisioning Profiles"
+          mkdir -p "$PROFILES_HOME"
+          PROFILE_PATH="$(mktemp "$PROFILES_HOME"/$(uuidgen).mobileprovision)"
+          echo ${PROVISIONING_PROFILE} | base64 --decode > "$PROFILE_PATH"
+          echo "Saved provisioning profile $PROFILE_PATH"   
+
+      - name: Set up Distribution Certificate
+        run: |
+          echo $DISTRIBUTION_CERTIFICATE | base64 --decode > /tmp/certificate.p12
+          keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password $DISTRIBUTION_CERTIFICATE_PASSWORD
+
+      - name: Set up Code signing settings on Xcode project
+        run: xcode-project use-profiles
+
+      - name: Build IPA for Distribution
+        run: |
+          file='VERSION'
+          fileData=`cat $file`
+          IFS='.'
+          read -a versionValue <<< "$fileData"
+          buildNumber=$(( ${versionValue[0]} * 1000000 + ${versionValue[1]} * 10000 + ${{ github.run_number }} ))
+          IFS=''
+          buildName="${versionValue[0]}.${versionValue[1]}.${{ github.run_number }}"
+          echo "Uploading build $buildName"
+          flutter build ipa --release --build-number=$buildNumber --build-name=$buildName --export-options-plist=$HOME/export_options.plist
+
+      # Deploy IPA to Firebase App Distribution
+      - name: Deploy IPA to Firebase App Distribution
+        run: |
+          firebase appdistribution:distribute build/ios/ipa/*.ipa \
+          --app "1:36597009887:ios:1f2605c8364b9e9153486a" \
+          --token ${{ secrets.FIREBASE_TOKEN }} 
+
