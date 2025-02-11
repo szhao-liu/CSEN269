@@ -80,6 +80,8 @@ jobs:
       # Build and Sign Flutter IPA
       - name: Build and Sign Flutter IPA
         run: flutter build ipa
+        env:
+          FLUTTER_XCODE_FLAGS: "-allowProvisioningUpdates"
 
       # Deploy IPA to Firebase App Distribution
       - name: Deploy IPA to Firebase App Distribution
