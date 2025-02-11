@@ -46,7 +46,7 @@ jobs:
       - name: Install CocoaPods dependencies
         run: |
           cd ios
-          pod install --repo-update --verbose
+          pod install --repo-update
 
       - name: Install the CodeMagic CLI
         run: pip install codemagic-cli-tools
@@ -69,6 +69,12 @@ jobs:
 
       - name: Set up Code signing settings on Xcode project
         run: xcode-project use-profiles
+
+      - name: Decode GoogleService-Info.plist
+        run: |
+          echo $GOOGLE_SERVICE_INFO | base64 --decode > ios/Runner/GoogleService-Info.plist
+        env:
+          GOOGLE_SERVICE_INFO: ${{ secrets.GOOGLE_INFO_PLIST }}
 
       - name: Build IPA for Distribution
         run: |
