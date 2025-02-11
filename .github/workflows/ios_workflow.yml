@@ -72,7 +72,7 @@ jobs:
 
       - name: Decode GoogleService-Info.plist
         run: |
-          echo $GOOGLE_SERVICE_INFO | base64 --decode q
+          echo $GOOGLE_SERVICE_INFO | base64 --decode > ios/Runner/GoogleService-Info.plist
         env:
           GOOGLE_SERVICE_INFO: ${{ secrets.GOOGLE_INFO_PLIST }}
 
