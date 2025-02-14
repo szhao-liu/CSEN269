@@ -14,10 +14,16 @@ import 'global/common/grade.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    name: "Track2College",
-      options:
-  DefaultFirebaseOptions.currentPlatform);
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } else {
+    await Firebase.initializeApp(
+      name: "Track2College",
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
   runApp(CollegeFinder());
 }
 

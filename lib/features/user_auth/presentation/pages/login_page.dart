@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_finder/global/common/grade.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'sign_up_page.dart';
 import '../widgets/form_container_widget.dart';
 import '../../../../global/common/toast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:college_finder/features/user_auth/presentation/pages/Tasks.dart';
 import '../../firebase_auth_implementation/firebase_auth_services.dart';
 
@@ -93,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                           controller: _passwordController,
                           hintText: "Password",
                           isPasswordField: true,
-                          onFieldSubmitted: (_) => _signIn(), // Login on Enter
+                          onFieldSubmitted: (_) => _signIn(),
                         ),
                         SizedBox(height: 30),
                         GestureDetector(
@@ -105,8 +105,8 @@ class _LoginPageState extends State<LoginPage> {
                               borderRadius: BorderRadius.circular(20),
                               gradient: LinearGradient(
                                 colors: [
-                                  Colors.blue[200] ?? Colors.transparent, // Blue color with 200 shade
-                                  Colors.greenAccent[100] ?? Colors.transparent, // GreenAccent with 100 shade
+                                  Colors.blue[200] ?? Colors.transparent,
+                                  Colors.greenAccent[100] ?? Colors.transparent,
                                 ],
                               ),
                               boxShadow: [
@@ -120,9 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             child: Center(
                               child: _isSigning
-                                  ? CircularProgressIndicator(
-                                color: Colors.white,
-                              )
+                                  ? CircularProgressIndicator(color: Colors.white)
                                   : Text(
                                 "LOGIN",
                                 style: TextStyle(
@@ -136,47 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         SizedBox(height: 20),
-                        GestureDetector(
-                          onTap: _signInWithGoogle,
-                          child: Container(
-                            width: double.infinity,
-                            height: 45,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset: Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    'assets/google.png',
-                                    height: 25,
-                                    width: 25,
-                                  ),
-                                  SizedBox(width: 10),
-                                  Text(
-                                    "Sign in with Google",
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'Cereal',
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                        _socialSignInButtons(),
                         SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -194,9 +152,7 @@ class _LoginPageState extends State<LoginPage> {
                               onTap: () {
                                 Navigator.pushAndRemoveUntil(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SignUpPage(),
-                                  ),
+                                  MaterialPageRoute(builder: (context) => SignUpPage()),
                                       (route) => false,
                                 );
                               },
@@ -223,6 +179,61 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Widget _socialSignInButtons() {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: _signInWithGoogle,
+          child: _socialButton('assets/google.png', "Sign in with Google"),
+        ),
+        SizedBox(height: 10),
+        if (Theme.of(context).platform == TargetPlatform.iOS) // Show only on iOS
+          GestureDetector(
+            onTap: _signInWithApple,
+            child: _socialButton(null, "Sign in with Apple", isApple: true),
+          ),
+      ],
+    );
+  }
+
+  Widget _socialButton(String? iconPath, String text, {bool isApple = false}) {
+    return Container(
+      width: double.infinity,
+      height: 45,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        color: isApple ? Colors.black : Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (iconPath != null) Image.asset(iconPath, height: 25, width: 25),
+            if (isApple) Icon(Icons.apple, color: Colors.white, size: 25),
+            SizedBox(width: 10),
+            Text(
+              text,
+              style: TextStyle(
+                fontSize: 15,
+                color: isApple ? Colors.white : Colors.black,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Cereal',
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _signIn() async {
     setState(() {
       _isSigning = true;
@@ -232,92 +243,79 @@ class _LoginPageState extends State<LoginPage> {
     String password = _passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      showToast(message: "Email and password cannot be empty");
+      showToast(message: "Email and password cannot be empty.");
       setState(() {
         _isSigning = false;
       });
       return;
     }
 
-    User? user = await _auth.signInWithEmailAndPassword(email, password);
+    try {
+      UserCredential userCredential =
+      await _firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    setState(() {
-      _isSigning = false;
-    });
-
-    if (user != null) {
-      showToast(message: "User is successfully signed in");
-
-      // Check if the user's grade is present in the Firebase DB
-      DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
-
-      if (snapshot.exists && snapshot.data() != null && snapshot.data()!['grade'] != "") {
-        // If the user's grade is present, navigate directly to the corresponding grade
-        Grade userGrade = getGradeFromString(snapshot.data()!['grade']);
-        navigateToTasks(context, userGrade, Colors.cyan);
-      } else {
-        // If the user's grade is not present, navigate to the home page
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          '/welcomePage', // Target route name
-              (Route<dynamic> route) => false, // Removes all previous routes
-        );
+      if (userCredential.user != null) {
+        showToast(message: "Login successful!");
+        Navigator.pushReplacementNamed(context, "/welcomePage");
       }
-    } else {
-      showToast(message: "Some error occurred");
+    } on FirebaseAuthException catch (e) {
+      showToast(message: e.message ?? "Login failed.");
+    } finally {
+      setState(() {
+        _isSigning = false;
+      });
     }
-  }
-
-  void navigateToTasks(BuildContext context, Grade grade, Color color) {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TasksPage(grade: grade),
-      ),
-      (Route<dynamic> route) => false,
-    );
   }
 
   Future<void> _signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
-      if (googleSignInAccount != null) {
-        final GoogleSignInAuthentication googleSignInAuthentication =
-        await googleSignInAccount.authentication;
+      if (googleUser == null) {
+        showToast(message: "Google sign-in canceled.");
+        return;
+      }
 
-        final AuthCredential credential = GoogleAuthProvider.credential(
-          idToken: googleSignInAuthentication.idToken,
-          accessToken: googleSignInAuthentication.accessToken,
-        );
+      final GoogleSignInAuthentication googleAuth =
+      await googleUser.authentication;
 
-        UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
-        User? user = userCredential.user;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
-        if (user != null) {
-          // Check if the user already exists in Firestore
-          DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .get();
+      UserCredential userCredential =
+      await _firebaseAuth.signInWithCredential(credential);
 
-          if (!snapshot.exists) {
-            // Create a new user document if it doesn't exist
-            await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-              'email': user.email,
-              'name': user.displayName,
-              'grade': "", // Default grade as empty if not provided
-            });
-          }
-
-          Navigator.pushNamed(context, "/welcomePage");
-        }
+      if (userCredential.user != null) {
+        showToast(message: "Google sign-in successful!");
+        Navigator.pushReplacementNamed(context, "/welcomePage");
       }
     } catch (e) {
-      showToast(message: "An error occurred: $e");
+      showToast(message: "Google sign-in failed: $e");
+    }
+  }
+
+
+  Future<void> _signInWithApple() async {
+    try {
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [AppleIDAuthorizationScopes.email, AppleIDAuthorizationScopes.fullName],
+      );
+
+      final OAuthProvider oAuthProvider = OAuthProvider("apple.com");
+      final AuthCredential appleCredential = oAuthProvider.credential(
+        idToken: credential.identityToken,
+        accessToken: credential.authorizationCode,
+      );
+
+      await _firebaseAuth.signInWithCredential(appleCredential);
+      Navigator.pushNamed(context, "/welcomePage");
+    } catch (e) {
+      showToast(message: "Apple Sign-in failed: $e");
     }
   }
 }

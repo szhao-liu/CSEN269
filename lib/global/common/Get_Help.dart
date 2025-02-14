@@ -16,7 +16,7 @@ class GetHelpPage extends StatelessWidget {
           IconButton(
             icon: Icon(
               Icons.group, // Group of people icon
-              size: 30, // Increased the size of the icon
+              size: 30,
               color: Colors.black,
             ),
             tooltip: 'About Us',
@@ -54,6 +54,9 @@ class GetHelpPage extends StatelessWidget {
                   FeatureCardsWidget(),
                   const SizedBox(height: 20),
                   LogoutButton(),
+                  const SizedBox(height: 20),
+                  DeleteAccountButton(), // New Delete Account button
+                  const SizedBox(height: 50),
                 ],
               ),
             ),
@@ -99,6 +102,77 @@ class LogoutButton extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class DeleteAccountButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () async {
+        bool confirmDelete = await _showConfirmationDialog(context);
+        if (confirmDelete) {
+          _deleteAccount(context);
+        }
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.black,
+        padding: const EdgeInsets.symmetric(vertical: 15.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      child: const Text(
+        "Delete Account",
+        style: TextStyle(
+          fontFamily: 'Cereal',
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Future<bool> _showConfirmationDialog(BuildContext context) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm Deletion"),
+          content: const Text(
+              "Are you sure you want to delete your account? This action cannot be undone."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text("Delete", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    ) ?? false;
+  }
+
+  Future<void> _deleteAccount(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.currentUser?.delete();
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/login',
+            (Route<dynamic> route) => false,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Account deleted successfully.")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error deleting account: ${e.toString()}")),
+      );
+    }
   }
 }
 
