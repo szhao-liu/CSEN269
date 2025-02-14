@@ -1,12 +1,11 @@
-import 'dart:io' show File;
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart'; // Import Syncfusion PDF Viewer
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
-
-//import 'chat_window.dart';
+import 'package:http/http.dart' as http;
+import 'pdf_viewer_page.dart';
 
 class DocumentListPage extends StatefulWidget {
   final List<String> documents;
@@ -38,13 +37,12 @@ class _DocumentListPageState extends State<DocumentListPage> {
 
     if (!await file.exists()) {
       try {
-        final downloadTask = FirebaseStorage.instance.refFromURL(url).writeToFile(file);
-        final snapshot = await downloadTask;
-        if (snapshot.state == TaskState.success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('$fileName downloaded to ${directory.path}')),
-          );
-        }
+        final response = await http.get(Uri.parse(url));
+        await file.writeAsBytes(response.bodyBytes);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$fileName downloaded to ${directory.path}')),
+        );
       } catch (e) {
         print('Error downloading file: $e');
         ScaffoldMessenger.of(context).showSnackBar(
@@ -99,37 +97,6 @@ class _DocumentListPageState extends State<DocumentListPage> {
           ),
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     Navigator.push(
-      //       context,
-      //       MaterialPageRoute(
-      //         builder: (context) => ChatWindow(
-      //           userUUID: FirebaseAuth.instance.currentUser?.uid
-      //         ),
-      //       ),
-      //     );
-      //   },
-      //   child: Icon(Icons.chat_rounded),
-      //   backgroundColor: Color(0xFF0560FB),
-      // ),
-    );
-  }
-}
-
-class PdfViewerPage extends StatelessWidget {
-  final String pdfUrl;
-
-  const PdfViewerPage({Key? key, required this.pdfUrl}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Document Viewer"),
-        backgroundColor: Colors.indigo,
-      ),
-      body: SfPdfViewer.network(pdfUrl), // Use Syncfusion PDF Viewer for viewing PDFs
     );
   }
 }

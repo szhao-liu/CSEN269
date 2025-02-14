@@ -1,0 +1,2 @@
+/Users/sudarshanmehta/Development/CollegeFinder/android/app/.cxx/Debug/8ub5h3p3/x86_64/CMakeFiles/edit_cache.dir
+/Users/sudarshanmehta/Development/CollegeFinder/android/app/.cxx/Debug/8ub5h3p3/x86_64/CMakeFiles/rebuild_cache.dir
