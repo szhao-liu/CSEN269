@@ -98,11 +98,11 @@ flutter:
   fonts:
     - family: Cereal
       fonts:
-        - asset: Fonts/cereal/AirbnbCereal_W_Lt.otf
+        - asset: fonts/cereal/AirbnbCereal_W_Lt.otf
           weight: 300
-        - asset: Fonts/cereal/AirbnbCereal_W_Md.otf
+        - asset: fonts/cereal/AirbnbCereal_W_Md.otf
           weight: 500
-        - asset: Fonts/cereal/AirbnbCereal_W_Bd.otf
+        - asset: fonts/cereal/AirbnbCereal_W_Bd.otf
           weight: 700
-        - asset: Fonts/cereal/AirbnbCereal_W_Blk.otf
+        - asset: fonts/cereal/AirbnbCereal_W_Blk.otf
           weight: 900
