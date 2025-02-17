@@ -21,6 +21,13 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
+      # Set up Ruby for Fastlane
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1.0
+          bundler-cache: true
+
       - name: Set Xcode Command Line Tools
         run: sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
 
@@ -75,9 +82,6 @@ jobs:
           echo $GOOGLE_SERVICE_INFO | base64 --decode > ios/Runner/GoogleService-Info.plist
         env:
           GOOGLE_SERVICE_INFO: ${{ secrets.GOOGLE_INFO_PLIST }}
-
-      - name: Install Fastlane
-        run: bundle install
 
       - name: Increment Version & Build Number
         working-directory: ios
