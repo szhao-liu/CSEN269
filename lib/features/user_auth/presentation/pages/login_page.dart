@@ -303,8 +303,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  /// Generates a cryptographically secure random nonce, to be included in a
-  /// credential request.
+  /// Generates a cryptographically secure random nonce
   String generateNonce([int length = 32]) {
     final charset =
         '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
@@ -313,58 +312,74 @@ class _LoginPageState extends State<LoginPage> {
         .join();
   }
 
-  /// Returns the sha256 hash of [input] in hex notation.
+  /// Returns the SHA-256 hash of [input] in hex notation
   String sha256ofString(String input) {
     final bytes = utf8.encode(input);
     final digest = sha256.convert(bytes);
     return digest.toString();
   }
 
+  /// Signs in with Apple and Firebase
+  Future<void> signInWithApple() async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<User?> signInWithApple() async {
-    // To prevent replay attacks with the credential returned from Apple, we
-    // include a nonce in the credential request. When signing in in with
-    // Firebase, the nonce in the id token returned by Apple, is expected to
-    // match the sha256 hash of `rawNonce`.
+    // Generate a nonce
     final rawNonce = generateNonce();
     final nonce = sha256ofString(rawNonce);
 
     try {
-      // Request credential for the currently signed in Apple account.
+      // Request Apple credentials
       final appleCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName,
         ],
-        nonce: nonce,
+        nonce: nonce, // Hashed nonce for Apple
       );
 
-      print(appleCredential.authorizationCode);
-
-      // Create an `OAuthCredential` from the credential returned by Apple.
+      // Create an OAuthCredential
       final oauthCredential = OAuthProvider("apple.com").credential(
         idToken: appleCredential.identityToken,
-        rawNonce: rawNonce,
-        accessToken: appleCredential.authorizationCode
+        rawNonce: rawNonce, // Unhashed nonce for Firebase
+        accessToken: appleCredential.authorizationCode,
       );
 
-      // Sign in the user with Firebase. If the nonce we generated earlier does
-      // not match the nonce in `appleCredential.identityToken`, sign in will fail.
-      final authResult =
-      await _firebaseAuth.signInWithCredential(oauthCredential);
+      // Sign in with Firebase
+      final UserCredential userCredential =
+      await auth.signInWithCredential(oauthCredential);
 
-      final displayName =
-          '${appleCredential.givenName} ${appleCredential.familyName}';
-      final userEmail = '${appleCredential.email}';
+      final User? firebaseUser = userCredential.user;
 
-      final firebaseUser = authResult.user;
-      print(displayName);
-      await firebaseUser?.updateProfile(displayName: displayName);
-      await firebaseUser?.updateEmail(userEmail);
+      if (firebaseUser != null) {
+        // Handle missing email (Apple only provides email on first login)
+        String? email = appleCredential.email ?? firebaseUser.email;
 
-      return firebaseUser;
-    } catch (exception) {
-      print(exception);
+        // If email is still null, retrieve from Firestore (if stored previously)
+        if (email == null) {
+          final doc =
+          await firestore.collection("users").doc(firebaseUser.uid).get();
+          if (doc.exists) {
+            email = doc.data()?["email"];
+          }
+        }
+
+        // Save email & name on first sign-in
+        if (appleCredential.email != null) {
+          await firestore.collection("users").doc(firebaseUser.uid).set({
+            "email": appleCredential.email,
+            "fullName":
+            "${appleCredential.givenName ?? ''} ${appleCredential.familyName ?? ''}".trim(),
+            "createdAt": FieldValue.serverTimestamp(),
+          }, SetOptions(merge: true));
+        }
+      }
+
+      print("Apple Sign-In Success: ${firebaseUser?.email}");
+      Navigator.pushReplacementNamed(context, "/welcomePage");
+    } catch (e) {
+      print("Apple Sign-In Error: $e");
+      return null;
     }
   }
 }
