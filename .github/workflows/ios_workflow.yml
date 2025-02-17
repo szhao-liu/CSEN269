@@ -76,9 +76,23 @@ jobs:
         env:
           GOOGLE_SERVICE_INFO: ${{ secrets.GOOGLE_INFO_PLIST }}
 
+      - name: Install Fastlane
+        run: bundle install
+
+      - name: Increment Version & Build Number
+        working-directory: ios
+        run: bundle exec fastlane fetch_and_increment_build_number
+
+      - name: Fetch updated build number
+        working-directory: ios
+        run: echo "BUILD_NUMBER=$(agvtool what-version -terse)" >> $GITHUB_ENV
+
       - name: Build IPA for Distribution
         run: |
-          flutter build ipa --release --export-options-plist=$HOME/export_options.plist
+          flutter build ipa --release \
+          --build-name=1.0.0 \
+          --build-number=$BUILD_NUMBER \
+          --export-options-plist=$HOME/export_options.plist
 
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
