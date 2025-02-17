@@ -5,11 +5,18 @@ lane :fetch_and_increment_build_number do
  #fetch read your app identifier defined in your Appfile
  app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
 
+ api_key = {
+   key_id: ENV["APP_STORE_CONNECT_KEY_IDENTIFIER"],
+   issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
+   key_content: ENV["APP_STORE_CONNECT_PRIVATE_KEY"],
+   in_house: false
+ }
+
  current_version = get_version_number(
    target: "Runner"
  )
  latest_build_number = latest_testflight_build_number(
-   api_key: ENV["APP_STORE_CONNECT_PRIVATE_KEY"],
+   api_key: api_key,
    version: current_version,
    app_identifier: app_identifier
  )

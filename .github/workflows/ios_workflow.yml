@@ -83,8 +83,6 @@ jobs:
       - name: Increment Version & Build Number
         working-directory: ios
         run: bundle exec fastlane fetch_and_increment_build_number
-        env:
-          APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
 
       - name: Fetch updated build number
         working-directory: ios
