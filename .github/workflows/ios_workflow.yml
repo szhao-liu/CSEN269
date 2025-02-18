@@ -86,10 +86,7 @@ jobs:
 
       - name: Build IPA for Distribution
         run: |
-          flutter build ipa --release \
-          --build-name=1.0.0 \
-          --build-number=$IOS_BUILD_NUMBER \
-          --export-options-plist=$HOME/export_options.plist
+          flutter build ipa --release --export-options-plist=$HOME/export_options.plist
 
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
