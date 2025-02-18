@@ -1,1 +1,1 @@
-package_name("com.frugal.CollegeFinder")
+app_identifier("com.frugal.CollegeFinder")
