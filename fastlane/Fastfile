@@ -14,3 +14,38 @@ lane :increment_build_num do
     version_code: current_build_number
   )
 end
+
+
+platform :ios do
+  desc "Fetch latest TestFlight build number and increment it"
+  lane :fetch_and_increment_build_number do
+    # Load App Store Connect API Key
+    api_key = app_store_connect_api_key(
+      key_id: ENV["APP_STORE_CONNECT_KEY_IDENTIFIER"],
+      issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
+      key_content: ENV["APP_STORE_CONNECT_PRIVATE_KEY"],
+      is_key_content_base64: true,
+      in_house: false
+    )
+
+    # Fetch app identifier from Appfile
+    app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+
+    # Get current version number
+    current_version = get_version_number(
+      target: "Runner"
+    )
+
+    # Fetch latest TestFlight build number
+    latest_build_number = latest_testflight_build_number(
+      api_key: api_key,
+      version: current_version,
+      app_identifier: app_identifier
+    )
+
+    # Increment the build number
+    new_build_number = latest_build_number + 1
+    increment_build_number(build_number: new_build_number)
+    puts "🚀 Incremented Build Number: #{new_build_number}"
+  end
+end

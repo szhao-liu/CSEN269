@@ -77,11 +77,9 @@ jobs:
           GOOGLE_SERVICE_INFO: ${{ secrets.GOOGLE_INFO_PLIST }}
 
       - name: Install Fastlane
-        working-directory: ios
         run: bundle install
 
       - name: Increment iOS Build Number
-        working-directory: ios
         run: bundle exec fastlane ios fetch_and_increment_build_number
 
       - name: Fetch updated build number
