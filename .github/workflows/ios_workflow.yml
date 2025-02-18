@@ -80,9 +80,20 @@ jobs:
         working-directory: ios
         run: bundle install
 
-      - name: Increment Version & Build Number
+      - name: Decode App Store Connect API Key
+        uses: timheuer/base64-to-file@v1
+        id: app_store_api_key
+        with:
+          fileName: "AuthKey.p8"
+          encodedString: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+
+      - name: Increment iOS Build Number
         working-directory: ios
         run: bundle exec fastlane fetch_and_increment_build_number
+        env:
+          APP_STORE_CONNECT_PRIVATE_KEY: ${{ steps.app_store_api_key.outputs.filePath }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
 
       - name: Fetch updated build number
         working-directory: ios
