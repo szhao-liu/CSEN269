@@ -3,8 +3,6 @@ default_platform(:ios)
 desc "Bump build number based on most recent TestFlight build number"
 lane :fetch_and_increment_build_number do
  #fetch read your app identifier defined in your Appfile
- app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
-
  api_key = {
    key_id: ENV["APP_STORE_CONNECT_KEY_IDENTIFIER"],
    issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
@@ -12,14 +10,18 @@ lane :fetch_and_increment_build_number do
    in_house: false
  }
 
- current_version = get_version_number(
-   target: "Runner"
- )
+ app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+ puts "✅ App Identifier: #{app_identifier}"
+
+ current_version = get_version_number(target: "Runner")
+ puts "✅ Current Version: #{current_version}"
+
  latest_build_number = latest_testflight_build_number(
    api_key: api_key,
    version: current_version,
    app_identifier: app_identifier
  )
+ puts "✅ Latest Build Number: #{latest_build_number}"
  increment_build_number(
    build_number: (latest_build_number + 1),
  )
