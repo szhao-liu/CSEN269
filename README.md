@@ -1,19 +1,11 @@
-# 🎓 CollegeFinder App
+# 🎓 Track2College App
 
-CollegeFinder is a Flutter app that helps students and aspiring applicants find the best colleges suited to their academic interests, budget, and location preferences. With a user-friendly interface and comprehensive filters, CollegeFinder simplifies the college search process by delivering relevant information and recommendations at the user's fingertips.
+Track2College is a Flutter app that helps students and aspiring applicants find the best colleges suited to their academic interests, budget, and location preferences. With a user-friendly interface and comprehensive filters, Track2College simplifies the college search process by delivering relevant information and recommendations at the user's fingertips.
 
 ## 🚀 Features
 
-- **Search Colleges**: Find colleges by name, location, or specific criteria.
-- **Filter Options**: Filter results based on factors like ranking, tuition cost, location, program, and more.
-- **College Details**: View detailed information for each college, including programs offered, tuition fees, admission requirements, and campus facilities.
-- **Favorites**: Save favorite colleges for quick access later.
-- **Recommendations**: Get personalized college recommendations based on profile preferences.
-- **Location-Based Search**: Find colleges close to your current location.
-
-## 📱 Screenshots
-
-_Add screenshots of the main screens to showcase the UI and app functionality._
+- **Tasks**: Complete each task to reach the college of your choice.
+- **Upload Resumes**: Keep a track of build resumes for college applications.
 
 ## 🛠️ Installation
 
@@ -25,62 +17,20 @@ _Add screenshots of the main screens to showcase the UI and app functionality._
 2. **Install dependencies**:
    ```bash
    flutter pub get
-   
-3. **Configure API keys**:
-- Add your API keys (e.g., for college data API, map APIs) in a .env file for secure management.
-- Set up environment variables by adding a .env file in the project root.
-
-4. **Run the app**:
+3. **Release maintainence**:
    ```bash
-   flutter run
+   build for both ios and android are configured using github that dumps both the ios and android build to firebase distribution
+   https://console.firebase.google.com/project/college-finder-54f2c/appdistribution/app/android:com.frugal.CollegeFinder/releases
 
-5. **🔑 Environment Variables**:
-Create a .env file in the root directory with the following:
-    ```bash
-   COLLEGE_API_KEY=your_college_api_key
-   MAP_API_KEY=your_map_api_key
-
-6. **🧩 Dependencies**: 
-   flutter_riverpod: For state management
-   http: For API calls
-   flutter_dotenv: For managing API keys and environment variables
-   geolocator: For location-based services
-   cached_network_image: To cache college images
-
-7. **📂 Folder Structure**
-   lib/
-      screens/: Contains all screen widgets (e.g., home screen, details screen, search screen).
-      widgets/: Contains reusable widgets.
-      models/: Defines data models for College, Program, and other related entities.
-      providers/: State management providers (e.g., college provider, search provider).
-      services/: API services and external data-fetching logic.
-      utils/: Utility functions and constants.
-
-8. **🔍 Usage**:
-   Search for Colleges:
-      On the home screen, enter keywords or use filters to search for colleges.
-   View College Details:
-      Tap on any college in the list to view its details.
-   Save Favorites:
-      Use the "favorite" icon to save a college for later reference.
-   View Recommended Colleges:
-      Get recommendations based on saved preferences and search history.
-
-9. **🌐 API Usage**:
-   CollegeFinder relies on third-party APIs to fetch college data. Ensure you have valid API keys, as noted in the installation section.
-
-10.   **🛠️ Development & Contribution**
-   Fork the repository.
-      Create a new branch for your feature:
-   bash
-      git checkout -b feature-name
-    Commit your changes and push to the branch:
-   bash
-      git commit -m "Add new feature"
-      git push origin feature-name
-      Open a pull request.
+   Versioning is taken care automatically by Fastlane in github itself
+   To release follow the below steps:
+   - push the changes to the branch main
+   - once the build completes go to the distribution section
+   - for Play store - download the lastest aab from distribution section and upload directly on playstore after logging in to the dev account
+   - for Apple store - download the latest ipa file from distribution section and upload using TRANSPORTER app using mac after logging in to the dev account
+   - Yay! build release, yup it's that easy :-)
    
-11. **👥 Contributors**: 
-   Your Name - Sudarshan Mehta, Sonam Yegde, Anwitha Arbi
+4. **👥 Contributors**: 
+   Your Name - Sudarshan Mehta, Sonam Yegde
 📜 License
    This project is licensed under the MIT License.
