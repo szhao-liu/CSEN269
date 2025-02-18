@@ -82,7 +82,7 @@ jobs:
 
       - name: Increment iOS Build Number
         working-directory: ios
-        run: bundle exec fastlane fetch_and_increment_build_number
+        run: bundle exec fastlane ios fetch_and_increment_build_number
 
       - name: Fetch updated build number
         working-directory: ios
