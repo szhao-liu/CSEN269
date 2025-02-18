@@ -84,22 +84,11 @@ jobs:
         working-directory: ios
         run: bundle exec fastlane ios fetch_and_increment_build_number
 
-      - name: Fetch updated build number
-        working-directory: ios
-        run: |
-          if [ ! -f build_number.txt ]; then
-            echo "❌ build_number.txt not found!"
-            exit 1
-          fi
-          BUILD_NUMBER=$(cat build_number.txt | tr -d '\n')
-          echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
-          echo "✅ Updated Build Number: $BUILD_NUMBER"
-
       - name: Build IPA for Distribution
         run: |
           flutter build ipa --release \
           --build-name=1.0.0 \
-          --build-number=$BUILD_NUMBER \
+          --build-number=$IOS_BUILD_NUMBER \
           --export-options-plist=$HOME/export_options.plist
 
       - name: Install Firebase CLI

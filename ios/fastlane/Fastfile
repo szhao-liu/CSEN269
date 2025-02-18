@@ -29,5 +29,7 @@ platform :ios do
     new_build_number = latest_build_number + 1
     increment_build_number(build_number: new_build_number)
     puts "🚀 Incremented Build Number: #{new_build_number}"
+
+    ENV["IOS_BUILD_NUMBER"] = new_build_number.to_s
   end
 end
