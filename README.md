@@ -31,6 +31,6 @@ Track2College is a Flutter app that helps students and aspiring applicants find 
    - Yay! build release, yup it's that easy :-)
    
 4. **👥 Contributors**: 
-   Your Name - Sudarshan Mehta, Sonam Yegde
+   Your Name - Sudarshan Mehta, Sonam Yedge
 📜 License
    This project is licensed under the MIT License.
