@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_finder/features/user_auth/presentation/pages/DocumentUpload.dart';
 import 'package:college_finder/features/user_auth/presentation/pages/List.dart';
@@ -13,8 +14,10 @@ import 'package:college_finder/global/common/page_type.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+
 import '../../../../global/common/grade.dart';
 import 'Memo.dart';
+
 
 class FrostedGlassBox extends StatelessWidget {
   const FrostedGlassBox({
@@ -24,9 +27,11 @@ class FrostedGlassBox extends StatelessWidget {
     required this.theChild,
   }) : super(key: key);
 
+
   final double theWidth;
   final double theHeight;
   final Widget theChild;
+
 
   @override
   Widget build(BuildContext context) {
@@ -62,17 +67,22 @@ class FrostedGlassBox extends StatelessWidget {
   }
 }
 
+
 class TasksPage extends StatefulWidget {
   Grade grade;
 
+
   TasksPage({required this.grade});
+
 
   @override
   _TasksPageState createState() => _TasksPageState();
 }
 
+
 class _TasksPageState extends State<TasksPage> {
   late List<Task> tasks = [];
+
 
   @override
   void initState() {
@@ -80,12 +90,14 @@ class _TasksPageState extends State<TasksPage> {
     fetchAndSetTasks(widget.grade);
   }
 
+
   void _onGradeChanged(Grade newGrade) {
     setState(() {
       widget.grade = newGrade;
       fetchAndSetTasks(widget.grade);
     });
   }
+
 
   Future<void> fetchAndSetTasks(Grade grade) async {
     String? userUUID = FirebaseAuth.instance.currentUser?.uid;
@@ -95,11 +107,13 @@ class _TasksPageState extends State<TasksPage> {
         .collection('tasks')
         .get();
 
+
     final querySnapshotUsers = await FirebaseFirestore.instance
         .collection('users')
         .doc(userUUID)
         .collection('tasks')
         .get();
+
 
     setState(() {
       tasks = querySnapshotTasks.docs.map((doc) {
@@ -110,6 +124,7 @@ class _TasksPageState extends State<TasksPage> {
             userTask = userTaskDoc;
           }
         });
+
 
         // If userTask is null, add the task to user's tasks with mark false
         if (userTask == null) {
@@ -126,6 +141,7 @@ class _TasksPageState extends State<TasksPage> {
           });
         }
 
+
         List<String> documents = [];
         List<String> links = [];
         try {
@@ -136,6 +152,7 @@ class _TasksPageState extends State<TasksPage> {
           // You can also log the error or perform any other error handling as needed
         }
 
+
         try {
           links = List<String>.from(doc['link']);
         } catch (e) {
@@ -143,6 +160,7 @@ class _TasksPageState extends State<TasksPage> {
           print('Error fetching links: $e');
           // You can also log the error or perform any other error handling as needed
         }
+
 
         return Task(
             id: doc.id,
@@ -157,13 +175,16 @@ class _TasksPageState extends State<TasksPage> {
             grade: grade);
       }).toList();
 
+
       // Sort the tasks based on rank
       tasks.sort((a, b) => a.rank.compareTo(b.rank));
     });
   }
 
+
   double calculateProgress(List<Task> tasks) {
     if (tasks.isEmpty) return 0.0;
+
 
     int completedTasks = tasks
         .where((task) => task.mark)
@@ -171,30 +192,100 @@ class _TasksPageState extends State<TasksPage> {
     return completedTasks / tasks.length;
   }
 
+  void _showCompletionPopup() {
+    String message = _getCompletionMessage(widget.grade.grade);
+
+    // Get the color from the grade's fixedColor property
+    Color gradeColor = widget.grade.fixedColor;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: gradeColor, // Dynamically set the background color
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0), // Rounded corners
+          ),
+          title: Text(
+            "Remember",
+            style: TextStyle(
+              fontSize: 24, // Customize font size
+              fontWeight: FontWeight.bold, // Customize font weight
+              color: Colors.black, // White color for title text
+            ),
+          ),
+          content: Text(
+            message,
+            style: TextStyle(
+              fontSize: 18, // Customize font size
+              color: Colors.black, // Lighter text color for message content
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                "OK",
+                style: TextStyle(
+                  fontSize: 16, // Customize font size
+                  fontWeight: FontWeight.w600, // Customize font weight
+                  color: Colors.black, // Button text color
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+  String _getCompletionMessage(String grade) {
+    switch (grade) {
+      case '9th Grade':
+        return "It’s not about being the best. It’s about giving your best.";
+      case '10th Grade':
+        return "Every step forward counts, no matter how small. ";
+      case '11th Grade':
+        return "Perfection isn’t the goal. Progress is";
+      case '12th Grade':
+        return "Trust yourself! You’ve come so far, and you’re not stopping now. ";
+      default:
+        return "Congratulations on completing all tasks!";
+    }
+  }
+
+
+
   void updateTaskMark(Task task, bool newValue) {
     setState(() {
       task.mark = newValue;
     });
 
     String? userUUID = FirebaseAuth.instance.currentUser?.uid;
-    // Update mark in the user's collection
+
+    // Update mark in Firestore
     FirebaseFirestore.instance
         .collection('users')
         .doc(userUUID)
         .collection('tasks')
         .doc(task.id)
-        .set(
-        {'mark': newValue},
-        SetOptions(
-            merge:
-            true)) // Use set with merge to create if not exists or update if exists
+        .set({'mark': newValue}, SetOptions(merge: true))
         .then((value) {
       print('User task mark updated successfully');
+
+      // Check if all tasks are completed and show popup
+      if (tasks.every((task) => task.mark)) {
+        _showCompletionPopup();
+      }
     }).catchError((error) {
       print('Failed to update user task mark: $error');
-      // Handle the error as needed
     });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -202,6 +293,9 @@ class _TasksPageState extends State<TasksPage> {
     int completedTasks = tasks.where((task) => task.mark).length;
     int totalTasks = tasks.length;
     double progressPercent = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+
+
+
 
     return Scaffold(
       appBar: CommonHeader.Header(
@@ -241,15 +335,31 @@ class _TasksPageState extends State<TasksPage> {
                           color: Colors.lightGreen.withOpacity(0.3),
                         ),
                       ),
-                      AnimatedContainer(
-                        duration: Duration(milliseconds: 500),
-                        width: MediaQuery.of(context).size.width * progress,
-                        height: 20,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.green,
+                      // AnimatedContainer(
+                      //   duration: Duration(milliseconds: 500),
+                      //   width: MediaQuery.of(context).size.width * progress,
+                      //   height: 20,
+                      //   decoration: BoxDecoration(
+                      //     borderRadius: BorderRadius.circular(10),
+                      //     color: Colors.green,
+                      //   ),
+                      // ),
+                      FractionallySizedBox(
+                        alignment: Alignment.centerLeft,
+                        widthFactor: progress,  // Progress is passed as a factor from 0.0 to 1.0
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 500),
+                          height: 20,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.green,
+                          ),
                         ),
                       ),
+
+
+
+
                       Positioned.fill(
                         child: Align(
                           alignment: Alignment.centerRight,
@@ -305,9 +415,13 @@ class _TasksPageState extends State<TasksPage> {
                   radius: 25, // Smaller size for the button
                   backgroundColor: Colors.blueAccent,
 
+
                   child: Image.asset(
                     'assets/help.png',  // Ensure this path is correct
                     fit: BoxFit.cover,  // Ensures the image fits within the circle
+
+
+
 
 
 
@@ -316,9 +430,11 @@ class _TasksPageState extends State<TasksPage> {
               ),
             ),
 
+
           ],
         ),
       ),
+
 
       // floatingActionButton: Align(
       //   alignment: Alignment.bottomRight,
@@ -345,16 +461,19 @@ class _TasksPageState extends State<TasksPage> {
   }
 }
 
+
 class TaskList extends StatelessWidget {
   final List<Task> tasks;
   final Grade grade;
   final Function(Task, bool) updateTaskMark;
+
 
   TaskList({
     required this.tasks,
     required this.grade,
     required this.updateTaskMark,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -370,6 +489,7 @@ class TaskList extends StatelessWidget {
     );
   }
 }
+
 
 Widget getPageWidget(Task task) {
   switch (task.pageType) {
@@ -392,10 +512,12 @@ Widget getPageWidget(Task task) {
   }
 }
 
+
 class TaskCard extends StatefulWidget {
   final Task task;
   final Grade grade;
   final Function(Task, bool) updateTaskMark;
+
 
   TaskCard({
     required this.task,
@@ -403,9 +525,11 @@ class TaskCard extends StatefulWidget {
     required this.updateTaskMark,
   });
 
+
   @override
   _TaskCardState createState() => _TaskCardState();
 }
+
 
 class _TaskCardState extends State<TaskCard>
     with SingleTickerProviderStateMixin {
@@ -414,15 +538,18 @@ class _TaskCardState extends State<TaskCard>
   late Timer _timer;
   bool _isAnimationStopped = false;
 
+
   @override
   void initState() {
     super.initState();
+
 
     _controller = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
     )
       ..repeat(reverse: true);
+
 
     _offsetAnimation = Tween<Offset>(
       begin: Offset.zero,
@@ -439,11 +566,13 @@ class _TaskCardState extends State<TaskCard>
         }
       });
 
+
     // Stop the animation after 5 seconds
     _timer = Timer(const Duration(seconds: 2), () {
       _controller.stop();
     });
   }
+
 
   @override
   void dispose() {
@@ -520,6 +649,7 @@ class _TaskCardState extends State<TaskCard>
       ),
     );
   }
+
 
   Widget _buildExpansionTile(BuildContext context) {
     return Container(
@@ -599,11 +729,14 @@ class _TaskCardState extends State<TaskCard>
   }
 }
 
+
 class TaskListPage extends StatelessWidget {
   final List<Task> tasks;
   final Grade grade;
 
+
   TaskListPage({required this.tasks, required this.grade});
+
 
   @override
   Widget build(BuildContext context) {
@@ -643,6 +776,7 @@ class TaskListPage extends StatelessWidget {
   }
 }
 
+
 class Task {
   final String id;
   final String title;
@@ -654,6 +788,7 @@ class Task {
   final Grade grade;
   bool mark;
 
+
   Task({required this.id,
     required this.title,
     required this.description,
@@ -664,3 +799,4 @@ class Task {
     required this.links,
     required this.documents});
 }
+

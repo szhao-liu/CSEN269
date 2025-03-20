@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/sonamyedge/Downloads/development/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/sonamyedge/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/sonamyedge/StudioProjects/CollegeFinder/android/app/.cxx/Debug/515zb1c5/arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/sonamyedge/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/sonamyedge/StudioProjects/CollegeFinder/android/app/.cxx/Debug/515zb1c5/arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}
