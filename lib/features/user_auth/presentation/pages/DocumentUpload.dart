@@ -82,6 +82,49 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
     }
   }
 
+  Future<void> deleteResume(String url) async {
+    try {
+      final fileName = Uri.decodeFull(url.split('%2F').last.split('?').first);
+      await firebase_storage.FirebaseStorage.instance
+          .ref('resumes/${widget.userUUID}/$fileName')
+          .delete();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$fileName deleted')),
+      );
+
+      fetchUploadedResumes(); // Refresh list
+    } catch (e) {
+      print('Error deleting file: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error deleting file')),
+      );
+    }
+  }
+
+  void _confirmDelete(BuildContext context, String url) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Delete Document'),
+        content: Text('Are you sure you want to delete this document?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              deleteResume(url);
+            },
+            child: Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,7 +161,7 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
                           color: Colors.grey[200],
                           borderRadius: BorderRadius.circular(12),
                           border:
-                              Border.all(color: Colors.grey.shade400, width: 2),
+                          Border.all(color: Colors.grey.shade400, width: 2),
                         ),
                         child: Column(
                           children: [
@@ -179,7 +222,7 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
                                 );
                                 return Padding(
                                   padding:
-                                      const EdgeInsets.symmetric(vertical: 4.0),
+                                  const EdgeInsets.symmetric(vertical: 4.0),
                                   child: Card(
                                     elevation: 2,
                                     shape: RoundedRectangleBorder(
@@ -192,13 +235,27 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
                                             color: Colors.indigo,
                                             fontWeight: FontWeight.w500),
                                       ),
-                                      trailing: Icon(Icons.open_in_new,
-                                          color: Colors.indigo),
-                                      onTap: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => PdfViewerPage(
-                                                pdfUrl: resumeUrl)),
+                                      trailing: Wrap(
+                                        spacing: 4,
+                                        children: [
+                                          IconButton(
+                                            icon: Icon(Icons.open_in_new,
+                                                color: Colors.indigo),
+                                            onPressed: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PdfViewerPage(
+                                                          pdfUrl: resumeUrl)),
+                                            ),
+                                          ),
+                                          IconButton(
+                                            icon: Icon(Icons.delete,
+                                                color: Colors.red),
+                                            onPressed: () =>
+                                                _confirmDelete(context, resumeUrl),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
