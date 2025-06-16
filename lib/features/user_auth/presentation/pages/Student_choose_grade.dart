@@ -10,43 +10,90 @@ import '../../../../global/common/toast.dart';
 import 'package:college_finder/global/common/Get_Help.dart';
 
 class StudentChooseGrade extends StatelessWidget {
+  final bool showShowcase;
+
+  const StudentChooseGrade({Key? key, this.showShowcase=false}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    print("showShowcase: $showShowcase");
     return ShowCaseWidget(
-      builder: (context) => MaterialApp(
-
-        home: MyHomePage(),
-      ),
+      builder: (context) { return MyHomePage(showShowcase: showShowcase);},
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
+  final bool showShowcase;
+
+  const MyHomePage({required this.showShowcase});
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   final GlobalKey _chatButtonKey = GlobalKey();
   final Map<Grade, GlobalKey> _gradeKeys = {
     for (var grade in Grade.values) grade: GlobalKey(),
   };
 
   String? userUUID;
+  bool shouldShowShowcase = false;
 
   @override
   void initState() {
     super.initState();
     userUUID = FirebaseAuth.instance.currentUser?.uid;
+    
+    if (widget.showShowcase) {
+      _checkIfShouldShowShowcase();
+    }
+  }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ShowCaseWidget.of(context).startShowCase([
-
-        ..._gradeKeys.values,
-        _chatButtonKey,
-      ]);
-    });
+  // Check if user has seen the showcase before
+  Future<void> _checkIfShouldShowShowcase() async {
+    if (userUUID == null) return;
+    
+    try {
+      final userRef = FirebaseFirestore.instance.collection('users').doc(userUUID);
+      final userSnapshot = await userRef.get();
+      
+      if (userSnapshot.exists) {
+        final userData = userSnapshot.data() as Map<String, dynamic>;
+        final hasSeenShowcase = userData['hasSeenGradeShowcase'] ?? false;
+        
+        if (!hasSeenShowcase) {
+          setState(() {
+            shouldShowShowcase = true;
+          });
+          
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ShowCaseWidget.of(context).startShowCase([
+              ..._gradeKeys.values,
+              _chatButtonKey,
+            ]);
+          });
+          
+          // Mark that user has seen the showcase
+          await userRef.update({'hasSeenGradeShowcase': true});
+        }
+      } else {
+        // First time user, show showcase
+        setState(() {
+          shouldShowShowcase = true;
+        });
+        
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          ShowCaseWidget.of(context).startShowCase([
+            ..._gradeKeys.values,
+            _chatButtonKey,
+          ]);
+        });
+      }
+    } catch (e) {
+      print("Error checking showcase status: $e");
+    }
   }
 
   @override
@@ -86,46 +133,22 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
           ),
-          // Align(
-          //   alignment: Alignment.bottomRight,
-          //   child: Padding(
-          //     padding: const EdgeInsets.all(16.0),
-          //     child: Showcase(
-          //       key: _chatButtonKey,
-          //       description: "Tap here to open the chat window.",
-          //       child: FloatingActionButton(
-          //         onPressed: () {
-          //           Navigator.push(
-          //             context,
-          //             MaterialPageRoute(
-          //               builder: (context) => ChatWindow(
-          //                   userUUID: userUUID),
-          //             ),
-          //           );
-          //         },
-          //         child: Icon(Icons.chat_rounded),
-          //         backgroundColor: Color(0xFF0560FB),
-          //       ),
-          //     ),
-          //   ),
-          // ),
           Positioned(
             bottom: 20,
-            right: 20,  // Positioned to the bottom right
+            right: 20,
             child: GestureDetector(
               onTap: () {
-                // Navigate to GetHelpPage when the button is pressed
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => GetHelpPage()),
                 );
               },
               child: CircleAvatar(
-                radius: 25, // Smaller size for the button
+                radius: 25,
                 backgroundColor: Colors.blueAccent,
                 child: Image.asset(
-                  'assets/help.png',  // Ensure this path is correct
-                  fit: BoxFit.cover,  // Ensures the image fits within the circle
+                  'assets/help.png',
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
@@ -141,18 +164,21 @@ class _MyHomePageState extends State<MyHomePage> {
       return;
     }
     try {
-      final userRef =
-      FirebaseFirestore.instance.collection('users').doc(userUUID);
-
+      final userRef = FirebaseFirestore.instance.collection('users').doc(userUUID);
       final userSnapshot = await userRef.get();
 
       if (!userSnapshot.exists) {
         await userRef.set({
-          'grade': "",
+          'grade': grade,
+          'hasSeenGradeShowcase': true, // Set this when creating user
+        });
+      } else {
+        await userRef.update({
+          'grade': grade,
+          'hasSeenGradeShowcase': true, // Update this field
         });
       }
-
-      await userRef.update({'grade': grade});
+      
       showToast(message: "User is successfully signed in");
     } catch (e) {
       showToast(message: "Failed to add grade: $e");
@@ -161,13 +187,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void navigateToTasks(BuildContext context, Grade grade) {
-    Navigator.pushAndRemoveUntil(
+    Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            TasksPage(grade: grade),
+        builder: (context) => TasksPage(grade: grade),
       ),
-      (Route<dynamic> route) => false,
+      //(Route<dynamic> route) => false,
     );
   }
 }

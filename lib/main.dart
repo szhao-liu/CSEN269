@@ -46,7 +46,8 @@ class CollegeFinder extends StatelessWidget {
           case '/signUp':
             return MaterialPageRoute(builder: (context) => SignUpPage());
           case '/home':
-            return MaterialPageRoute(builder: (context) => StudentChooseGrade());
+            final showShowcase = settings.arguments as bool? ?? false;
+            return MaterialPageRoute(builder: (context) => StudentChooseGrade(showShowcase: showShowcase));
           case '/welcomePage':
             return MaterialPageRoute(builder: (context) => WelcomePage());
           case '/tasks':

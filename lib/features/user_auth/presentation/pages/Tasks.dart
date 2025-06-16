@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
 
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_finder/features/user_auth/presentation/pages/DocumentUpload.dart';
 import 'package:college_finder/features/user_auth/presentation/pages/List.dart';
@@ -14,10 +13,8 @@ import 'package:college_finder/global/common/page_type.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-
 import '../../../../global/common/grade.dart';
 import 'Memo.dart';
-
 
 class FrostedGlassBox extends StatelessWidget {
   const FrostedGlassBox({
@@ -27,11 +24,9 @@ class FrostedGlassBox extends StatelessWidget {
     required this.theChild,
   }) : super(key: key);
 
-
   final double theWidth;
   final double theHeight;
   final Widget theChild;
-
 
   @override
   Widget build(BuildContext context) {
@@ -67,22 +62,17 @@ class FrostedGlassBox extends StatelessWidget {
   }
 }
 
-
 class TasksPage extends StatefulWidget {
   Grade grade;
 
-
   TasksPage({required this.grade});
-
 
   @override
   _TasksPageState createState() => _TasksPageState();
 }
 
-
 class _TasksPageState extends State<TasksPage> {
   late List<Task> tasks = [];
-
 
   @override
   void initState() {
@@ -90,14 +80,12 @@ class _TasksPageState extends State<TasksPage> {
     fetchAndSetTasks(widget.grade);
   }
 
-
   void _onGradeChanged(Grade newGrade) {
     setState(() {
       widget.grade = newGrade;
       fetchAndSetTasks(widget.grade);
     });
   }
-
 
   Future<void> fetchAndSetTasks(Grade grade) async {
     String? userUUID = FirebaseAuth.instance.currentUser?.uid;
@@ -107,13 +95,11 @@ class _TasksPageState extends State<TasksPage> {
         .collection('tasks')
         .get();
 
-
     final querySnapshotUsers = await FirebaseFirestore.instance
         .collection('users')
         .doc(userUUID)
         .collection('tasks')
         .get();
-
 
     setState(() {
       tasks = querySnapshotTasks.docs.map((doc) {
@@ -124,7 +110,6 @@ class _TasksPageState extends State<TasksPage> {
             userTask = userTaskDoc;
           }
         });
-
 
         // If userTask is null, add the task to user's tasks with mark false
         if (userTask == null) {
@@ -141,7 +126,6 @@ class _TasksPageState extends State<TasksPage> {
           });
         }
 
-
         List<String> documents = [];
         List<String> links = [];
         try {
@@ -152,7 +136,6 @@ class _TasksPageState extends State<TasksPage> {
           // You can also log the error or perform any other error handling as needed
         }
 
-
         try {
           links = List<String>.from(doc['link']);
         } catch (e) {
@@ -160,7 +143,6 @@ class _TasksPageState extends State<TasksPage> {
           print('Error fetching links: $e');
           // You can also log the error or perform any other error handling as needed
         }
-
 
         return Task(
             id: doc.id,
@@ -175,16 +157,13 @@ class _TasksPageState extends State<TasksPage> {
             grade: grade);
       }).toList();
 
-
       // Sort the tasks based on rank
       tasks.sort((a, b) => a.rank.compareTo(b.rank));
     });
   }
 
-
   double calculateProgress(List<Task> tasks) {
     if (tasks.isEmpty) return 0.0;
-
 
     int completedTasks = tasks
         .where((task) => task.mark)
@@ -241,23 +220,20 @@ class _TasksPageState extends State<TasksPage> {
     );
   }
 
-
   String _getCompletionMessage(String grade) {
     switch (grade) {
       case '9th Grade':
-        return "It’s not about being the best. It’s about giving your best.";
+        return "It's not about being the best. It's about giving your best.";
       case '10th Grade':
         return "Every step forward counts, no matter how small. ";
       case '11th Grade':
-        return "Perfection isn’t the goal. Progress is";
+        return "Perfection isn't the goal. Progress is";
       case '12th Grade':
-        return "Trust yourself! You’ve come so far, and you’re not stopping now. ";
+        return "Trust yourself! You've come so far, and you're not stopping now. ";
       default:
         return "Congratulations on completing all tasks!";
     }
   }
-
-
 
   void updateTaskMark(Task task, bool newValue) {
     setState(() {
@@ -285,8 +261,6 @@ class _TasksPageState extends State<TasksPage> {
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     double progress = calculateProgress(tasks);
@@ -294,15 +268,12 @@ class _TasksPageState extends State<TasksPage> {
     int totalTasks = tasks.length;
     double progressPercent = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
-
-
-
     return Scaffold(
       appBar: CommonHeader.Header(
         dynamicText: "Checklist",
         grade: widget.grade,
         onGradeChanged: _onGradeChanged,
-        showBackArrow: false,
+        showBackArrow: true,
       ),
       body: SingleChildScrollView(
         child: Stack(
@@ -335,15 +306,6 @@ class _TasksPageState extends State<TasksPage> {
                           color: Colors.lightGreen.withOpacity(0.3),
                         ),
                       ),
-                      // AnimatedContainer(
-                      //   duration: Duration(milliseconds: 500),
-                      //   width: MediaQuery.of(context).size.width * progress,
-                      //   height: 20,
-                      //   decoration: BoxDecoration(
-                      //     borderRadius: BorderRadius.circular(10),
-                      //     color: Colors.green,
-                      //   ),
-                      // ),
                       FractionallySizedBox(
                         alignment: Alignment.centerLeft,
                         widthFactor: progress,  // Progress is passed as a factor from 0.0 to 1.0
@@ -356,10 +318,6 @@ class _TasksPageState extends State<TasksPage> {
                           ),
                         ),
                       ),
-
-
-
-
                       Positioned.fill(
                         child: Align(
                           alignment: Alignment.centerRight,
@@ -414,66 +372,30 @@ class _TasksPageState extends State<TasksPage> {
                 child: CircleAvatar(
                   radius: 25, // Smaller size for the button
                   backgroundColor: Colors.blueAccent,
-
-
                   child: Image.asset(
                     'assets/help.png',  // Ensure this path is correct
                     fit: BoxFit.cover,  // Ensures the image fits within the circle
-
-
-
-
-
-
                   ),
                 ),
               ),
             ),
-
-
           ],
         ),
       ),
-
-
-      // floatingActionButton: Align(
-      //   alignment: Alignment.bottomRight,
-      //   child: Padding(
-      //     padding: const EdgeInsets.all(16.0),
-      //     child: FloatingActionButton(
-      //       onPressed: () {
-      //         Navigator.push(
-      //           context,
-      //           MaterialPageRoute(
-      //             builder: (context) => ChatWindow(
-      //               userUUID: FirebaseAuth.instance.currentUser?.uid,
-      //               grade: widget.grade,
-      //             ),
-      //           ),
-      //         );
-      //       },
-      //       child: Icon(Icons.chat_rounded),
-      //       backgroundColor: Color(0xFF0560FB),
-      //     ),
-      //   ),
-      // ),
     );
   }
 }
-
 
 class TaskList extends StatelessWidget {
   final List<Task> tasks;
   final Grade grade;
   final Function(Task, bool) updateTaskMark;
 
-
   TaskList({
     required this.tasks,
     required this.grade,
     required this.updateTaskMark,
   });
-
 
   @override
   Widget build(BuildContext context) {
@@ -489,7 +411,6 @@ class TaskList extends StatelessWidget {
     );
   }
 }
-
 
 Widget getPageWidget(Task task) {
   switch (task.pageType) {
@@ -512,12 +433,10 @@ Widget getPageWidget(Task task) {
   }
 }
 
-
 class TaskCard extends StatefulWidget {
   final Task task;
   final Grade grade;
   final Function(Task, bool) updateTaskMark;
-
 
   TaskCard({
     required this.task,
@@ -525,31 +444,32 @@ class TaskCard extends StatefulWidget {
     required this.updateTaskMark,
   });
 
-
   @override
   _TaskCardState createState() => _TaskCardState();
 }
 
-
 class _TaskCardState extends State<TaskCard>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AnimationController _controller;
+  late AnimationController _arrowController;
   late Animation<Offset> _offsetAnimation;
-  late Timer _timer;
+  late Animation<double> _arrowAnimation;
+  late Timer? _timer;
   bool _isAnimationStopped = false;
-
 
   @override
   void initState() {
     super.initState();
 
-
     _controller = AnimationController(
-      duration: const Duration(seconds: 1),
+      duration: const Duration(milliseconds: 1500),
       vsync: this,
-    )
-      ..repeat(reverse: true);
+    );
 
+    _arrowController = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
 
     _offsetAnimation = Tween<Offset>(
       begin: Offset.zero,
@@ -557,29 +477,39 @@ class _TaskCardState extends State<TaskCard>
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.easeInOut,
-    ))
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
+    ));
+
+    _arrowAnimation = Tween<double>(
+      begin: 0.0,
+      end: -10.0,
+    ).animate(CurvedAnimation(
+      parent: _arrowController,
+      curve: Curves.easeInOut,
+    ));
+
+    // Start animations once and stop them after completion
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.forward().then((_) {
+        _controller.reverse().then((_) {
           setState(() {
             _isAnimationStopped = true;
           });
-        }
+        });
       });
-
-
-    // Stop the animation after 5 seconds
-    _timer = Timer(const Duration(seconds: 2), () {
-      _controller.stop();
+      
+      _arrowController.forward().then((_) {
+        _arrowController.reverse();
+      });
     });
   }
-
 
   @override
   void dispose() {
     _controller.dispose();
-    _timer.cancel();
+    _arrowController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -605,7 +535,7 @@ class _TaskCardState extends State<TaskCard>
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: List.generate(
                   3,
-                      (index) => Padding(
+                  (index) => Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: Icon(
                       Icons.arrow_back_ios,
@@ -634,109 +564,131 @@ class _TaskCardState extends State<TaskCard>
         },
         child: Stack(
           children: [
-            if (!_isAnimationStopped)
-              SlideTransition(
-                position: _offsetAnimation,
-                child: _buildExpansionTile(context),
-              ),
-            // For the second ExpansionTile when _isAnimationStopped is true
-            if (_isAnimationStopped)
-              Center(
-                child: _buildExpansionTile(context),
-              ),
+            SlideTransition(
+              position: _offsetAnimation,
+              child: _buildExpansionTile(context),
+            ),
           ],
         ),
       ),
     );
   }
 
-
   Widget _buildExpansionTile(BuildContext context) {
     return Container(
       color: Colors.white,
-      child: ExpansionTile(
-        title: Text(
-          widget.task.title,
-          style: TextStyle(
-            color: Color(0xFF0560FB),
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'Cereal',
-            shadows: [
-              Shadow(
-                blurRadius: 2,
-                color: Colors.black.withOpacity(0.2),
-                offset: Offset(1, 1),
+      child: Stack(
+        children: [
+          ExpansionTile(
+            title: Text(
+              widget.task.title,
+              style: TextStyle(
+                color: Color(0xFF0560FB),
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Cereal',
+                shadows: [
+                  Shadow(
+                    blurRadius: 2,
+                    color: Colors.black.withOpacity(0.2),
+                    offset: Offset(1, 1),
+                  ),
+                ],
+              ),
+            ),
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Divider(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5.0),
+                      child: Text(
+                        widget.task.description,
+                        style: TextStyle(
+                          color: Color(0xFF333333),
+                          fontSize: 15,
+                          fontFamily: 'Cereal',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
-          ),
-        ),
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Divider(), // Separator between title and description
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                  child: Text(
-                    widget.task.description,
-                    style: TextStyle(
-                      color: Color(0xFF333333),
-                      fontSize: 15,
-                      fontFamily: 'Cereal',
-                    ),
+            trailing: Theme(
+              data: Theme.of(context).copyWith(
+                checkboxTheme: CheckboxThemeData(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
                   ),
                 ),
-              ],
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Checkbox(
+                  value: widget.task.mark,
+                  activeColor: Color(0xFF0560FB),
+                  onChanged: (newValue) {
+                    if (newValue != null) {
+                      FirebaseFirestore.instance
+                          .collection('Checklist')
+                          .doc(widget.grade.grade)
+                          .collection('tasks')
+                          .doc(widget.task.id)
+                          .update({'mark': newValue}).then((value) {
+                        print('Document updated successfully');
+                      }).catchError((error) {
+                        print('Failed to update document: $error');
+                      });
+                      widget.updateTaskMark(widget.task, newValue);
+                    }
+                  },
+                ),
+              ),
+            ),
+          ),
+          
+          // Arrow positioned at the far right end of the tile
+          Positioned(
+            right: 8,
+            top: 0,
+            bottom: 0,
+            child: Center(
+              child: !_isAnimationStopped
+                  ? AnimatedBuilder(
+                      animation: _arrowAnimation,
+                      builder: (context, child) {
+                        return Transform.translate(
+                          offset: Offset(_arrowAnimation.value, 0),
+                          child: Icon(
+                            Icons.arrow_back_ios,
+                            color: Color(0xFF0560FB).withOpacity(0.7),
+                            size: 24,
+                          ),
+                        );
+                      },
+                    )
+                  : Icon(
+                      Icons.arrow_back_ios,
+                      color: Color(0xFF0560FB).withOpacity(0.4),
+                      size: 24,
+                    ),
             ),
           ),
         ],
-        trailing: Theme(
-          data: Theme.of(context).copyWith(
-            checkboxTheme: CheckboxThemeData(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50), // Adjust for roundness
-              ),
-            ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Checkbox(
-              value: widget.task.mark,
-              activeColor: Color(0xFF0560FB),
-              onChanged: (newValue) {
-                if (newValue != null) {
-                  FirebaseFirestore.instance
-                      .collection('Checklist')
-                      .doc(widget.grade.grade)
-                      .collection('tasks')
-                      .doc(widget.task.id)
-                      .update({'mark': newValue}).then((value) {
-                    print('Document updated successfully');
-                  }).catchError((error) {
-                    print('Failed to update document: $error');
-                  });
-                  widget.updateTaskMark(widget.task, newValue);
-                }
-              },
-            ),
-          ),
-        ),
       ),
     );
   }
 }
 
-
 class TaskListPage extends StatelessWidget {
   final List<Task> tasks;
   final Grade grade;
 
-
   TaskListPage({required this.tasks, required this.grade});
-
 
   @override
   Widget build(BuildContext context) {
@@ -776,7 +728,6 @@ class TaskListPage extends StatelessWidget {
   }
 }
 
-
 class Task {
   final String id;
   final String title;
@@ -788,7 +739,6 @@ class Task {
   final Grade grade;
   bool mark;
 
-
   Task({required this.id,
     required this.title,
     required this.description,
@@ -799,4 +749,3 @@ class Task {
     required this.links,
     required this.documents});
 }
-

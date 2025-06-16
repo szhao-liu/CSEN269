@@ -48,7 +48,7 @@ class WelcomePage extends StatelessWidget {
                         TextSpan(
                           text: "Welcome",
                           style: TextStyle(
-                            fontSize: 36,
+                            fontSize: 28,
                             fontWeight: FontWeight.bold,
                             color: Colors.blue, // Blue color for 'Welcome'
                           ),
@@ -56,7 +56,7 @@ class WelcomePage extends StatelessWidget {
                         TextSpan(
                           text: " to your College Prep Journey",
                           style: TextStyle(
-                            fontSize: 36,
+                            fontSize: 28,
                             fontWeight: FontWeight.bold,
                             color: Colors.black, // Black color for the rest of the text
                           ),
@@ -82,7 +82,7 @@ class WelcomePage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 110.0),
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, "/home");
+                      Navigator.pushNamed(context, "/home", arguments: true);
                     },
                     child: Container(
                       height: 45,
