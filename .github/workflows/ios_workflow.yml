@@ -46,6 +46,7 @@ jobs:
       - name: Install CocoaPods dependencies
         run: |
           cd ios
+          rm -rf Pods Podfile.lock ~/Library/Developer/Xcode/DerivedData
           pod install --repo-update
 
       - name: Install the CodeMagic CLI
