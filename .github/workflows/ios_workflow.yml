@@ -7,7 +7,7 @@ on:
 
 jobs:
   ios_deployment:
-    runs-on: macos-latest
+    runs-on: macos-13
     env:
       APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
       APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
@@ -21,6 +21,9 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
+      - name: Select Xcode 15.4
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+  
       - name: Set Xcode Command Line Tools
         run: sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
 
