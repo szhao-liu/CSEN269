@@ -188,6 +188,14 @@ class _DocumentUploadPageState extends State<DocumentUploadPage> {
                                     borderRadius: BorderRadius.circular(8)),
                               ),
                             ),
+                            Text(
+                              'Only .pdf files are accepted',
+                              style: TextStyle(
+                                  color: Colors.indigo,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
                           ],
                         ),
                       ),

@@ -655,7 +655,7 @@ class _TaskCardState extends State<TaskCard>
           Positioned(
             right: 8,
             top: 0,
-            bottom: 0,
+            height: 56,
             child: Center(
               child: !_isAnimationStopped
                   ? AnimatedBuilder(
