@@ -106,6 +106,7 @@ class WelcomePage extends StatelessWidget {
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
+                        textScaler: TextScaler.noScaling,
                         ),
                       ),
                     ),
