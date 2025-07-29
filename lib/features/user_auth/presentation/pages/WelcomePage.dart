@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
-import 'package:college_finder/global/common/Get_Help.dart'; // Import the GetHelpPage
-import 'About_Us.dart'; // Import your About_Us.dart file
+import 'package:college_finder/global/common/Get_Help.dart';
+import 'About_Us.dart';
 
 class WelcomePage extends StatelessWidget {
   @override
@@ -14,10 +14,10 @@ class WelcomePage extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(
-              Icons.group,  // Group of people icon
-              size: 30,  // Increase the size of the icon
+              Icons.group,
+              size: 30,
               color: Colors.black,
-            ), // Replaced the "i" icon with a team icon
+            ),
             tooltip: 'About Us',
             onPressed: () {
               Navigator.push(
@@ -34,117 +34,124 @@ class WelcomePage extends StatelessWidget {
           Positioned.fill(
             child: Container(color: Color(0xFFF9F9F9)),
           ),
+          // Main content with button after scrollable content
           SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(height: 30),
-                // Large Welcome text with customized colors
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "Welcome",
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue, // Blue color for 'Welcome'
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height - 
+                          MediaQuery.of(context).padding.top - 
+                          kToolbarHeight - 80, // Subtract AppBar height and bottom spacing
+              ),
+              child: IntrinsicHeight(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Main content
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          SizedBox(height: 30),
+                          // Welcome text
+                          Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "Welcome",
+                                  style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: " to your College Prep Journey",
+                                  style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        TextSpan(
-                          text: " to your College Prep Journey",
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black, // Black color for the rest of the text
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                // Updated Feature Cards with the new text
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Column(
-                    children: [
-                      _buildFeatureCard(0, "This app will help you keep track of everything you need to get ready for college.", Colors.yellow[200]!, Colors.pink[100]!),
-                      _buildFeatureCard(1, "Each grade has its own tasks, but it’s a good idea to explore them all to see the big picture and understand what’s ahead.", Colors.yellow[200]!, Colors.pink[100]!),
-                      _buildFeatureCard(2, "Everything here is carefully chosen, so you can trust it to guide you in the right direction. You’ve got this!", Colors.yellow[200]!, Colors.pink[100]!),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 40),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 110.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, "/home", arguments: true);
-                    },
-                    child: Container(
-                      height: 45,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: Colors.blueAccent,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: Offset(0, 3),
-                          ),
+                          SizedBox(height: 20),
+                          // Feature Cards
+                          _buildFeatureCard(0, "This app will help you keep track of everything you need to get ready for college.", Colors.yellow[200]!, Colors.pink[100]!),
+                          _buildFeatureCard(1, "Each grade has its own tasks, but it's a good idea to explore them all to see the big picture and understand what's ahead.", Colors.yellow[200]!, Colors.pink[100]!),
+                          _buildFeatureCard(2, "Everything here is carefully chosen, so you can trust it to guide you in the right direction. You've got this!", Colors.yellow[200]!, Colors.pink[100]!),
                         ],
                       ),
-                      child: Center(
-                        child: Text(
-                          "Get Started",
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                    ),
+                    // Spacer to push button to bottom
+                    Spacer(),
+                    // Button area - appears after content but maintains consistent bottom spacing
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 110.0, vertical: 40.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, "/home", arguments: true);
+                        },
+                        child: Container(
+                          height: 45,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            color: Colors.blueAccent,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
                           ),
-                        textScaler: TextScaler.noScaling,
+                          child: Center(
+                            child: Text(
+                              "Get Started",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textScaler: TextScaler.noScaling,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-          // Positioned "?" button at the bottom right corner with smaller size
+          // Help button
           Positioned(
             bottom: 20,
-            right: 20,  // Positioned to the bottom right
+            right: 20,
             child: GestureDetector(
               onTap: () {
-                // Navigate to GetHelpPage when the button is pressed
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => GetHelpPage()),
                 );
               },
               child: CircleAvatar(
-                radius: 25, // Smaller size for the button
+                radius: 25,
                 backgroundColor: Colors.blueAccent,
                 child: Image.asset(
-                  'assets/help.png',  // Replace with the correct path to your image
-                  fit: BoxFit.cover,  // Ensures the image fits within the circle
+                  'assets/help.png',
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
           ),
-
-
         ],
       ),
     );
   }
 
-  // Method to create feature cards with alternating alignment and gradient colors
   Widget _buildFeatureCard(int index, String description, Color color1, Color color2) {
     return Align(
       alignment: index % 2 == 0 ? Alignment.centerRight : Alignment.centerLeft,

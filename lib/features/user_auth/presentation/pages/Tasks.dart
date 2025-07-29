@@ -222,12 +222,13 @@ class _TasksPageState extends State<TasksPage> with TickerProviderStateMixin {
             borderRadius: BorderRadius.circular(12.0), // Rounded corners
           ),
           title: Text(
-            "Remember",
+            "CONGRATULATIONS",
             style: TextStyle(
               fontSize: 24, // Customize font size
               fontWeight: FontWeight.bold, // Customize font weight
               color: Colors.black, // White color for title text
             ),
+            textScaler:  MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.2),
           ),
           content: Text(
             message,
@@ -235,6 +236,7 @@ class _TasksPageState extends State<TasksPage> with TickerProviderStateMixin {
               fontSize: 18, // Customize font size
               color: Colors.black, // Lighter text color for message content
             ),
+            textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.2),
           ),
           actions: [
             TextButton(
@@ -257,18 +259,7 @@ class _TasksPageState extends State<TasksPage> with TickerProviderStateMixin {
   }
 
   String _getCompletionMessage(String grade) {
-    switch (grade) {
-      case '9th Grade':
-        return "It's not about being the best. It's about giving your best.";
-      case '10th Grade':
-        return "Every step forward counts, no matter how small. ";
-      case '11th Grade':
-        return "Perfection isn't the goal. Progress is";
-      case '12th Grade':
-        return "Trust yourself! You've come so far, and you're not stopping now. ";
-      default:
-        return "Congratulations on completing all tasks!";
-    }
+    return "You did it !!! You completed the checklist for this year!";
   }
 
   void updateTaskMark(Task task, bool newValue) {
@@ -399,93 +390,89 @@ class _TasksPageState extends State<TasksPage> with TickerProviderStateMixin {
                 ],
               ),
             ),
-            // Help button with tooltip
-            Positioned(
-              bottom: 20,
-              right: 20,
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      // Hide tooltip immediately when tapped
-                      if (_showTooltip) {
-                        _tooltipController.forward().then((_) {
-                          setState(() {
-                            _showTooltip = false;
-                          });
-                        });
-                      }
-                      
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => GetHelpPage()),
-                      );
-                    },
-                    child: CircleAvatar(
-                      radius: 25,
-                      backgroundColor: Colors.blueAccent,
-                      child: Image.asset(
-                        'assets/help.png',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  // Tooltip bubble
-                  if (_showTooltip)
-                    Positioned(
-                      bottom: 60, // Position above the button
-                      right: -20, // Adjust horizontal position
-                      child: FadeTransition(
-                        opacity: _tooltipAnimation,
-                        child: Container(
-                          width: 200,
-                          padding: EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.black87,
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 4,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontFamily: 'Cereal',
-                                  ),
-                                  children: [
-                                    TextSpan(text: "Click here if you need help on how to use the checklist"),
-                                    TextSpan(
-                                      text: "👇",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
           ],
         ),
       ),
+      floatingActionButton: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          GestureDetector(
+            onTap: () {
+              // Hide tooltip immediately when tapped
+              if (_showTooltip) {
+                _tooltipController.forward().then((_) {
+                  setState(() {
+                    _showTooltip = false;
+                  });
+                });
+              }
+              
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => GetHelpPage()),
+              );
+            },
+            child: CircleAvatar(
+              radius: 25,
+              backgroundColor: Colors.blueAccent,
+              child: Image.asset(
+                'assets/help.png',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          // Tooltip bubble
+          if (_showTooltip)
+            Positioned(
+              bottom: 70, // Position above the FAB
+              right: -40, // Center above the button
+              child: FadeTransition(
+                opacity: _tooltipAnimation,
+                child: Container(
+                  width: 200,
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.black87,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 4,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontFamily: 'Cereal',
+                          ),
+                          children: [
+                            TextSpan(text: "Click here if you need help on how to use the checklist "),
+                            TextSpan(
+                              text: "👇",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
@@ -573,14 +560,14 @@ class TaskCard extends StatefulWidget {
   _TaskCardState createState() => _TaskCardState();
 }
 
-class _TaskCardState extends State<TaskCard>
-    with TickerProviderStateMixin {
+class _TaskCardState extends State<TaskCard> with TickerProviderStateMixin {
   late AnimationController _controller;
   late AnimationController _arrowController;
   late Animation<Offset> _offsetAnimation;
   late Animation<double> _arrowAnimation;
   late Timer? _timer;
   bool _isAnimationStopped = false;
+  bool _isExpanded = false; // Track expansion state
 
   @override
   void initState() {
@@ -687,158 +674,138 @@ class _TaskCardState extends State<TaskCard>
           }
           return false; // Prevents dismissal when navigating
         },
-        child: Stack(
-          children: [
-            SlideTransition(
-              position: _offsetAnimation,
-              child: _buildExpansionTile(context),
-            ),
-          ],
+        child: SlideTransition(
+          position: _offsetAnimation,
+          child: _buildCustomTile(context),
         ),
       ),
     );
   }
 
-  Widget _buildExpansionTile(BuildContext context) {
+  Widget _buildCustomTile(BuildContext context) {
     return Container(
       color: Colors.white,
-      child: Stack(
+      child: Column(
         children: [
-          ExpansionTile(
-            title: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    widget.task.title,
-                    style: TextStyle(
-                      color: Color(0xFF0560FB),
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Cereal',
-                      shadows: [
-                        Shadow(
-                          blurRadius: 2,
-                          color: Colors.black.withOpacity(0.2),
-                          offset: Offset(1, 1),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                // Arrows moved closer to checkbox
-                Padding(
-                  padding: EdgeInsets.only(right: 8),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      !_isAnimationStopped
-                          ? AnimatedBuilder(
-                              animation: _arrowAnimation,
-                              builder: (context, child) {
-                                return Transform.translate(
-                                  offset: Offset(_arrowAnimation.value, 0),
-                                  child: Icon(
-                                    Icons.arrow_back_ios,
-                                    color: Color(0xFF0560FB).withOpacity(0.7),
-                                    size: 20,
-                                  ),
-                                );
-                              },
-                            )
-                          : Icon(
-                              Icons.arrow_back_ios,
-                              color: Color(0xFF0560FB).withOpacity(0.4),
-                              size: 20,
-                            ),
-                      SizedBox(width: 1),
-                      !_isAnimationStopped
-                          ? AnimatedBuilder(
-                              animation: _arrowAnimation,
-                              builder: (context, child) {
-                                return Transform.translate(
-                                  offset: Offset(_arrowAnimation.value, 0),
-                                  child: Icon(
-                                    Icons.arrow_back_ios,
-                                    color: Color(0xFF0560FB).withOpacity(0.7),
-                                    size: 20,
-                                  ),
-                                );
-                              },
-                            )
-                          : Icon(
-                              Icons.arrow_back_ios,
-                              color: Color(0xFF0560FB).withOpacity(0.4),
-                              size: 20,
-                            ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Divider(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 5.0),
-                      child: Text(
-                        widget.task.description,
-                        style: TextStyle(
-                          color: Color(0xFF333333),
-                          fontSize: 15,
-                          fontFamily: 'Cereal',
-                        ),
+          // Title row with tight control over spacing
+          InkWell(
+            onTap: () {
+              setState(() {
+                _isExpanded = !_isExpanded;
+              });
+            },
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 8, 12), // Reduced right padding
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.task.title,
+                      style: TextStyle(
+                        color: Color(0xFF0560FB),
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Cereal',
+                        shadows: [
+                          Shadow(
+                            blurRadius: 2,
+                            color: Colors.black.withOpacity(0.2),
+                            offset: Offset(1, 1),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-            trailing: SizedBox.shrink(),
-          ),
-          
-          // Checkbox positioned at the far right
-          Positioned(
-            right: 8,
-            top: 0,
-            bottom: 0,
-            child: Container(
-              height: 56,
-              child: Center(
-                child: Theme(
-                  data: Theme.of(context).copyWith(
-                    checkboxTheme: CheckboxThemeData(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                      ),
+                      textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.2),
                     ),
                   ),
-                  child: Checkbox(
-                    value: widget.task.mark,
-                    activeColor: Color(0xFF0560FB),
-                    onChanged: (newValue) {
-                      if (newValue != null) {
-                        FirebaseFirestore.instance
-                            .collection('Checklist')
-                            .doc(widget.grade.grade)
-                            .collection('tasks')
-                            .doc(widget.task.id)
-                            .update({'mark': newValue}).then((value) {
-                          print('Document updated successfully');
-                        }).catchError((error) {
-                          print('Failed to update document: $error');
-                        });
-                        widget.updateTaskMark(widget.task, newValue);
-                      }
-                    },
-                  ),
-                ),
+                  // Arrows with no extra spacing
+                  !_isAnimationStopped
+                      ? AnimatedBuilder(
+                          animation: _arrowAnimation,
+                          builder: (context, child) {
+                            return Transform.translate(
+                              offset: Offset(_arrowAnimation.value, 0),
+                              child: Icon(
+                                Icons.arrow_back_ios,
+                                color: Color(0xFF0560FB).withOpacity(0.7),
+                                size: 20,
+                              ),
+                            );
+                          },
+                        )
+                      : Icon(
+                          Icons.arrow_back_ios,
+                          color: Color(0xFF0560FB).withOpacity(0.4),
+                          size: 20,
+                        ),
+                  !_isAnimationStopped
+                      ? AnimatedBuilder(
+                          animation: _arrowAnimation,
+                          builder: (context, child) {
+                            return Transform.translate(
+                              offset: Offset(_arrowAnimation.value, 0),
+                              child: Icon(
+                                Icons.arrow_back_ios,
+                                color: Color(0xFF0560FB).withOpacity(0.7),
+                                size: 20,
+                              ),
+                            );
+                          },
+                        )
+                      : Icon(
+                          Icons.arrow_back_ios,
+                          color: Color(0xFF0560FB).withOpacity(0.4),
+                          size: 20,
+                        ),
+                  SizedBox(width: 4), // Minimal gap
+                  // Checkbox with minimal spacing
+                  Checkbox(
+                      value: widget.task.mark,
+                      activeColor: Color(0xFF0560FB),
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity: VisualDensity.compact,
+                      onChanged: (newValue) {
+                        if (newValue != null) {
+                          FirebaseFirestore.instance
+                              .collection('Checklist')
+                              .doc(widget.grade.grade)
+                              .collection('tasks')
+                              .doc(widget.task.id)
+                              .update({'mark': newValue}).then((value) {
+                            print('Document updated successfully');
+                          }).catchError((error) {
+                            print('Failed to update document: $error');
+                          });
+                          widget.updateTaskMark(widget.task, newValue);
+                        }
+                      },
+                    ),
+                ],
               ),
             ),
           ),
+          // Expandable content
+          if (_isExpanded)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Divider(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(
+                      widget.task.description,
+                      style: TextStyle(
+                        color: Color(0xFF333333),
+                        fontSize: 15,
+                        fontFamily: 'Cereal',
+                      ),
+                      textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.2),
+                    ),
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );

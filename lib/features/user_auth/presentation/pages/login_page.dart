@@ -38,144 +38,149 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/bb.png'),
-            fit: BoxFit.cover,
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(
+        textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.2),
+      ),
+      child: Scaffold(
+        body: Container(
+          height: MediaQuery.of(context).size.height,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/bb.png'),
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: 150),
-                Text(
-                  "Welcome!",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 60,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Cereal',
-                  ),
-                ),
-                SizedBox(height: 50),
-                Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                    width: 400,
-                    decoration: BoxDecoration(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 150),
+                  Text(
+                    "Welcome!",
+                    style: TextStyle(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
+                      fontSize: 60,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Cereal',
                     ),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 10),
-                        Text(
-                          "Login",
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 45,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Cereal',
+                  ),
+                  SizedBox(height: 50),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                      width: 400,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 10),
+                          Text(
+                            "Login",
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 45,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Cereal',
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 30),
-                        FormContainerWidget(
-                          controller: _emailController,
-                          hintText: "Email",
-                          isPasswordField: false,
-                        ),
-                        SizedBox(height: 10),
-                        FormContainerWidget(
-                          controller: _passwordController,
-                          hintText: "Password",
-                          isPasswordField: true,
-                          onFieldSubmitted: (_) => _signIn(),
-                        ),
-                        SizedBox(height: 30),
-                        GestureDetector(
-                          onTap: _signIn,
-                          child: Container(
-                            width: double.infinity,
-                            height: 45,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.blue[200] ?? Colors.transparent,
-                                  Colors.greenAccent[100] ?? Colors.transparent,
+                          SizedBox(height: 30),
+                          FormContainerWidget(
+                            controller: _emailController,
+                            hintText: "Email",
+                            isPasswordField: false,
+                          ),
+                          SizedBox(height: 10),
+                          FormContainerWidget(
+                            controller: _passwordController,
+                            hintText: "Password",
+                            isPasswordField: true,
+                            onFieldSubmitted: (_) => _signIn(),
+                          ),
+                          SizedBox(height: 30),
+                          GestureDetector(
+                            onTap: _signIn,
+                            child: Container(
+                              width: double.infinity,
+                              height: 45,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.blue[200] ?? Colors.transparent,
+                                    Colors.greenAccent[100] ?? Colors.transparent,
+                                  ],
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                    offset: Offset(0, 3),
+                                  ),
                                 ],
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset: Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child: _isSigning
-                                  ? CircularProgressIndicator(color: Colors.white)
-                                  : Text(
-                                "LOGIN",
-                                style: TextStyle(
-                                  fontSize: 25,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Cereal',
+                              child: Center(
+                                child: _isSigning
+                                    ? CircularProgressIndicator(color: Colors.white)
+                                    : Text(
+                                  "LOGIN",
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Cereal',
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 20),
-                        _socialSignInButtons(),
-                        SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Don't have an account?",
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.black,
-                                fontFamily: 'Cereal',
-                              ),
-                            ),
-                            SizedBox(width: 5),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => SignUpPage()),
-                                      (route) => false,
-                                );
-                              },
-                              child: Text(
-                                "Sign Up",
+                          SizedBox(height: 20),
+                          _socialSignInButtons(),
+                          SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Don't have an account?",
                                 style: TextStyle(
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  color: Colors.black,
                                   fontFamily: 'Cereal',
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                              SizedBox(width: 5),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => SignUpPage()),
+                                        (route) => false,
+                                  );
+                                },
+                                child: Text(
+                                  "Sign Up",
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Cereal',
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
