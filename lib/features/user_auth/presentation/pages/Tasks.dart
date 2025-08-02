@@ -228,7 +228,7 @@ class _TasksPageState extends State<TasksPage> with TickerProviderStateMixin {
               fontWeight: FontWeight.bold, // Customize font weight
               color: Colors.black, // White color for title text
             ),
-            textScaler:  MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.2),
+            textScaler: TextScaler.noScaling ,
           ),
           content: Text(
             message,
@@ -393,84 +393,87 @@ class _TasksPageState extends State<TasksPage> with TickerProviderStateMixin {
           ],
         ),
       ),
-      floatingActionButton: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          GestureDetector(
-            onTap: () {
-              // Hide tooltip immediately when tapped
-              if (_showTooltip) {
-                _tooltipController.forward().then((_) {
-                  setState(() {
-                    _showTooltip = false;
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom:5),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            GestureDetector(
+              onTap: () {
+                // Hide tooltip immediately when tapped
+                if (_showTooltip) {
+                  _tooltipController.forward().then((_) {
+                    setState(() {
+                      _showTooltip = false;
+                    });
                   });
-                });
-              }
-              
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => GetHelpPage()),
-              );
-            },
-            child: CircleAvatar(
-              radius: 25,
-              backgroundColor: Colors.blueAccent,
-              child: Image.asset(
-                'assets/help.png',
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          // Tooltip bubble
-          if (_showTooltip)
-            Positioned(
-              bottom: 70, // Position above the FAB
-              right: -40, // Center above the button
-              child: FadeTransition(
-                opacity: _tooltipAnimation,
-                child: Container(
-                  width: 200,
-                  padding: EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.black87,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 4,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontFamily: 'Cereal',
-                          ),
-                          children: [
-                            TextSpan(text: "Click here if you need help on how to use the checklist "),
-                            TextSpan(
-                              text: "👇",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                }
+                
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GetHelpPage()),
+                );
+              },
+              child: CircleAvatar(
+                radius: 25,
+                backgroundColor: Colors.blueAccent,
+                child: Image.asset(
+                  'assets/help.png',
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
-        ],
+            // Tooltip bubble
+            if (_showTooltip)
+              Positioned(
+                bottom: 70, // Position above the FAB
+                right: 0, // Center above the button
+                child: FadeTransition(
+                  opacity: _tooltipAnimation,
+                  child: Container(
+                    width: 200,
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.black87,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontFamily: 'Cereal',
+                            ),
+                            children: [
+                              TextSpan(text: "Click here if you need help on how to use the checklist "),
+                              TextSpan(
+                                text: "👇",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
