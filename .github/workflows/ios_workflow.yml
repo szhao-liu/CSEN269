@@ -22,9 +22,23 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Select Xcode (16.x on macos-15)
+        shell: bash
         run: |
+          set -e
+          # (Optional) switch to the newest 16.x present on the image
+          for V in 16.4.0 16.4 16.3.0 16.3 16.2.0 16.2 16.1.0 16.1 16.0.0 16.0; do
+            if [ -d "/Applications/Xcode_${V}.app" ]; then
+              sudo xcode-select -switch "/Applications/Xcode_${V}.app/Contents/Developer"
+              break
+            fi
+          done
+
           sudo xcodebuild -license accept
           sudo xcodebuild -runFirstLaunch || true
+
+          # ⬇️ This is the missing piece
+          sudo xcodebuild -downloadPlatform iOS
+
           xcodebuild -version
           xcodebuild -showsdks
 
