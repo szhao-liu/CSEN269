@@ -21,10 +21,12 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Prepare Xcode
+      - name: Prepare Xcode 16
+        shell: bash
         run: |
+          set -e  
           sudo xcodebuild -license accept
-          xcodebuild -version
+          sudo xcodebuild -runFirstLaunch
           sudo xcodebuild -downloadPlatform iOS
           xcodebuild -showsdks
   
