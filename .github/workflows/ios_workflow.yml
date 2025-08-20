@@ -23,7 +23,7 @@ jobs:
 
       - name: Prepare Xcode
         run: |
-          sudo xcodebuild -licnese accept
+          sudo xcodebuild -license accept
           xcodebuild -version
           sudo xcodebuild -downloadPlatform iOS
           xcodebuild -showsdks
