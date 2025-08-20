@@ -21,8 +21,13 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
   
-      - name: Set Xcode Command Line Tools
-        run: sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+      #- name: Set Xcode Command Line Tools
+      #  run: sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+      - name: Set up Xcode
+        uses: maxim-lobanev/setup-xcode@v1
+        with:
+          xcode-version: '15.4'
+      - run: sudo xcodebuild -license accept
 
       - name: Set up Flutter SDK
         uses: flutter-actions/setup-flutter@v3
