@@ -302,180 +302,188 @@ class _TasksPageState extends State<TasksPage> with TickerProviderStateMixin {
         onGradeChanged: _onGradeChanged,
         showBackArrow: true,
       ),
-      body: SingleChildScrollView(
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Container(color: Color(0xFFF9F9F9)),
-            ),
-            Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(bottom: 20),
-                    child: Text(
-                      widget.grade.grade,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontFamily: "Cereal",
-                        fontWeight: FontWeight.w700,
-                      ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Positioned.fill(
+            child: Container(color: Color(0xFFF9F9F9)),
+          ),
+          Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Grade title
+                Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: Text(
+                    widget.grade.grade,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: "Cereal",
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Stack(
-                      children: [
-                        Container(
+                ),
+                // Progress bar
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: 30,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.lightGreen.withOpacity(0.3),
+                        ),
+                      ),
+                      FractionallySizedBox(
+                        alignment: Alignment.centerLeft,
+                        widthFactor: progress,
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 500),
                           height: 30,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
-                            color: Colors.lightGreen.withOpacity(0.3),
+                            color: Colors.green,
                           ),
                         ),
-                        FractionallySizedBox(
-                          alignment: Alignment.centerLeft,
-                          widthFactor: progress,
-                          child: AnimatedContainer(
-                            duration: Duration(milliseconds: 500),
-                            height: 30,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.green,
-                            ),
-                          ),
-                        ),
-                        Positioned.fill(
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 12.0),
-                              child: Text(
-                                '${progressPercent.toStringAsFixed(0)}%',
-                                textScaler: TextScaler.noScaling,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                      ),
+                      Positioned.fill(
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 12.0),
+                            child: Text(
+                              '${progressPercent.toStringAsFixed(0)}%',
+                              textScaler: TextScaler.noScaling,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Progress',
-                    style: TextStyle(
-                      fontFamily: 'Cereal',
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'Progress',
+                  style: TextStyle(
+                    fontFamily: 'Cereal',
+                    fontSize: 16,
+                    color: Colors.black,
                   ),
-                  SizedBox(height: 8),
-                  FrostedGlassBox(
+                ),
+                SizedBox(height: 8),
+                // Expanded task list with proper scrolling
+                Expanded(
+                  child: FrostedGlassBox(
                     theWidth: double.infinity,
-                    theHeight: MediaQuery.of(context).size.height * 0.7,
-                    theChild: TaskList(
-                      tasks: tasks,
-                      grade: widget.grade,
-                      updateTaskMark: updateTaskMark,
+                    theHeight: double.infinity, // Let it take available space
+                    theChild: Padding(
+                      padding: EdgeInsets.only(bottom: 20), // Add bottom padding for FAB
+                      child: TaskList(
+                        tasks: tasks,
+                        grade: widget.grade,
+                        updateTaskMark: updateTaskMark,
+                      ),
                     ),
                   ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: Padding(
-        padding: EdgeInsets.only(bottom:5),
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            GestureDetector(
-              onTap: () {
-                // Hide tooltip immediately when tapped
-                if (_showTooltip) {
-                  _tooltipController.forward().then((_) {
-                    setState(() {
-                      _showTooltip = false;
-                    });
-                  });
-                }
-                
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => GetHelpPage()),
-                );
-              },
-              child: CircleAvatar(
-                radius: 25,
-                backgroundColor: Colors.blueAccent,
-                child: Image.asset(
-                  'assets/help.png',
-                  fit: BoxFit.cover,
                 ),
-              ),
+              ],
             ),
-            // Tooltip bubble
-            if (_showTooltip)
-              Positioned(
-                bottom: 70, // Position above the FAB
-                right: 0, // Center above the button
-                child: FadeTransition(
-                  opacity: _tooltipAnimation,
-                  child: Container(
-                    width: 200,
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.black87,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
+          ),
+          // Positioned floating action button like in Student_choose_grade.dart
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    // Hide tooltip immediately when tapped
+                    if (_showTooltip) {
+                      _tooltipController.forward().then((_) {
+                        setState(() {
+                          _showTooltip = false;
+                        });
+                      });
+                    }
+                    
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => GetHelpPage()),
+                    );
+                  },
+                  child: CircleAvatar(
+                    radius: 25,
+                    backgroundColor: Colors.blueAccent,
+                    child: Image.asset(
+                      'assets/help.png',
+                      fit: BoxFit.cover,
                     ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontFamily: 'Cereal',
+                  ),
+                ),
+                // Tooltip bubble
+                if (_showTooltip)
+                  Positioned(
+                    bottom: 70, // Position above the FAB
+                    right: 0, // Center above the button
+                    child: FadeTransition(
+                      opacity: _tooltipAnimation,
+                      child: Container(
+                        width: 200,
+                        padding: EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.black87,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 4,
+                              offset: Offset(0, 2),
                             ),
-                            children: [
-                              TextSpan(text: "Click here if you need help on how to use the checklist "),
-                              TextSpan(
-                                text: "👇",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
+                          ],
                         ),
-                      ],
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontFamily: 'Cereal',
+                                ),
+                                children: [
+                                  TextSpan(text: "Click here if you need help on how to use the checklist "),
+                                  TextSpan(
+                                    text: "👇",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-          ],
-        ),
+              ],
+            ),
+          ),
+        ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
@@ -698,9 +706,33 @@ class _TaskCardState extends State<TaskCard> with TickerProviderStateMixin {
               });
             },
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 8, 12), // Reduced right padding
+              padding: const EdgeInsets.fromLTRB(8, 12, 16, 12), // Adjusted padding
               child: Row(
                 children: [
+                  // Checkbox first
+                  Checkbox(
+                    value: widget.task.mark,
+                    activeColor: Color(0xFF0560FB),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                    onChanged: (newValue) {
+                      if (newValue != null) {
+                        FirebaseFirestore.instance
+                            .collection('Checklist')
+                            .doc(widget.grade.grade)
+                            .collection('tasks')
+                            .doc(widget.task.id)
+                            .update({'mark': newValue}).then((value) {
+                          print('Document updated successfully');
+                        }).catchError((error) {
+                          print('Failed to update document: $error');
+                        });
+                        widget.updateTaskMark(widget.task, newValue);
+                      }
+                    },
+                  ),
+                  SizedBox(width: 8), // Space between checkbox and task title
+                  // Task title in the middle
                   Expanded(
                     child: Text(
                       widget.task.title,
@@ -720,7 +752,8 @@ class _TaskCardState extends State<TaskCard> with TickerProviderStateMixin {
                       textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.2),
                     ),
                   ),
-                  // Arrows with no extra spacing
+                  SizedBox(width: 8), // Space between task title and arrows
+                  // Arrows at the end with no extra spacing
                   !_isAnimationStopped
                       ? AnimatedBuilder(
                           animation: _arrowAnimation,
@@ -759,29 +792,6 @@ class _TaskCardState extends State<TaskCard> with TickerProviderStateMixin {
                           color: Color(0xFF0560FB).withOpacity(0.4),
                           size: 20,
                         ),
-                  SizedBox(width: 4), // Minimal gap
-                  // Checkbox with minimal spacing
-                  Checkbox(
-                      value: widget.task.mark,
-                      activeColor: Color(0xFF0560FB),
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      visualDensity: VisualDensity.compact,
-                      onChanged: (newValue) {
-                        if (newValue != null) {
-                          FirebaseFirestore.instance
-                              .collection('Checklist')
-                              .doc(widget.grade.grade)
-                              .collection('tasks')
-                              .doc(widget.task.id)
-                              .update({'mark': newValue}).then((value) {
-                            print('Document updated successfully');
-                          }).catchError((error) {
-                            print('Failed to update document: $error');
-                          });
-                          widget.updateTaskMark(widget.task, newValue);
-                        }
-                      },
-                    ),
                 ],
               ),
             ),
