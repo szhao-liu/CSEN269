@@ -21,15 +21,23 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Prepare Xcode 16
+      - name: Select Xcode 15.4 if available (fallback to default)
         shell: bash
         run: |
-          set -e  
+          set -e
+          echo "Available Xcodes:"
+          ls -1 /Applications | grep -i Xcode || true
+
+          if [ -d "/Applications/Xcode_15.4.app" ]; then
+            sudo xcode-select -switch /Applications/Xcode_15.4.app/Contents/Developer
+            echo "Switched to Xcode 15.4"
+          else
+            echo "Xcode 15.4 not present; staying on default Xcode"
+          fi
+
           sudo xcodebuild -license accept
-          sudo xcodebuild -runFirstLaunch
-          sudo xcodebuild -downloadPlatform iOS
-          xcodebuild -showsdks
-  
+          xcodebuild -version
+
       - name: Set Xcode Command Line Tools
         run: sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
 
