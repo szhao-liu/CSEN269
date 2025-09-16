@@ -37,9 +37,7 @@ class CollegeFinder extends StatelessWidget {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => SplashScreen(
-                child: LoginPage(),
-              ),
+              builder: (context) => SplashScreen(),
             );
           case '/login':
             return MaterialPageRoute(builder: (context) => LoginPage());
