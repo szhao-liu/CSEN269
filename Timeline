@@ -25,3 +25,15 @@ three verticals we could think about:
 - motivate students to go to college? (implement a skill test during onboarding)
 
 ---
+
+one of the team members also did a heuristic evaluation of the app based on nielsen norman group’s heuristic evaluation criteria
+
+help and documentation
+ - the help tab needs improvement. currently, it functions more like a simplified version of a help feature rather than a detailed walk-through
+
+error prevention
+ - when the user clicks logout, there is no confirmation message to verify whether they actually want to log out
+
+our team will discuss internally based on the heuristic evaluation and interview results to determine the next steps
+
+---
