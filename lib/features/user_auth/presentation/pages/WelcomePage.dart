@@ -53,33 +53,37 @@ class WelcomePage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           SizedBox(height: 30),
-                          // Welcome text
-                          Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: "Welcome",
-                                  style: TextStyle(
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue,
+                          // Welcome text - centered
+                          Center(
+                            child: Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: "Welcome",
+                                    style: TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue,
+                                    ),
                                   ),
-                                ),
-                                TextSpan(
-                                  text: " to your College Prep Journey",
-                                  style: TextStyle(
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
+                                  TextSpan(
+                                    text: " to your College Prep Journey",
+                                    style: TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                          SizedBox(height: 20),
-                          // Feature Cards
+                          SizedBox(height: 30),
+                          // Feature Cards - vertically aligned in a column
                           _buildFeatureCard(0, "This app will help you keep track of everything you need to get ready for college.", Colors.yellow[200]!, Colors.pink[100]!),
+                          SizedBox(height: 16),
                           _buildFeatureCard(1, "Each grade has its own tasks, but it's a good idea to explore them all to see the big picture and understand what's ahead.", Colors.yellow[200]!, Colors.pink[100]!),
+                          SizedBox(height: 16),
                           _buildFeatureCard(2, "Everything here is carefully chosen, so you can trust it to guide you in the right direction. You've got this!", Colors.yellow[200]!, Colors.pink[100]!),
                         ],
                       ),
@@ -153,41 +157,32 @@ class WelcomePage extends StatelessWidget {
   }
 
   Widget _buildFeatureCard(int index, String description, Color color1, Color color2) {
-    return Align(
-      alignment: index % 2 == 0 ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 10),
-        padding: EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          gradient: LinearGradient(
-            colors: [color1, color2],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: Offset(0, 3),
-            ),
-          ],
+    return Container(
+      padding: EdgeInsets.all(20.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.0),
+        gradient: LinearGradient(
+          colors: [color1, color2],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 5),
-            Text(
-              description,
-              style: TextStyle(
-                fontFamily: 'Cereal',
-                fontSize: 18,
-                fontWeight: FontWeight.normal,
-                color: Colors.black,
-              ),
-            ),
-          ],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            spreadRadius: 2,
+            blurRadius: 8,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Text(
+        description,
+        style: TextStyle(
+          fontFamily: 'Cereal',
+          fontSize: 18,
+          fontWeight: FontWeight.normal,
+          color: Colors.black,
+          height: 1.5,
         ),
       ),
     );

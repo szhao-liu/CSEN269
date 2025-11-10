@@ -41,21 +41,20 @@ class GetHelpPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 30),
-                  const Text(
-                    'Welcome to Get Help!',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.indigo,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
+                  // Modern Header Section
+                  _buildHeaderSection(),
+                  const SizedBox(height: 32),
+                  // How to Use Section
+                  _buildSectionTitle("How to Use", Icons.help_outline),
+                  const SizedBox(height: 16),
                   FeatureCardsWidget(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 32),
+                  // Account Settings Section
+                  _buildSectionTitle("Account Settings", Icons.settings_outlined),
+                  const SizedBox(height: 16),
                   LogoutButton(),
-                  const SizedBox(height: 20),
-                  DeleteAccountButton(), // New Delete Account button
+                  const SizedBox(height: 12),
+                  DeleteAccountButton(),
                   const SizedBox(height: 50),
                 ],
               ),
@@ -65,40 +64,154 @@ class GetHelpPage extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildHeaderSection() {
+    return Container(
+      padding: const EdgeInsets.all(24.0),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.indigo.shade400, Colors.indigo.shade600],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.indigo.withOpacity(0.3),
+            blurRadius: 15,
+            spreadRadius: 2,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.help_center,
+              size: 48,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Welcome to Get Help!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+              fontFamily: 'Cereal',
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Find answers and manage your account',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.white.withOpacity(0.9),
+              fontFamily: 'Cereal',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title, IconData icon) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.indigo.shade50,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            icon,
+            color: Colors.indigo.shade700,
+            size: 20,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: Colors.grey.shade800,
+            fontFamily: 'Cereal',
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 class LogoutButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () async {
-        try {
-          await FirebaseAuth.instance.signOut();
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            '/login',
-                (Route<dynamic> route) => false, // Clear the navigation stack
-          );
-        } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Error logging out: ${e.toString()}")),
-          );
-        }
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.redAccent,
-        padding: const EdgeInsets.symmetric(vertical: 15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.redAccent.withOpacity(0.3),
+            blurRadius: 8,
+            spreadRadius: 1,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
-      child: const Text(
-        "Logout",
-        style: TextStyle(
-          fontFamily: 'Cereal',
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
+      child: ElevatedButton(
+        onPressed: () async {
+          try {
+            await FirebaseAuth.instance.signOut();
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              '/login',
+              (Route<dynamic> route) => false, // Clear the navigation stack
+            );
+          } catch (e) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Error logging out: ${e.toString()}")),
+            );
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.redAccent,
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          elevation: 0,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.logout,
+              color: Colors.white,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            const Text(
+              "Logout",
+              style: TextStyle(
+                fontFamily: 'Cereal',
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -108,27 +221,52 @@ class LogoutButton extends StatelessWidget {
 class DeleteAccountButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () async {
-        bool confirmDelete = await _showConfirmationDialog(context);
-        if (confirmDelete) {
-          _deleteAccount(context);
-        }
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.black,
-        padding: const EdgeInsets.symmetric(vertical: 15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade800.withOpacity(0.3),
+            blurRadius: 8,
+            spreadRadius: 1,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
-      child: const Text(
-        "Delete Account",
-        style: TextStyle(
-          fontFamily: 'Cereal',
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
+      child: ElevatedButton(
+        onPressed: () async {
+          bool confirmDelete = await _showConfirmationDialog(context);
+          if (confirmDelete) {
+            _deleteAccount(context);
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.grey.shade900,
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          elevation: 0,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.delete_outline,
+              color: Colors.white,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            const Text(
+              "Delete Account",
+              style: TextStyle(
+                fontFamily: 'Cereal',
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -139,17 +277,57 @@ class DeleteAccountButton extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Confirm Deletion"),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Row(
+            children: [
+              Icon(Icons.warning_amber_rounded, color: Colors.red.shade600, size: 28),
+              const SizedBox(width: 12),
+              const Text(
+                "Confirm Deletion",
+                style: TextStyle(
+                  fontFamily: 'Cereal',
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
           content: const Text(
-              "Are you sure you want to delete your account? This action cannot be undone."),
+            "Are you sure you want to delete your account? This action cannot be undone.",
+            style: TextStyle(
+              fontFamily: 'Cereal',
+              fontSize: 15,
+            ),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text("Cancel"),
+              child: Text(
+                "Cancel",
+                style: TextStyle(
+                  fontFamily: 'Cereal',
+                  color: Colors.grey.shade700,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text("Delete", style: TextStyle(color: Colors.red)),
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.red.shade50,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                "Delete",
+                style: TextStyle(
+                  fontFamily: 'Cereal',
+                  color: Colors.red.shade700,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         );
@@ -179,73 +357,120 @@ class DeleteAccountButton extends StatelessWidget {
 class FeatureCardsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 5,
-            spreadRadius: 2,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          _buildFeatureCard(
-            context,
-            "Click on each tab to see a detailed explanation of the term.",
-            Colors.orange[200]!,
-            Colors.purple[100]!,
-          ),
-          const SizedBox(height: 20),
-          _buildFeatureCard(
-            context,
-            "Then, swipe to complete a simple task related to it.",
-            Colors.orange[200]!,
-            Colors.purple[100]!,
-          ),
-          const SizedBox(height: 20),
-          _buildFeatureCard(
-            context,
-            "Once you finish, check the box to track your progress.",
-            Colors.orange[200]!,
-            Colors.purple[100]!,
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        _buildFeatureCard(
+          context,
+          Icons.touch_app_rounded,
+          "Step 1",
+          "Click on each tab to see a detailed explanation of the term.",
+          [Colors.blue.shade400, Colors.blue.shade600],
+        ),
+        const SizedBox(height: 16),
+        _buildFeatureCard(
+          context,
+          Icons.swipe_rounded,
+          "Step 2",
+          "Then, swipe to complete a simple task related to it.",
+          [Colors.purple.shade400, Colors.purple.shade600],
+        ),
+        const SizedBox(height: 16),
+        _buildFeatureCard(
+          context,
+          Icons.check_circle_outline_rounded,
+          "Step 3",
+          "Once you finish, check the box to track your progress.",
+          [Colors.green.shade400, Colors.green.shade600],
+        ),
+      ],
     );
   }
 
-  Widget _buildFeatureCard(BuildContext context, String description, Color color1, Color color2) {
+  Widget _buildFeatureCard(
+    BuildContext context,
+    IconData icon,
+    String step,
+    String description,
+    List<Color> gradientColors,
+  ) {
     return Container(
-      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(16),
         gradient: LinearGradient(
-          colors: [color1, color2],
+          colors: gradientColors,
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: gradientColors[0].withOpacity(0.3),
+            blurRadius: 12,
             spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-      child: Text(
-        description,
-        style: const TextStyle(
-          fontFamily: 'Cereal',
-          fontSize: 16,
-          fontWeight: FontWeight.normal,
-          color: Colors.black,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () {},
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Row(
+              children: [
+                // Icon Container
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.25),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    icon,
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                // Content
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        step,
+                        style: TextStyle(
+                          fontFamily: 'Cereal',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white.withOpacity(0.9),
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        description,
+                        style: const TextStyle(
+                          fontFamily: 'Cereal',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Arrow Icon
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: Colors.white.withOpacity(0.8),
+                  size: 24,
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
