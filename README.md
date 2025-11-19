@@ -17,20 +17,58 @@ Track2College is a Flutter app that helps students and aspiring applicants find 
 2. **Install dependencies**:
    ```bash
    flutter pub get
-3. **Release maintainence**:
-   ```bash
-   build for both ios and android are configured using github that dumps both the ios and android build to firebase distribution
-   https://console.firebase.google.com/project/college-finder-54f2c/appdistribution/app/android:com.frugal.CollegeFinder/releases
+   ```
 
-   Versioning is taken care automatically by Fastlane in github itself
-   To release follow the below steps:
-   - push the changes to the branch main
-   - once the build completes go to the distribution section
-   - for Play store - download the lastest aab from distribution section and upload directly on playstore after logging in to the dev account
-   - for Apple store - download the latest ipa file from distribution section and upload using TRANSPORTER app using mac after logging in to the dev account
-   - Yay! build release, yup it's that easy :-)
+## 🌐 Running the App in Chrome (Demo)
+
+To demo the app in your Chrome browser:
+
+1. **Check available devices**:
+   ```bash
+   flutter devices
+   ```
+
+2. **Run the app in Chrome**:
+   ```bash
+   flutter run -d chrome
+   ```
+
+   The app will:
+   - Compile for web (this may take a minute or two on first run)
+   - Automatically open in Chrome browser
+   - Start a local web server (usually on `http://localhost:xxxxx`)
+
+3. **Stop the app**:
+   - Press `q` in the terminal, or
+   - Close the Chrome browser window
+
+### Troubleshooting Chrome Demo
+
+- If Chrome doesn't open automatically, look for the URL in the terminal output and open it manually
+- Make sure you have Chrome installed on your system
+- If you encounter build errors, try: `flutter clean && flutter pub get`
+- For hot reload: Press `r` in the terminal while the app is running
+- For hot restart: Press `R` in the terminal while the app is running
+
+## 📦 Release Maintenance
+
+Builds for both iOS and Android are configured using GitHub that dumps both the iOS and Android builds to Firebase distribution:
+https://console.firebase.google.com/project/college-finder-54f2c/appdistribution/app/android:com.frugal.CollegeFinder/releases
+
+Versioning is taken care of automatically by Fastlane in GitHub itself.
+
+**To release, follow these steps:**
+1. Push the changes to the branch `main`
+2. Once the build completes, go to the distribution section
+3. **For Play Store**: Download the latest `.aab` from the distribution section and upload directly to Play Store after logging into the dev account
+4. **For Apple Store**: Download the latest `.ipa` file from the distribution section and upload using the TRANSPORTER app on Mac after logging into the dev account
+5. Yay! Build released - it's that easy! 🎉
    
-4. **👥 Contributors**: 
-   Your Name - Sudarshan Mehta, Sonam Yedge
-📜 License
-   This project is licensed under the MIT License.
+## 👥 Contributors
+
+- Sudarshan Mehta
+- Sonam Yedge
+
+## 📜 License
+
+This project is licensed under the MIT License.

@@ -47,7 +47,7 @@ class GetHelpPage extends StatelessWidget {
                   // How to Use Section
                   _buildSectionTitle("How to Use", Icons.help_outline),
                   const SizedBox(height: 16),
-                  FeatureCardsWidget(),
+                  const FeatureCardsWidget(),
                   const SizedBox(height: 32),
                   // Account Settings Section
                   _buildSectionTitle("Account Settings", Icons.settings_outlined),
@@ -354,45 +354,83 @@ class DeleteAccountButton extends StatelessWidget {
   }
 }
 
-class FeatureCardsWidget extends StatelessWidget {
+class FeatureCardsWidget extends StatefulWidget {
+  const FeatureCardsWidget({Key? key}) : super(key: key);
+
+  @override
+  State<FeatureCardsWidget> createState() => _FeatureCardsWidgetState();
+}
+
+class _FeatureCardsWidgetState extends State<FeatureCardsWidget> {
+  int? _expandedIndex;
+
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        _buildFeatureCard(
+        _buildExpandableFeatureCard(
           context,
+          0,
           Icons.touch_app_rounded,
           "Step 1",
           "Click on each tab to see a detailed explanation of the term.",
+          [
+            "Navigate through different tabs in the app to explore various terms and concepts related to college preparation.",
+            "Each tab contains specific information that will help you understand important terminology used in the college application process.",
+            "Take your time to read through the explanations - they are designed to make complex concepts easy to understand.",
+            "You can click on multiple tabs to compare different terms and concepts side by side.",
+          ],
           [Colors.blue.shade400, Colors.blue.shade600],
         ),
         const SizedBox(height: 16),
-        _buildFeatureCard(
+        _buildExpandableFeatureCard(
           context,
+          1,
           Icons.swipe_rounded,
           "Step 2",
           "Then, swipe to complete a simple task related to it.",
+          [
+            "After reading the explanation, you'll find a related task or activity to complete.",
+            "Swipe left or right on the task card to mark it as complete or to access task details.",
+            "Tasks are designed to help you actively engage with the concepts you just learned.",
+            "Completing tasks helps reinforce your understanding and prepares you for your college journey.",
+            "You can revisit tasks anytime to review or update your progress.",
+          ],
           [Colors.purple.shade400, Colors.purple.shade600],
         ),
         const SizedBox(height: 16),
-        _buildFeatureCard(
+        _buildExpandableFeatureCard(
           context,
+          2,
           Icons.check_circle_outline_rounded,
           "Step 3",
           "Once you finish, check the box to track your progress.",
+          [
+            "After completing a task, check the box next to it to mark it as done.",
+            "Your progress is automatically saved, so you can track what you've accomplished.",
+            "The checked boxes help you visualize your journey and see how much you've completed.",
+            "You can view your overall progress at any time to stay motivated and organized.",
+            "Uncheck a box if you need to revisit a task or update your work.",
+            "Celebrate your progress - each checked box represents a step closer to your college goals!",
+          ],
           [Colors.green.shade400, Colors.green.shade600],
         ),
       ],
     );
   }
 
-  Widget _buildFeatureCard(
+  Widget _buildExpandableFeatureCard(
     BuildContext context,
+    int index,
     IconData icon,
     String step,
     String description,
+    List<String> details,
     List<Color> gradientColors,
   ) {
+    final isExpanded = _expandedIndex == index;
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
@@ -414,60 +452,134 @@ class FeatureCardsWidget extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
-          onTap: () {},
+          onTap: () {
+            setState(() {
+              _expandedIndex = isExpanded ? null : index;
+            });
+          },
           child: Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Icon Container
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.25),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    icon,
-                    color: Colors.white,
-                    size: 28,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                // Content
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        step,
-                        style: TextStyle(
-                          fontFamily: 'Cereal',
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white.withOpacity(0.9),
-                          letterSpacing: 0.5,
-                        ),
+                Row(
+                  children: [
+                    // Icon Container
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.25),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      const SizedBox(height: 6),
-                      Text(
-                        description,
-                        style: const TextStyle(
-                          fontFamily: 'Cereal',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                          height: 1.4,
-                        ),
+                      child: Icon(
+                        icon,
+                        color: Colors.white,
+                        size: 28,
                       ),
-                    ],
+                    ),
+                    const SizedBox(width: 16),
+                    // Content
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            step,
+                            style: TextStyle(
+                              fontFamily: 'Cereal',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white.withOpacity(0.9),
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            description,
+                            style: const TextStyle(
+                              fontFamily: 'Cereal',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Arrow Icon with rotation animation
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      transform: Matrix4.identity()..rotateZ(isExpanded ? 3.14159 : 0.0),
+                      child: Icon(
+                        isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                        color: Colors.white.withOpacity(0.8),
+                        size: 28,
+                      ),
+                    ),
+                  ],
+                ),
+                // Expanded Details
+                if (isExpanded) ...[
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Detailed Information:",
+                          style: TextStyle(
+                            fontFamily: 'Cereal',
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white.withOpacity(0.95),
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        ...details.asMap().entries.map((entry) {
+                          int index = entry.key;
+                          String detail = entry.value;
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: index == details.length - 1 ? 0 : 10),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(top: 6, right: 10),
+                                  width: 6,
+                                  height: 6,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    detail,
+                                    style: TextStyle(
+                                      fontFamily: 'Cereal',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white.withOpacity(0.9),
+                                      height: 1.5,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
                   ),
-                ),
-                // Arrow Icon
-                Icon(
-                  Icons.chevron_right_rounded,
-                  color: Colors.white.withOpacity(0.8),
-                  size: 24,
-                ),
+                ],
               ],
             ),
           ),
