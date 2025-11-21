@@ -66,9 +66,10 @@ Versioning is taken care of automatically by Fastlane in GitHub itself.
    
 ## 👥 Contributors
 
-- Sudarshan Mehta
-- Sonam Yedge
+- Shenquan (Martin) Wang
+- Shizhao (Lawrence) Liu
+
 
 ## 📜 License
 
-This project is licensed under the MIT License.
+This project is licensed under the SCU License.
