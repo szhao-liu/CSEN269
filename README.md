@@ -6,5 +6,5 @@ Hello and welcome to team Chatbot. Currently we have two branches under our repo
 For demo, please switch to the ‘tryout’ branch for more details.
 
 # Contributors
-Shenquan (Martin) Wang
-Shizhao (Lawrence) Liu
+## Shenquan (Martin) Wang
+## Shizhao (Lawrence) Liu
