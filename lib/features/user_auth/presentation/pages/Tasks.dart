@@ -6,7 +6,7 @@ import 'package:college_finder/features/user_auth/presentation/pages/DocumentUpl
 import 'package:college_finder/features/user_auth/presentation/pages/List.dart';
 import 'package:college_finder/features/user_auth/presentation/pages/MeetingRecord.dart';
 import 'package:college_finder/features/user_auth/presentation/pages/Video.dart';
-import 'package:college_finder/global/common/Get_Help.dart';
+import 'package:college_finder/global/common/ChatBotPage.dart';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
 import 'package:college_finder/global/common/document_list.dart';
 import 'package:college_finder/global/common/page_type.dart';
@@ -415,18 +415,19 @@ class _TasksPageState extends State<TasksPage> with TickerProviderStateMixin {
                         });
                       });
                     }
-                    
+                    // Navigate to chatbot
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => GetHelpPage()),
+                      MaterialPageRoute(builder: (context) => ChatBotPage()),
                     );
                   },
                   child: CircleAvatar(
                     radius: 25,
                     backgroundColor: Colors.blueAccent,
-                    child: Image.asset(
-                      'assets/help.png',
-                      fit: BoxFit.cover,
+                    child: Icon(
+                      Icons.chat_bubble_outline,
+                      color: Colors.white,
+                      size: 25,
                     ),
                   ),
                 ),

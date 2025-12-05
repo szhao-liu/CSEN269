@@ -7,7 +7,7 @@ import 'package:showcaseview/showcaseview.dart';
 import '../../../../global/common/chat_window.dart';
 import '../../../../global/common/grade.dart';
 import '../../../../global/common/toast.dart';
-import 'package:college_finder/global/common/Get_Help.dart';
+import 'package:college_finder/global/common/ChatBotButton.dart';
 
 class StudentChooseGrade extends StatelessWidget {
   final bool showShowcase;
@@ -136,20 +136,12 @@ class _MyHomePageState extends State<MyHomePage> {
           Positioned(
             bottom: 20,
             right: 20,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => GetHelpPage()),
-                );
-              },
-              child: CircleAvatar(
+            child: Showcase(
+              key: _chatButtonKey,
+              description: "Tap here to chat with your assistant for help!",
+              child: ChatBotButton(
                 radius: 25,
                 backgroundColor: Colors.blueAccent,
-                child: Image.asset(
-                  'assets/help.png',
-                  fit: BoxFit.cover,
-                ),
               ),
             ),
           ),

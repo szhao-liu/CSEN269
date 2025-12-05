@@ -5,7 +5,7 @@ import '../../../../global/common/document_list.dart';
 import 'Tasks.dart';
 import 'dart:async';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
-import 'package:college_finder/global/common/Get_Help.dart';
+import 'package:college_finder/global/common/ChatBotButton.dart';
 
 class MeetingRecordPage extends StatefulWidget {
   final Task task;
@@ -139,21 +139,9 @@ class _MeetingRecordPageState extends State<MeetingRecordPage> {
             backgroundColor: Colors.indigo,
           ),
           SizedBox(height: 16),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => GetHelpPage()),
-              );
-            },
-            child: CircleAvatar(
-              radius: 25,
-              backgroundColor: Colors.blueAccent,
-              child: Image.asset(
-                'assets/help.png',
-                fit: BoxFit.cover,
-              ),
-            ),
+          ChatBotButton(
+            radius: 25,
+            backgroundColor: Colors.blueAccent,
           ),
         ],
       ),

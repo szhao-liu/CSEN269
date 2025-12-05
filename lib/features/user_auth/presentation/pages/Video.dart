@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:college_finder/global/common/Get_Help.dart';
+import 'package:college_finder/global/common/ChatBotButton.dart';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -216,21 +216,9 @@ class _VideoPageState extends State<VideoPage> {
           Positioned(
             bottom: 20,
             right: 20,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => GetHelpPage()),
-                );
-              },
-              child: CircleAvatar(
-                radius: 25,
-                backgroundColor: Colors.blueAccent,
-                child: Image.asset(
-                  'assets/help.png',
-                  fit: BoxFit.cover,
-                ),
-              ),
+            child: ChatBotButton(
+              radius: 25,
+              backgroundColor: Colors.blueAccent,
             ),
           ),
         ],

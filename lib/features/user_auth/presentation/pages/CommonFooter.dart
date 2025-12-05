@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:college_finder/global/common/showHelpDialog.dart';
+import 'package:college_finder/global/common/ChatBotPage.dart';
 
 class CommonFooter extends StatelessWidget {
   @override
@@ -23,11 +23,25 @@ class CommonFooter extends StatelessWidget {
           ),
           GlassmorphicButton(
             onPressed: () {
-              showHelpDialog(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ChatBotPage()),
+              );
             },
-            child: Text(
-              'Get Help',
-              style: TextStyle(color: Colors.white, fontFamily: 'Cereal'),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.chat_bubble_outline,
+                  color: Colors.white,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Chat Assistant',
+                  style: TextStyle(color: Colors.white, fontFamily: 'Cereal'),
+                ),
+              ],
             ),
           ),
         ],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:college_finder/global/common/Header.dart' as CommonHeader;
-import 'package:college_finder/global/common/Get_Help.dart'; // Import the GetHelpPage
+import 'package:college_finder/global/common/ChatBotButton.dart';
 
 class AboutUsPage extends StatelessWidget {
   @override
@@ -81,22 +81,9 @@ class AboutUsPage extends StatelessWidget {
           Positioned(
             bottom: 20,
             right: 20,  // Positioned to the bottom right
-            child: GestureDetector(
-              onTap: () {
-                // Navigate to GetHelpPage when the button is pressed
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => GetHelpPage()),
-                );
-              },
-              child: CircleAvatar(
-                radius: 25, // Smaller size for the button
-                backgroundColor: Colors.blueAccent,
-                child: Image.asset(
-                  'assets/help.png',  // Replace with the correct path to your image
-                  fit: BoxFit.cover,  // Ensures the image fits within the circle
-                ),
-              ),
+            child: ChatBotButton(
+              radius: 25,
+              backgroundColor: Colors.blueAccent,
             ),
           ),
         ],
